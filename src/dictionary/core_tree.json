@@ -1,0 +1,141 @@
+{
+  "yes": [
+    "fa",
+    "sol"
+  ],
+  "no": [
+    "sol",
+    "la",
+    "do"
+  ],
+  "more": [
+    "sol",
+    "si"
+  ],
+  "stop": [
+    "sol",
+    "fa",
+    "sol"
+  ],
+  "done": [
+    "sol",
+    "la",
+    "re"
+  ],
+  "again": [
+    "sol",
+    "re"
+  ],
+  "help": [
+    "sol",
+    "fa",
+    "do"
+  ],
+  "please": [
+    "fa",
+    "re"
+  ],
+  "thank you": [
+    "sol",
+    "mi"
+  ],
+  "hello": [
+    "fa",
+    "mi"
+  ],
+  "eat": [
+    "re",
+    "sol"
+  ],
+  "drink": [
+    "re",
+    "fa"
+  ],
+  "water": [
+    "re",
+    "do"
+  ],
+  "tired": [
+    "mi",
+    "fa"
+  ],
+  "hurt": [
+    "sol",
+    "la",
+    "re"
+  ],
+  "toilet": [
+    "do"
+  ],
+  "hot": [
+    "re",
+    "mi"
+  ],
+  "cold": [
+    "re",
+    "mi"
+  ],
+  "want": [
+    "la",
+    "do"
+  ],
+  "happy": [
+    "fa",
+    "la"
+  ],
+  "sad": [
+    "fa",
+    "si"
+  ],
+  "love": [
+    "fa",
+    "sol"
+  ],
+  "afraid": [
+    "mi",
+    "re"
+  ],
+  "angry": [
+    "mi",
+    "do"
+  ],
+  "I": [
+    "la",
+    "mi"
+  ],
+  "you": [
+    "la",
+    "re"
+  ],
+  "parent": [
+    "fa",
+    "do"
+  ],
+  "home": [
+    "sol",
+    "do"
+  ],
+  "go": [
+    "sol",
+    "fa",
+    "mi"
+  ],
+  "come": [
+    "sol",
+    "fa",
+    "re"
+  ],
+  "play": [
+    "si"
+  ],
+  "good": [
+    "sol",
+    "la",
+    "mi"
+  ],
+  "bad": [
+    "sol",
+    "la",
+    "do"
+  ]
+}

@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Maya</title>
+<style>
+/* ------------------------------------------------------------------ *
+ * Maya — a voice made of colour and sound. Local. Offline. Hers.
+ * Do = red = no (low, falling).   Si = violet = yes (high, rising).
+ * Seven notes, seven colours: the rainbow is one optical octave.
+ * ------------------------------------------------------------------ */
+:root{
+  /* the seven notes as the seven colours of the spectrum */
+  --n0:#FF4D4D;  /* do  red    */
+  --n1:#FF9A3D;  /* re  orange */
+  --n2:#FFD23D;  /* mi  yellow */
+  --n3:#46C96B;  /* fa  green  */
+  --n4:#2FBEC9;  /* sol teal   */
+  --n5:#4D7CFF;  /* la  blue   */
+  --n6:#A567FF;  /* si  violet */
+
+  --yes:#A567FF; --yes-2:#7C3AED;
+  --no:#FF4D4D;  --no-2:#E02424;
+
+  --bg:#FBF6EF;            /* warm near-white, chosen not defaulted */
+  --card:#FFFFFF;
+  --ink:#2B2320;
+  --ink-soft:#8A7E74;
+  --line:#EFE6DA;
+  --shadow:0 10px 30px rgba(70,50,30,.10), 0 2px 6px rgba(70,50,30,.06);
+  --radius:26px;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#171310; --card:#221C18; --ink:#F5ECE2; --ink-soft:#A89A8C; --line:#302720;
+         --shadow:0 12px 34px rgba(0,0,0,.45); }
+}
+:root[data-theme="light"]{ --bg:#FBF6EF; --card:#FFFFFF; --ink:#2B2320; --ink-soft:#8A7E74; --line:#EFE6DA; --shadow:0 10px 30px rgba(70,50,30,.10),0 2px 6px rgba(70,50,30,.06); }
+:root[data-theme="dark"]{ --bg:#171310; --card:#221C18; --ink:#F5ECE2; --ink-soft:#A89A8C; --line:#302720; --shadow:0 12px 34px rgba(0,0,0,.45); }
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  padding:max(14px,env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));
+  max-width:1100px; margin:0 auto;
+  -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
+}
+button{font-family:inherit; color:inherit; border:none; background:none; cursor:pointer}
+button:focus-visible{outline:4px solid var(--n5); outline-offset:3px}
+
+/* header ----------------------------------------------------------- */
+header{display:flex; align-items:center; gap:12px; padding:4px 6px 14px}
+.brand{display:flex; align-items:baseline; gap:12px}
+.brand h1{font-size:26px; font-weight:800; letter-spacing:.2px; margin:0}
+.brand .dots{display:flex; gap:5px; align-self:center}
+.brand .dots i{width:12px;height:12px;border-radius:50%}
+header .spacer{flex:1}
+.toggle{display:flex; align-items:center; gap:8px; font-weight:700; color:var(--ink-soft);
+  font-size:15px; background:var(--card); border:1px solid var(--line); padding:9px 14px; border-radius:999px; box-shadow:var(--shadow)}
+.toggle b{color:var(--ink)}
+
+/* say-bar — Maya's voice made visible, read across the room --------- */
+.say{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:22px 24px; display:flex; align-items:center; gap:22px;
+  min-height:118px; margin-bottom:16px;
+}
+.say .word{font-size:clamp(34px,7vw,58px); font-weight:800; line-height:1; display:flex; align-items:center; gap:18px}
+.say .emoji{font-size:clamp(40px,8vw,64px)}
+.say .beads{display:flex; gap:9px; flex-wrap:wrap}
+.say .beads i{width:26px;height:26px;border-radius:50%; box-shadow:inset 0 -3px 6px rgba(0,0,0,.18)}
+.say .rest{color:var(--ink-soft); font-size:22px; font-weight:700; display:flex; align-items:center; gap:14px}
+.say .spacer{flex:1}
+.replay{width:66px;height:66px;border-radius:50%; background:var(--bg); border:1px solid var(--line);
+  box-shadow:var(--shadow); font-size:28px; display:grid; place-items:center; flex:none}
+.replay:active{transform:scale(.92)}
+.say.pop{animation:pop .32s cubic-bezier(.2,1.3,.5,1)}
+@keyframes pop{0%{transform:scale(.97)}60%{transform:scale(1.015)}100%{transform:scale(1)}}
+
+/* YES / NO — the whole product on day one -------------------------- */
+.yesno{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px}
+.big{
+  border-radius:var(--radius); padding:30px; min-height:min(38vh,300px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  color:#fff; box-shadow:var(--shadow); position:relative; overflow:hidden; transition:transform .08s ease;
+}
+.big:active{transform:scale(.97)}
+.big .lbl{font-size:clamp(52px,11vw,104px); font-weight:900; letter-spacing:.5px; line-height:.9}
+.big .sub{font-size:20px; font-weight:800; opacity:.9; letter-spacing:.4px; display:flex; align-items:center; gap:10px}
+.big .sub i{width:16px;height:16px;border-radius:50%; background:rgba(255,255,255,.95)}
+.big.no{background:radial-gradient(120% 120% at 30% 20%, #ff6a6a, var(--no) 45%, var(--no-2))}
+.big.yes{background:radial-gradient(120% 120% at 70% 20%, #c79bff, var(--yes) 45%, var(--yes-2))}
+.big .glow{position:absolute; inset:0; background:radial-gradient(circle at center, rgba(255,255,255,.55), transparent 60%); opacity:0; pointer-events:none}
+.big.lit .glow{animation:flash .5s ease}
+@keyframes flash{0%{opacity:.8; transform:scale(.6)}100%{opacity:0; transform:scale(1.3)}}
+.big .arrow{position:absolute; right:22px; bottom:16px; font-size:34px; opacity:.6}
+
+/* section titles --------------------------------------------------- */
+.h{font-size:14px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--ink-soft); margin:6px 6px 12px}
+
+/* word grid -------------------------------------------------------- */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(132px,1fr)); gap:13px; margin-bottom:22px}
+.tile{
+  background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow);
+  padding:16px 12px 13px; display:flex; flex-direction:column; align-items:center; gap:9px; position:relative; transition:transform .08s ease;
+}
+.tile:active{transform:scale(.95)}
+.tile .em{font-size:42px; line-height:1}
+.tile .w{font-size:20px; font-weight:800}
+.tile .beads{display:flex; gap:5px}
+.tile .beads i{width:13px;height:13px;border-radius:50%; box-shadow:inset 0 -2px 3px rgba(0,0,0,.2)}
+.tile.mine .pin{position:absolute; top:8px; right:10px; font-size:13px; color:var(--ink-soft)}
+.tile.lit{box-shadow:0 0 0 4px var(--hl,var(--n5)), var(--shadow)}
+
+/* make-a-word ------------------------------------------------------ */
+.make{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; margin-bottom:26px}
+.make .top{display:flex; align-items:center; gap:12px; margin-bottom:4px; cursor:pointer}
+.make .top h2{font-size:19px; font-weight:800; margin:0}
+.make .top .chev{margin-left:auto; color:var(--ink-soft); font-size:22px; transition:transform .2s}
+.make.open .top .chev{transform:rotate(90deg)}
+.make .body{display:none; padding-top:16px}
+.make.open .body{display:block}
+.keys{display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin-bottom:16px}
+.key{height:84px; border-radius:18px; color:#fff; font-weight:800; font-size:15px;
+  display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; box-shadow:var(--shadow); text-shadow:0 1px 2px rgba(0,0,0,.25); transition:transform .07s}
+.key:active{transform:translateY(3px) scale(.97)}
+.compose{display:flex; align-items:center; gap:14px; flex-wrap:wrap; min-height:64px;
+  background:var(--bg); border:2px dashed var(--line); border-radius:18px; padding:14px 16px; margin-bottom:12px}
+.compose .beads{display:flex; gap:9px}
+.compose .beads i{width:30px;height:30px;border-radius:50%; box-shadow:inset 0 -3px 5px rgba(0,0,0,.2)}
+.compose .hint{color:var(--ink-soft); font-weight:700; font-size:17px}
+.compose .spacer{flex:1}
+.warn{color:#B45309; font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px}
+@media (prefers-color-scheme:dark){ .warn{color:#FCD34D} }
+:root[data-theme="dark"] .warn{color:#FCD34D}
+.mrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.mbtn{background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px 18px; font-weight:800; font-size:16px; box-shadow:var(--shadow); display:flex; align-items:center; gap:8px}
+.mbtn:active{transform:scale(.95)}
+.mbtn.go{background:linear-gradient(180deg,#57d17a,#37b45e); color:#fff; border:none}
+.mbtn[disabled]{opacity:.4}
+.palette{display:flex; gap:8px; flex-wrap:wrap; margin-left:4px}
+.palette button{font-size:30px; width:52px;height:52px; border-radius:14px; background:var(--bg); border:1px solid var(--line)}
+.palette button.sel{box-shadow:0 0 0 3px var(--n4)}
+.namein{font-family:inherit; font-size:17px; font-weight:700; padding:11px 14px; border-radius:14px; border:1px solid var(--line); background:var(--bg); color:var(--ink); width:150px}
+footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 20px; font-weight:600}
+
+@media (max-width:560px){
+  .say .word{gap:12px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:10px}
+  .tile .em{font-size:36px}.tile .w{font-size:17px}
+  .keys{gap:6px}.key{height:70px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>Maya</h1>
+    <span class="dots" aria-hidden="true">
+      <i style="background:var(--n0)"></i><i style="background:var(--n1)"></i><i style="background:var(--n2)"></i>
+      <i style="background:var(--n3)"></i><i style="background:var(--n4)"></i><i style="background:var(--n5)"></i><i style="background:var(--n6)"></i>
+    </span>
+  </div>
+  <div class="spacer"></div>
+  <button class="toggle" id="voiceBtn" aria-pressed="true">🔊 Voice <b id="voiceState">on</b></button>
+</header>
+
+<!-- Maya's voice, made visible and read aloud -->
+<section class="say" id="say" aria-live="polite">
+  <div class="rest" id="sayRest">🌈 <span>Tap to talk</span></div>
+  <div class="word" id="sayWord" hidden><span class="emoji" id="sayEmoji"></span><span id="sayText"></span></div>
+  <div class="spacer"></div>
+  <div class="beads" id="sayBeads" aria-hidden="true"></div>
+  <button class="replay" id="replay" title="Say it again" aria-label="Say it again" hidden>🔁</button>
+</section>
+
+<!-- The whole product on day one -->
+<section class="yesno">
+  <button class="big no" data-word="no"  aria-label="No">
+    <span class="glow"></span>
+    <span class="lbl">No</span>
+    <span class="sub"><i></i>do · red</span>
+    <span class="arrow" aria-hidden="true">↓</span>
+  </button>
+  <button class="big yes" data-word="yes" aria-label="Yes">
+    <span class="glow"></span>
+    <span class="lbl">Yes</span>
+    <span class="sub"><i></i>si · violet</span>
+    <span class="arrow" aria-hidden="true">↑</span>
+  </button>
+</section>
+
+<div class="h">Her words</div>
+<section class="grid" id="grid"></section>
+
+<!-- Author: she writes, not only is read (Kay); live and hers (Ingalls) -->
+<section class="make" id="make">
+  <div class="top" id="makeTop">
+    <h2>➕ Make a word</h2>
+    <span class="chev">›</span>
+  </div>
+  <div class="body">
+    <div class="keys" id="keys"></div>
+    <div class="compose">
+      <div class="beads" id="cbeads"></div>
+      <span class="hint" id="chint">Press the colours to build a word — you’ll hear each one.</span>
+      <span class="spacer"></span>
+      <span class="warn" id="cwarn" hidden></span>
+    </div>
+    <div class="mrow">
+      <button class="mbtn" id="cplay">▶ Hear it</button>
+      <button class="mbtn" id="cundo">⌫ Back</button>
+      <span class="palette" id="palette" aria-label="pick a picture"></span>
+      <input class="namein" id="cname" placeholder="name (grown-up)" maxlength="14" aria-label="word name">
+      <button class="mbtn go" id="ckeep" disabled>✓ Keep it</button>
+    </div>
+  </div>
+</section>
+
+<footer id="foot">Made for Maya · works with no internet · her words are saved on this computer</footer>
+
+<script>
+"use strict";
+/* ---- notes: colour + pitch (C major, one octave) ---- */
+const NOTE_NAMES = ["do","re","mi","fa","sol","la","si"];
+const COLORS = ["--n0","--n1","--n2","--n3","--n4","--n5","--n6"].map(v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim());
+const FREQ  = [261.63,293.66,329.63,349.23,392.00,440.00,493.88];  // do..si
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ---- vocabulary: whole tiles, safe by place + picture + colour + speech.
+        (note-distance safety is enforced in Make-a-word, where slips happen.) ---- */
+const CORE = [
+  {w:"more",   e:"🔁", c:[5,2,5,1]},
+  {w:"stop",   e:"✋", c:[3,0]},
+  {w:"help",   e:"🆘", c:[0,6,0]},
+  {w:"hurt",   e:"🤕", c:[2,1,6,3]},
+  {w:"eat",    e:"🍽️", c:[0,5,2,6]},
+  {w:"drink",  e:"🥤", c:[3,4,5]},      // re-separated from eat: rising, watery
+  {w:"toilet", e:"🚽", c:[1,0,5,0]},
+  {w:"tired",  e:"😴", c:[4,3,1]},
+  {w:"love",   e:"❤️", c:[2,1,0]},
+  {w:"play",   e:"🧸", c:[4,5,4,5]},
+  {w:"happy",  e:"😊", c:[4,6,4]},
+  {w:"sad",    e:"😢", c:[3,1,0]},
+  {w:"music",  e:"🎵", c:[4,3,2,1]},
+  {w:"outside",e:"🌳", c:[2,4,6]},
+  {w:"mom",    e:"👩", c:[5,3,5]},
+  {w:"dad",    e:"👨", c:[0,3,0]},
+];
+const YES={w:"yes",e:"💜",c:[6]}, NO={w:"no",e:"❤️",c:[0]};
+/* the words a slip must never land on */
+const CRITICAL = [YES,NO,...CORE.filter(x=>["stop","help","hurt","eat","drink","toilet"].includes(x.w))];
+
+/* ---- audio ---- */
+let AC=null;
+function audio(){ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state==="suspended")AC.resume(); return AC; }
+function tone(freq, t0, dur, bend){
+  const ac=audio();
+  const o=ac.createOscillator(), o2=ac.createOscillator(), g=ac.createGain();
+  o.type="triangle"; o2.type="sine"; o2.detune.value=6;
+  o.frequency.setValueAtTime(freq,t0); o2.frequency.setValueAtTime(freq,t0);
+  if(bend){ const f2=freq*Math.pow(2,bend/12); o.frequency.linearRampToValueAtTime(f2,t0+dur*.9); o2.frequency.linearRampToValueAtTime(f2,t0+dur*.9); }
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(0.32,t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g); o2.connect(g); g.connect(ac.destination);
+  o.start(t0); o2.start(t0); o.stop(t0+dur+.05); o2.stop(t0+dur+.05);
+}
+function playCode(code, bend){
+  const ac=audio(); let t=ac.currentTime+0.02; const step=code.length>1?0.19:0.42;
+  code.forEach((n,i)=>{ const b = bend!==undefined ? bend : 0; tone(FREQ[n], t, step*0.95, code.length===1?b:0); t+=step; });
+}
+function playNote(n){ tone(FREQ[n], audio().currentTime+0.01, 0.5); }
+
+/* ---- speech: the family across the room understands, no manual ---- */
+let VOICE_ON=true, VOICES=[];
+function loadVoices(){ VOICES=window.speechSynthesis? speechSynthesis.getVoices():[]; }
+if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function speak(text){
+  if(!VOICE_ON||!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.92; u.pitch=1.06;
+  const v=VOICES.find(v=>/en/i.test(v.lang)&&/(female|samantha|karen|moira|google us)/i.test(v.name))||VOICES.find(v=>/en/i.test(v.lang));
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+
+/* ---- saying a word: sound + colour + voice + made visible ---- */
+const say=document.getElementById("say"), sayRest=document.getElementById("sayRest"),
+      sayWord=document.getElementById("sayWord"), sayEmoji=document.getElementById("sayEmoji"),
+      sayText=document.getElementById("sayText"), sayBeads=document.getElementById("sayBeads"),
+      replay=document.getElementById("replay");
+let LAST=null;
+function beadsInto(el,code,aria){ el.innerHTML=""; code.forEach(n=>{ const i=document.createElement("i"); i.style.background=COLORS[n]; el.appendChild(i); }); }
+function render(item, bend){
+  LAST={item,bend};
+  sayRest.hidden=true; sayWord.hidden=false; replay.hidden=false;
+  sayEmoji.textContent=item.e; sayText.textContent=item.w;
+  beadsInto(sayBeads,item.c);
+  say.classList.remove("pop"); void say.offsetWidth; say.classList.add("pop");
+  playCode(item.c, bend); speak(item.w);
+}
+replay.addEventListener("click", ()=>{ if(LAST) render(LAST.item, LAST.bend); });
+
+/* ---- YES / NO ---- */
+document.querySelectorAll(".big").forEach(b=>{
+  b.addEventListener("pointerdown", ()=>{
+    const yes=b.dataset.word==="yes"; b.classList.remove("lit"); void b.offsetWidth; b.classList.add("lit");
+    render(yes?YES:NO, yes?+2:-2);   // yes rises, no falls — contour as a fourth channel
+  });
+});
+
+/* ---- word grid ---- */
+const grid=document.getElementById("grid");
+function tileEl(item, mine){
+  const t=document.createElement("button"); t.className="tile"+(mine?" mine":""); t.setAttribute("aria-label",item.w||"word");
+  const hl = COLORS[item.c[0]];
+  t.innerHTML = `<span class="em">${item.e}</span><span class="w">${item.w||""}</span><span class="beads"></span>`+(mine?`<span class="pin">★</span>`:``);
+  beadsInto(t.querySelector(".beads"), item.c);
+  t.addEventListener("pointerdown", ()=>{ t.style.setProperty("--hl",hl); t.classList.add("lit"); setTimeout(()=>t.classList.remove("lit"),260); render(item); });
+  return t;
+}
+function renderGrid(){
+  grid.innerHTML="";
+  CORE.forEach(x=>grid.appendChild(tileEl(x,false)));
+  mine().forEach(x=>grid.appendChild(tileEl(x,true)));
+}
+
+/* ---- her saved words (local, offline) ---- */
+const KEY="maya-words-v1";
+function mine(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ return []; } }
+function saveMine(list){ localStorage.setItem(KEY, JSON.stringify(list)); }
+
+/* ---- Make a word (author + live safety floor) ---- */
+const make=document.getElementById("make"), keys=document.getElementById("keys"),
+      cbeads=document.getElementById("cbeads"), chint=document.getElementById("chint"),
+      cwarn=document.getElementById("cwarn"), cplay=document.getElementById("cplay"),
+      cundo=document.getElementById("cundo"), ckeep=document.getElementById("ckeep"),
+      cname=document.getElementById("cname"), palette=document.getElementById("palette");
+let build=[], chosenEmoji="⭐";
+const EMOJI=["⭐","❤️","🍪","🎈","🐶","🎵","🚗","🌈","🧸","🍎","☀️","🎨"];
+
+document.getElementById("makeTop").addEventListener("click",()=>{ make.classList.toggle("open"); if(make.classList.contains("open"))audio(); });
+NOTE_NAMES.forEach((nm,n)=>{
+  const k=document.createElement("button"); k.className="key"; k.style.background=COLORS[n]; k.textContent=nm;
+  k.setAttribute("aria-label",nm);
+  k.addEventListener("pointerdown",()=>{ if(build.length>=7)return; build.push(n); playNote(n); refreshBuild(); });
+  keys.appendChild(k);
+});
+EMOJI.forEach((e,i)=>{ const b=document.createElement("button"); b.textContent=e; if(i===0)b.classList.add("sel");
+  b.addEventListener("click",()=>{ chosenEmoji=e; palette.querySelectorAll("button").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); }); palette.appendChild(b); });
+
+function edit(a,b){ const n=a.length,m=b.length; const d=Array.from({length:n+1},(_,i)=>[i,...Array(m).fill(0)]);
+  for(let j=0;j<=m;j++)d[0][j]=j;
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[n][m]; }
+function nearestCritical(code){ let best=null; for(const x of CRITICAL){ const e=edit(code,x.c); if(!best||e<best.e)best={x,e}; } return best; }
+function nearestAny(code){ const all=[YES,NO,...CORE,...mine()]; let best=null; for(const x of all){ const e=edit(code,x.c); if(!best||e<best.e)best={x,e}; } return best; }
+
+function refreshBuild(){
+  cbeads.innerHTML=""; build.forEach(n=>{ const i=document.createElement("i"); i.style.background=COLORS[n]; cbeads.appendChild(i); });
+  chint.style.display = build.length? "none":"";
+  ckeep.disabled = build.length===0;
+  // live safety floor: warn if this is one slip from a word that must stay distinct
+  cwarn.hidden=true;
+  if(build.length){
+    const nc=nearestCritical(build);
+    if(nc.e===0){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ that’s already ${nc.x.e} <b>${nc.x.w}</b>`; ckeep.disabled=true; }
+    else if(nc.e<=1){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ close to ${nc.x.e} <b>${nc.x.w}</b> — add a note to keep them apart`; }
+  }
+}
+cplay.addEventListener("click",()=>{ if(build.length)playCode(build); });
+cundo.addEventListener("click",()=>{ build.pop(); refreshBuild(); });
+ckeep.addEventListener("click",()=>{
+  if(!build.length)return;
+  const na=nearestAny(build);
+  if(na.e===0){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ that’s already ${na.x.e} <b>${na.x.w||"a word"}</b>`; return; }
+  const list=mine();
+  list.push({w:(cname.value.trim()||""), e:chosenEmoji, c:build.slice()});
+  saveMine(list);
+  build=[]; cname.value=""; refreshBuild(); renderGrid();
+  render(list[list.length-1]);   // celebrate: say her new word
+});
+
+/* ---- voice toggle ---- */
+const voiceBtn=document.getElementById("voiceBtn"), voiceState=document.getElementById("voiceState");
+voiceBtn.addEventListener("click",()=>{ VOICE_ON=!VOICE_ON; voiceState.textContent=VOICE_ON?"on":"off"; voiceBtn.setAttribute("aria-pressed",VOICE_ON);
+  voiceBtn.firstChild.textContent=VOICE_ON?"🔊 Voice ":"🔈 Voice "; if(VOICE_ON)speak("yes"); });
+
+/* ---- go ---- */
+renderGrid(); refreshBuild();
+window.addEventListener("pointerdown",()=>audio(),{once:true});
+</script>
+</body>
+</html>

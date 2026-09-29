@@ -1,0 +1,58 @@
+[
+  {
+    "note": "do",
+    "ratio": 1.0,
+    "audible_hz": 261.63,
+    "optical_thz": 400.0,
+    "wavelength_nm": 749.5,
+    "hex": "#620000"
+  },
+  {
+    "note": "re",
+    "ratio": 1.1225,
+    "audible_hz": 293.66,
+    "optical_thz": 449.0,
+    "wavelength_nm": 667.7,
+    "hex": "#e00000"
+  },
+  {
+    "note": "mi",
+    "ratio": 1.2599,
+    "audible_hz": 329.63,
+    "optical_thz": 504.0,
+    "wavelength_nm": 594.9,
+    "hex": "#ffcf00"
+  },
+  {
+    "note": "fa",
+    "ratio": 1.3348,
+    "audible_hz": 349.23,
+    "optical_thz": 533.9,
+    "wavelength_nm": 561.5,
+    "hex": "#c7ff00"
+  },
+  {
+    "note": "sol",
+    "ratio": 1.4983,
+    "audible_hz": 392.0,
+    "optical_thz": 599.3,
+    "wavelength_nm": 500.2,
+    "hex": "#00ff90"
+  },
+  {
+    "note": "la",
+    "ratio": 1.6818,
+    "audible_hz": 440.0,
+    "optical_thz": 672.7,
+    "wavelength_nm": 445.6,
+    "hex": "#002dff"
+  },
+  {
+    "note": "si",
+    "ratio": 1.8877,
+    "audible_hz": 493.88,
+    "optical_thz": 755.1,
+    "wavelength_nm": 397.0,
+    "hex": "#8100a9"
+  }
+]

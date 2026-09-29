@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solresol — a language you can see, hear, and grow</title>
+<style>
+  :root{
+    --bg:#0a0810; --panel:#141019; --panel2:#100c17; --line:#271f33; --line2:#372c48;
+    --ink:#efe9f6; --mut:#a99fc0; --dim:#726889;
+    --do:#e63946; --re:#f3722c; --mi:#f9c74f; --fa:#43aa8b; --sol:#3d8fd1; --la:#6a6bd0; --si:#a24be0;
+    --glow:#b98cff; --good:#5bd1a0; --bad:#e8746b;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+      radial-gradient(1100px 560px at 50% -10%, #1b1430 0%, rgba(27,20,48,0) 62%), var(--bg);
+    color:var(--ink);font-family:var(--sans);line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:760px;margin:0 auto;padding:56px 22px 100px}
+  .band{max-width:960px;margin:0 auto;padding:0 22px}
+  .eyebrow{font-family:var(--mono);font-size:.71rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,6.4vw,3.8rem);line-height:1.02;
+     letter-spacing:-.015em;margin:.3em 0 .35em;text-wrap:balance}
+  h1 em{font-style:italic;color:var(--glow)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,3.6vw,2rem);letter-spacing:-.01em;
+     margin:0 0 .5em;text-wrap:balance}
+  .spectrum{height:5px;border-radius:3px;margin:30px 0 6px;
+     background:linear-gradient(90deg,var(--do),var(--re),var(--mi),var(--fa),var(--sol),var(--la),var(--si))}
+  .lede{font-size:1.18rem;color:var(--mut)}
+  p{margin:0 0 1.05em}
+  section{margin-top:58px}
+  .num{font-family:var(--serif);font-style:italic;color:var(--glow)}
+  strong{color:#fff;font-weight:600}
+  em.k{font-style:normal;font-family:var(--mono);font-size:.9em;color:var(--la);letter-spacing:.02em}
+  a{color:var(--glow);text-decoration:none;border-bottom:1px solid #ffffff22}
+
+  /* results table */
+  .tbl{width:100%;border-collapse:collapse;font-size:.95rem;margin:6px 0 4px}
+  .tbl th,.tbl td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+  .tbl th{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500}
+  .tbl td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+  .tbl tr td:first-child{color:var(--ink)}
+  .win{color:var(--good)} .loss{color:var(--bad)}
+  .cap{font-size:.85rem;color:var(--dim);margin-top:8px}
+
+  /* frontier two-col */
+  .frontier{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  @media(max-width:620px){.frontier{grid-template-columns:1fr}}
+  .col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 20px 8px}
+  .col.w{border-color:#2b5c47} .col.l{border-color:#5c2f2c}
+  .col h3{margin:0 0 12px;font-size:.95rem;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+  .col.w h3{color:var(--good)} .col.l h3{color:var(--bad)}
+  .col ul{margin:0;padding:0;list-style:none}
+  .col li{padding:0 0 14px 22px;position:relative;font-size:.96rem;color:var(--mut)}
+  .col li b{color:var(--ink);font-weight:600}
+  .col.w li:before{content:"▲";position:absolute;left:0;color:var(--good);font-size:.7rem;top:.35em}
+  .col.l li:before{content:"▼";position:absolute;left:0;color:var(--bad);font-size:.7rem;top:.35em}
+
+  /* defect->asset */
+  .flip{border-left:2px solid var(--line2);padding:2px 0 2px 20px;margin:0 0 16px}
+  .flip .d{color:var(--mut)} .flip .a{color:var(--ink)}
+  .flip .a b{color:var(--glow);font-weight:600}
+
+  blockquote{margin:26px 0;padding:2px 0 2px 22px;border-left:3px solid var(--glow);
+     font-family:var(--serif);font-size:1.22rem;font-style:italic;color:#e7dffb}
+  .cta{display:inline-block;margin-top:10px;background:linear-gradient(180deg,#7b48c9,#5b34a0);
+     border:1px solid #8b5fd6;border-radius:11px;padding:12px 22px;color:#fff;font-weight:600;font-family:var(--sans)}
+  footer{margin-top:70px;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line);padding-top:22px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="eyebrow">A research note · Solresol</div>
+  <h1>A language you can <em>see</em>, <em>hear</em>, and <em>grow</em></h1>
+  <div class="spectrum"></div>
+  <p class="lede">A 175-year-old idea — seven syllables that are also seven notes and seven colours —
+    rebuilt as a shared <strong>meaning space</strong>: one structured code an LLM can reason in, a
+    person can perceive, and agents can invent for themselves. This is the honest field report —
+    what won, what lost, and what the evidence says it's actually for.</p>
+
+  <section>
+    <h2>The bet</h2>
+    <p>Natural language ties meaning to form <em>arbitrarily</em> — <span class="mono">cat</span>,
+      <span class="mono">cats</span>, and <span class="mono">feline</span> are unrelated symbols a
+      model must memorise. The bet here is the opposite: make the <strong>form encode the
+      meaning</strong>. Each concept becomes a short run of seven ring-ordered symbols, built so that
+      similar meanings get similar codes. The seven aren't arbitrary either — the visible spectrum is
+      almost exactly one optical octave, so a note's pitch-ratio maps to a hue by physics:
+      <em class="k">do</em>=red … <em class="k">si</em>=violet.</p>
+    <p>If it works, one code renders as sound, colour, or touch (for people), factors cleanly (for
+      machines), and stays robust when a symbol slips. If it fails, it fails honestly — and it did,
+      in one place.</p>
+  </section>
+
+  <section>
+    <h2>What the evidence says</h2>
+    <p>Every number below is from a run that's in the repo, most of it trained from scratch on a
+      laptop in seconds.</p>
+    <table class="tbl">
+      <tr><th>question</th><th>structured code</th><th>the alternative</th></tr>
+      <tr><td>Generalise to <b>unseen</b> concepts?</td>
+          <td class="n win">1.00</td><td class="n">0.00 <span class="cap">(arbitrary / hash)</span></td></tr>
+      <tr><td>Survive a fumbled symbol?</td>
+          <td class="n win">100%</td><td class="n">2% <span class="cap">(87% catastrophic)</span></td></tr>
+      <tr><td>Can it <b>grow itself</b> — no corpus, self-play, then generalise?</td>
+          <td class="n win">0.92</td><td class="n">0.17 <span class="cap">(chance)</span></td></tr>
+      <tr><td>Beat a hash embedding at <b>topic classification</b>?</td>
+          <td class="n loss">0.623</td><td class="n">0.748 <span class="cap">(BERT-Hash)</span></td></tr>
+    </table>
+    <p class="cap">Learnability &amp; robustness: a tiny transformer, structured vs arbitrary codes.
+      Self-play: a discrimination game with a population of agents, zero-shot on held-out meanings.
+      Classification: 20-Newsgroups, structured 448 params vs hash 262K vs a full table 1.5M.</p>
+    <p>Three wins and one clean loss. The wins say structure buys <strong>compositional
+      generalisation, graceful degradation, and a language that can invent itself.</strong> The loss
+      says something just as useful: at extreme compression a seven-symbol code throws away the
+      <em>word-identity</em> that topic classification rewards. It is <strong>not</strong> a drop-in
+      better tokenizer — and pretending otherwise would waste everyone's time.</p>
+  </section>
+
+  <section>
+    <h2>The frontier, drawn by data</h2>
+    <div class="frontier">
+      <div class="col w">
+        <h3>Where structure wins</h3>
+        <ul>
+          <li><b>Compositional generalisation</b> — decodes concepts it never saw; the arbitrary and
+            hashed codes cannot.</li>
+          <li><b>Graceful degradation</b> — a slip lands on a <em>neighbour</em> meaning, not noise.
+            Robust I/O over noisy channels.</li>
+          <li><b>Self-play emergent communication</b> — agents grow a shared, generalising code with
+            no data at all.</li>
+          <li><b>Interpretability &amp; algebra</b> — readable coordinates; <em class="k">king − man
+            + woman → father</em> as an edit on the code.</li>
+          <li><b>Parameter collapse</b> — 448 params where a table needs 1.5M, when identity isn't
+            the point.</li>
+        </ul>
+      </div>
+      <div class="col l">
+        <h3>Where it loses</h3>
+        <ul>
+          <li><b>Identity-heavy classification</b> — topic labels reward word-specific features that
+            extreme compression destroys. Hash and full tables win.</li>
+          <li><b>Frontier-scale throughput</b> — 4× longer sequences, ~16× attention. BPE wins on
+            cost at scale; entropy is conserved.</li>
+          <li><b>Context &amp; polysemy</b> — a static code freezes meaning a big model would rather
+            build from context.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:18px">So the honest product is not "better embeddings." It is a
+      <strong>self-growing, compositional, interpretable, robust meaning-code</strong> — best exactly
+      where a learner is <em>bounded</em> and the channel is <em>noisy</em>: on-device models,
+      agent-to-agent messaging, accessibility, and auditable I/O. The same niche, whether the bounded
+      learner is a tiny model or a child.</p>
+  </section>
+
+  <section>
+    <h2>Turning the defects into the spec</h2>
+    <p>Grace Hopper kept a nanosecond of wire on her desk to make a limit teach something. Read the
+      "weaknesses" that way and they name the mission:</p>
+    <div class="flip"><div class="d">A code with no out-of-vocabulary fallback…</div>
+      <div class="a">…<b>invents a word for an unseen concept</b> in the right neighbourhood. Coinage, not failure.</div></div>
+    <div class="flip"><div class="d">A meaning that's fixed, not context-built…</div>
+      <div class="a">…is <b>unambiguous and verifiable</b> — the anti-hallucination property a reasoning substrate wants.</div></div>
+    <div class="flip"><div class="d">Emergent codes that are private and idiosyncratic…</div>
+      <div class="a">…are exactly what a <b>personal, self-grown language</b> needs — the child's, or the agent's, own.</div></div>
+    <div class="flip"><div class="d">Only seven symbols…</div>
+      <div class="a">…is the most a bounded perceiver reliably tells apart, and the <b>only radix that renders as note, colour, and touch at once.</b></div></div>
+  </section>
+
+  <section>
+    <h2>Where it goes</h2>
+    <p>One shared meaning space; an LLM as the reasoner that reads and writes it; and a renderer for
+      each party — sound and colour for people, the code itself for machines, a transposed signal for
+      other species. The self-play result is the engine: a language that <strong>generates its own
+      training data and improves without a ceiling.</strong> The classification loss drew the wall we
+      won't run at. Both were worth knowing.</p>
+    <blockquote>Build the language that a small mind — silicon or human — can learn, grow, and never
+      be badly misheard in.</blockquote>
+    <a class="cta" href="demos_interlingua.html">▶ Play the instrument — a thought you can see and hear</a>
+  </section>
+
+  <footer>
+    Every figure is reproducible from the repo (<span class="mono">tools/</span>:
+    <span class="mono">interlingua · femto_experiment · femto_text · selfplay · selfplay2</span>).
+    Wins and the loss reported as run. Built as an honest field report, not a pitch.
+  </footer>
+</div>
+
+</body>
+</html>

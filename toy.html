@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Solresol — play</title>
+  <link rel="icon" href="data:," />
+  <style>
+/* The toy — a calm, luminous room where seven notes glow and sing.
+   Beauty is the goal; elegance is the restraint that gets there —
+   warm light, generous space, nothing gratuitous. */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #08090d; overflow: hidden; }
+body {
+  font: 16px/1.4 ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  touch-action: none;
+  color: #fff;
+}
+
+.toy-surface {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(130% 110% at 50% -10%, #1c2130 0%, #0c0e15 52%, #07080c 100%);
+}
+/* a faint vignette for depth */
+.toy-surface::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 45%, transparent 55%, rgba(0,0,0,0.45) 100%);
+}
+
+/* a soft wash that warms to the last note's colour */
+.toy-glow {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 1.1s ease, background 0.7s ease;
+  pointer-events: none; filter: blur(30px);
+}
+
+.toy-keys {
+  position: relative; z-index: 1;
+  display: flex; gap: clamp(10px, 1.8vw, 22px);
+  width: min(94vw, 880px); height: min(64vh, 540px);
+}
+
+.toy-key {
+  --c: #888; --peak: 1.06; --glow: 60px;
+  flex: 1; height: 100%;
+  border: none; border-radius: clamp(16px, 2.4vw, 30px);
+  cursor: pointer; position: relative; overflow: visible;
+  color: rgba(255,255,255,0.92);
+  /* luminous, faintly glassy colour field */
+  background:
+    linear-gradient(158deg,
+      color-mix(in srgb, var(--c) 74%, white 26%) 0%,
+      var(--c) 46%,
+      color-mix(in srgb, var(--c) 88%, black 12%) 100%);
+  box-shadow:
+    inset 0 2px 1px rgba(255,255,255,0.30),
+    inset 0 -34px 60px -30px rgba(0,0,0,0.45),
+    0 22px 50px -18px rgba(0,0,0,0.65),
+    0 0 34px -10px var(--c);                 /* a gentle resting halo — alive, not flat */
+  transition:
+    transform 0.55s cubic-bezier(.2, 1.35, .35, 1),   /* soft spring */
+    filter 0.35s ease, box-shadow 0.4s ease;
+  will-change: transform, filter;
+}
+/* slow luminous breath so the keys feel alive at rest */
+.toy-key::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit;
+  opacity: 0; pointer-events: none;
+  box-shadow: 0 0 40px -8px var(--c);
+  animation: toy-breathe 5.5s ease-in-out infinite;
+  animation-delay: var(--brk, 0s);
+}
+@keyframes toy-breathe {
+  0%, 100% { opacity: 0.10; }
+  50%      { opacity: 0.34; }
+}
+
+.toy-key--on {
+  transform: scale(var(--peak)) translateY(-1.5%);
+  filter: brightness(1.22) saturate(1.08);
+  box-shadow:
+    inset 0 2px 1px rgba(255,255,255,0.40),
+    0 26px 60px -20px rgba(0,0,0,0.6),
+    0 0 var(--glow) -4px var(--c),
+    0 0 calc(var(--glow) * 2) -20px var(--c);   /* deep, soft bloom */
+  z-index: 2;
+}
+
+.toy-label {
+  position: absolute; left: 0; right: 0; bottom: 7%;
+  text-align: center; pointer-events: none;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+}
+.toy-note {
+  display: block; font-weight: 700; font-size: clamp(0.95rem, 2.4vw, 1.5rem);
+  letter-spacing: 0.01em; opacity: 0.92;
+}
+.toy-key-hint {
+  display: block; font-size: clamp(0.6rem, 1.3vw, 0.78rem);
+  letter-spacing: 0.22em; opacity: 0.42; margin-top: 0.15em;
+}
+
+/* a ring of light blooming out of the point of contact */
+.toy-ripple {
+  position: absolute; left: 50%; top: 42%;
+  width: 46%; aspect-ratio: 1; margin-left: -23%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c) 60%, white) 0%, transparent 62%);
+  transform: scale(0.2); opacity: 0.55;
+  animation: toy-ripple 0.8s ease-out forwards;
+  pointer-events: none; mix-blend-mode: screen;
+}
+@keyframes toy-ripple { to { transform: scale(2.6); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .toy-key { transition: filter 0.2s, box-shadow 0.2s; }
+  .toy-key--on { transform: none; }
+  .toy-key::after, .toy-ripple { animation: none; }
+}
+
+  </style>
+</head>
+<body>
+  <main id="toy"></main>
+  <script>
+(function () {
+'use strict';
+// === dictionary/notes.js ===
+// The seven notes — the atoms of Solresol.
+//
+// This is the one place their facts live: name, number, colour, pitch,
+// braille dots, and staff step. Colours follow the canonical rainbow
+// (do = red … si = violet). See docs/SOLRESOL_MASTER.md.
+
+const NOTES = [
+  { name: 'do',  num: 1, color: '#e63946', freq: 261.63, braille: '⠁', step: 0 },
+  { name: 're',  num: 2, color: '#f3722c', freq: 293.66, braille: '⠂', step: 1 },
+  { name: 'mi',  num: 3, color: '#f9c74f', freq: 329.63, braille: '⠃', step: 2 },
+  { name: 'fa',  num: 4, color: '#43aa8b', freq: 349.23, braille: '⠄', step: 3 },
+  { name: 'sol', num: 5, color: '#277da1', freq: 392.00, braille: '⠅', step: 4 },
+  { name: 'la',  num: 6, color: '#4d5198', freq: 440.00, braille: '⠆', step: 5 },
+  { name: 'si',  num: 7, color: '#7b2cbf', freq: 493.88, braille: '⠇', step: 6 },
+];
+
+const BY_NAME = new Map(NOTES.map(n => [n.name, n]));
+const BY_NUM  = new Map(NOTES.map(n => [n.num, n]));
+
+const NOTE_NAMES = NOTES.map(n => n.name);
+
+const note         = (name) => BY_NAME.get(String(name).toLowerCase()) || null;
+const noteByNumber = (num)  => BY_NUM.get(Number(num)) || null;
+const isNote       = (name) => BY_NAME.has(String(name).toLowerCase());
+
+// Read a written word back into its notes: "Domisol" → ['do','mi','sol'].
+const parse = (text) =>
+  String(text).toLowerCase().match(/do|re|mi|fa|sol|la|si/g) || [];
+
+// Capitalize the first letter — the canonical way to show a syllable.
+const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
+
+// The ear, part one: a heard pitch → the nearest note. Used by tone-in.
+function nearestByFrequency(freq) {
+  if (!freq || freq <= 0) return null;
+  let best = NOTES[0], bestDist = Infinity;
+  for (const n of NOTES) {
+    const dist = Math.abs(Math.log2(freq / n.freq));   // distance in octaves
+    if (dist < bestDist) { bestDist = dist; best = n; }
+  }
+  return best.name;
+}
+
+// The ear, part two: a MIDI key → a note. White keys map straight through
+// (C→do … B→si); black keys snap down to the nearest white key.
+const WHITE = [0, 2, 4, 5, 7, 9, 11];               // semitone of do..si within an octave
+function noteFromMidi(midi) {
+  const pc = ((midi % 12) + 12) % 12;
+  let idx = WHITE.indexOf(pc);
+  if (idx === -1) idx = WHITE.indexOf(pc - 1);       // snap a black key down
+  return idx === -1 ? null : NOTES[idx].name;
+}
+
+// === ui/keymap.js ===
+// Home-row entry — play Solresol like an instrument and a typewriter.
+//
+// Left hand  A S D F  and right hand  J K L  play the seven notes;
+// Space (or ;, or Enter) finishes a word, like a typewriter space between
+// words. Pure data + lookups, so the mapping is tested on its own.
+//
+//   A S D F   J K L
+//   do re mi fa sol la si
+
+const KEY_TO_NOTE = {
+  a: 'do', s: 're', d: 'mi', f: 'fa', j: 'sol', k: 'la', l: 'si',
+};
+
+const NOTE_TO_KEY = Object.fromEntries(
+  Object.entries(KEY_TO_NOTE).map(([k, n]) => [n, k])
+);
+
+const COMMIT_KEYS = [' ', ';', 'Enter'];
+
+const noteForKey  = (key)  => KEY_TO_NOTE[String(key).toLowerCase()] || null;
+const keyForNote  = (note) => NOTE_TO_KEY[String(note).toLowerCase()] || null;
+const isCommitKey = (key)  => COMMIT_KEYS.includes(key);
+
+// === toy/voice.model.js ===
+// The "weight" of a note — the tunable, testable heart of the toy's feel.
+//
+// Low notes are heavier: they swell a little slower, ring a little longer,
+// and sit a touch louder. High notes are lighter and quicker. Pure math on
+// the note's scale step (0 = do … 6 = si), so the feel is tuned by tests,
+// not by ear-in-the-browser.
+
+function voiceParams(step) {
+  const s = Math.max(0, Math.min(6, Number(step) || 0));
+  const low = 6 - s;                 // 6 at do … 0 at si
+  return {
+    attack:  0.02 + low * 0.006,     // seconds — low notes bloom slower
+    release: 0.55 + low * 0.13,      // seconds — low notes have a longer tail
+    gain:    0.30 - s * 0.014,       // low notes a touch louder
+    cutoff:  900 + s * 700,          // brighter filter as pitch rises
+    detune:  7,                      // cents of chorus for warmth
+  };
+}
+
+// === toy/synth.js ===
+// The toy's voice — warm, sustained, alive.
+//
+// Two slightly-detuned oscillators through a soft envelope and a lowpass,
+// into a shared reverb so it feels like a room, not a test tone. A note
+// starts when touched and rings on until released, breathing gently. This
+// is browser-only (Web Audio); the tunable "weight" lives in voice.model.
+
+let ctx, master;
+
+function audio() {
+  if (ctx) return ctx;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  master = ctx.createGain();
+  master.gain.value = 0.85;
+
+  // a small generated room
+  const verb = ctx.createConvolver();
+  verb.buffer = impulse(ctx, 1.8, 2.4);
+  const wet = ctx.createGain(); wet.gain.value = 0.25;
+  const dry = ctx.createGain(); dry.gain.value = 0.9;
+
+  master.connect(dry).connect(ctx.destination);
+  master.connect(verb); verb.connect(wet).connect(ctx.destination);
+  return ctx;
+}
+
+function impulse(ac, seconds, decay) {
+  const len = ac.sampleRate * seconds;
+  const buf = ac.createBuffer(2, len, ac.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+  }
+  return buf;
+}
+
+// Start a note (do–si), return a handle you stop() on release.
+function voiceOn(note) {
+  const ac = audio();
+  if (ac.state === 'suspended') ac.resume();
+  const p = voiceParams(note.step);
+  const t = ac.currentTime;
+
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(p.gain, t + p.attack);         // soft swell, no click
+
+  const lp = ac.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = p.cutoff + note.freq * 2;
+
+  const o1 = ac.createOscillator(); o1.type = 'sine';     o1.frequency.value = note.freq;
+  const o2 = ac.createOscillator(); o2.type = 'triangle'; o2.frequency.value = note.freq; o2.detune.value = p.detune;
+
+  // a gentle breath while held
+  const lfo = ac.createOscillator(); lfo.frequency.value = 5;
+  const lfoG = ac.createGain(); lfoG.gain.value = 3;
+  lfo.connect(lfoG); lfoG.connect(o1.detune); lfoG.connect(o2.detune);
+
+  o1.connect(g); o2.connect(g); g.connect(lp); lp.connect(master);
+  o1.start(t); o2.start(t); lfo.start(t + 0.08);
+
+  return {
+    stop() {
+      const now = ac.currentTime;
+      const cur = g.gain.value;
+      g.gain.cancelScheduledValues(now);
+      g.gain.setValueAtTime(Math.max(0.0001, cur), now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + p.release);  // warm tail
+      const end = now + p.release + 0.05;
+      o1.stop(end); o2.stop(end); lfo.stop(end);
+    },
+  };
+}
+
+// === toy/toy.js ===
+// The toy — seven keys you mash to feel them respond. No meaning, no gate,
+// no score, nothing to fail. Touch, hold, sweep. It just sings back.
+
+function mountToy(root) {
+  root.classList.add('toy-surface');
+  root.innerHTML = `<div class="toy-glow"></div><div class="toy-keys"></div>`;
+  const glow = root.querySelector('.toy-glow');
+  const keysEl = root.querySelector('.toy-keys');
+
+  const keyEls = {};
+  for (const n of NOTES) {
+    const el = document.createElement('button');
+    el.className = 'toy-key';
+    el.dataset.note = n.name;
+    el.style.setProperty('--c', n.color);
+    // low notes bloom bigger & glow more (weight); high notes lighter
+    const weight = (6 - n.step);
+    el.style.setProperty('--peak', (1.05 + weight * 0.012).toFixed(3));
+    el.style.setProperty('--glow', (55 + weight * 8) + 'px');
+    el.style.setProperty('--brk', (n.step * 0.55) + 's');   // breathe offset
+    el.innerHTML =
+      `<span class="toy-label">` +
+        `<span class="toy-note">${cap(n.name)}</span>` +
+        `<span class="toy-key-hint">${(keyForNote(n.name) || '').toUpperCase()}</span>` +
+      `</span>`;
+    keysEl.appendChild(el);
+    keyEls[n.name] = el;
+  }
+
+  // ── voices held per pointer (multi-touch) and per keyboard key ──
+  const byPointer = new Map();   // pointerId → { name, voice }
+  const byKey = new Map();       // note name → voice (keyboard)
+
+  function on(name) {
+    const el = keyEls[name]; const note = NOTES.find((x) => x.name === name);
+    el.classList.add('toy-key--on');
+    ripple(el, note);
+    bleed(note);
+    if (navigator.vibrate) navigator.vibrate(8 + (6 - note.step) * 3);   // heavier low notes
+    return voiceOn(note);
+  }
+  function off(name, voice) {
+    keyEls[name]?.classList.remove('toy-key--on');
+    voice?.stop();
+  }
+
+  // keep a key lit if any pointer OR the keyboard still holds it
+  function stillHeld(name) {
+    for (const v of byPointer.values()) if (v.name === name) return true;
+    return byKey.has(name);
+  }
+
+  // ── pointer / touch (with glissando by sweeping) ──
+  keysEl.addEventListener('pointerdown', (e) => {
+    const name = noteUnder(e);
+    if (!name) return;
+    keysEl.setPointerCapture(e.pointerId);
+    byPointer.set(e.pointerId, { name, voice: on(name) });
+    e.preventDefault();
+  });
+  keysEl.addEventListener('pointermove', (e) => {
+    const held = byPointer.get(e.pointerId);
+    if (!held) return;
+    const name = noteUnder(e);
+    if (name && name !== held.name) {                 // slid onto a new key → glissando
+      const prev = held.name;
+      held.voice?.stop();
+      if (!hasOtherPointer(e.pointerId, prev)) keyEls[prev].classList.toggle('toy-key--on', stillHeldExcept(prev, e.pointerId));
+      held.name = name; held.voice = on(name);
+    }
+  });
+  const release = (e) => {
+    const held = byPointer.get(e.pointerId);
+    if (!held) return;
+    byPointer.delete(e.pointerId);
+    held.voice?.stop();
+    if (!stillHeld(held.name)) keyEls[held.name].classList.remove('toy-key--on');
+  };
+  keysEl.addEventListener('pointerup', release);
+  keysEl.addEventListener('pointercancel', release);
+  keysEl.addEventListener('pointerleave', release);
+
+  // ── home-row keyboard: A S D F  J K L (and 1–7) ──
+  function onKeyDown(e) {
+    if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (isTyping(e.target)) return;
+    const name = noteForKey(e.key) || (noteByNumber(e.key) || {}).name;
+    if (!name || byKey.has(name)) return;
+    e.preventDefault();
+    byKey.set(name, on(name));
+  }
+  function onKeyUp(e) {
+    const name = noteForKey(e.key) || (noteByNumber(e.key) || {}).name;
+    if (!name) return;
+    const voice = byKey.get(name);
+    byKey.delete(name);
+    voice?.stop();
+    if (!stillHeld(name)) keyEls[name].classList.remove('toy-key--on');
+  }
+  window.addEventListener('keydown', onKeyDown);
+  window.addEventListener('keyup', onKeyUp);
+
+  // ── juice helpers ──
+  function noteUnder(e) {
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    return el && el.closest && el.closest('.toy-key')?.dataset.note || null;
+  }
+  function ripple(el, note) {
+    const r = document.createElement('span');
+    r.className = 'toy-ripple';
+    r.style.setProperty('--c', note.color);
+    r.style.animationDuration = (0.6 + (6 - note.step) * 0.06) + 's';   // heavy notes ripple slower
+    el.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+  let bleedT;
+  function bleed(note) {
+    glow.style.background = `radial-gradient(60% 60% at 50% 60%, ${note.color}44, transparent 70%)`;
+    glow.style.opacity = '1';
+    clearTimeout(bleedT);
+    bleedT = setTimeout(() => { glow.style.opacity = '0'; }, 900);
+  }
+  function hasOtherPointer(id, name) {
+    for (const [pid, v] of byPointer) if (pid !== id && v.name === name) return true;
+    return false;
+  }
+  function stillHeldExcept(name, id) {
+    if (byKey.has(name)) return true;
+    return hasOtherPointer(id, name);
+  }
+
+  return {
+    destroy() {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      for (const v of byPointer.values()) v.voice?.stop();
+      for (const v of byKey.values()) v?.stop();
+      byPointer.clear(); byKey.clear();
+      root.textContent = '';
+    },
+  };
+}
+
+function isTyping(el) {
+  return !!el && (/^(input|textarea|select)$/i.test(el.tagName) || el.isContentEditable);
+}
+
+mountToy(document.getElementById('toy'));
+})();
+  </script>
+</body>
+</html>

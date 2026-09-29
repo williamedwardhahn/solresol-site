@@ -1,0 +1,200 @@
+{
+  "yes": [
+    "re",
+    "re",
+    "mi",
+    "fa"
+  ],
+  "no": [
+    "fa",
+    "sol",
+    "fa",
+    "fa"
+  ],
+  "more": [
+    "sol",
+    "si",
+    "sol",
+    "fa"
+  ],
+  "stop": [
+    "sol",
+    "la",
+    "sol",
+    "do"
+  ],
+  "done": [
+    "fa",
+    "la",
+    "mi",
+    "sol"
+  ],
+  "again": [
+    "fa",
+    "la",
+    "la",
+    "sol"
+  ],
+  "help": [
+    "fa",
+    "si",
+    "re",
+    "do"
+  ],
+  "please": [
+    "re",
+    "do",
+    "do",
+    "do"
+  ],
+  "thank you": [
+    "la",
+    "la",
+    "si",
+    "fa"
+  ],
+  "hello": [
+    "la",
+    "do",
+    "fa",
+    "re"
+  ],
+  "eat": [
+    "la",
+    "re",
+    "do",
+    "fa"
+  ],
+  "drink": [
+    "si",
+    "mi",
+    "re",
+    "mi"
+  ],
+  "water": [
+    "si",
+    "si",
+    "re",
+    "sol"
+  ],
+  "tired": [
+    "sol",
+    "do",
+    "si",
+    "la"
+  ],
+  "hurt": [
+    "mi",
+    "fa",
+    "si",
+    "re"
+  ],
+  "toilet": [
+    "si",
+    "do",
+    "fa",
+    "re"
+  ],
+  "hot": [
+    "si",
+    "mi",
+    "fa",
+    "la"
+  ],
+  "cold": [
+    "si",
+    "fa",
+    "la",
+    "si"
+  ],
+  "want": [
+    "do",
+    "sol",
+    "do",
+    "re"
+  ],
+  "happy": [
+    "do",
+    "mi",
+    "fa",
+    "sol"
+  ],
+  "sad": [
+    "re",
+    "do",
+    "si",
+    "si"
+  ],
+  "love": [
+    "re",
+    "re",
+    "mi",
+    "la"
+  ],
+  "afraid": [
+    "re",
+    "re",
+    "sol",
+    "re"
+  ],
+  "angry": [
+    "sol",
+    "re",
+    "si",
+    "do"
+  ],
+  "I": [
+    "do",
+    "fa",
+    "do",
+    "si"
+  ],
+  "you": [
+    "do",
+    "fa",
+    "do",
+    "la"
+  ],
+  "parent": [
+    "la",
+    "mi",
+    "la",
+    "do"
+  ],
+  "home": [
+    "la",
+    "si",
+    "la",
+    "mi"
+  ],
+  "go": [
+    "mi",
+    "sol",
+    "re",
+    "mi"
+  ],
+  "come": [
+    "mi",
+    "la",
+    "mi",
+    "mi"
+  ],
+  "play": [
+    "do",
+    "si",
+    "sol",
+    "si"
+  ],
+  "good": [
+    "mi",
+    "sol",
+    "re",
+    "si"
+  ],
+  "bad": [
+    "fa",
+    "fa",
+    "la",
+    "la"
+  ]
+}

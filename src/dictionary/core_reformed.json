@@ -1,0 +1,349 @@
+[
+  {
+    "concept": "yes",
+    "notes": [
+      "mi",
+      "fa"
+    ],
+    "solresol": "Mifa",
+    "current": "Si"
+  },
+  {
+    "concept": "no",
+    "notes": [
+      "sol",
+      "do"
+    ],
+    "solresol": "Soldo",
+    "current": "Do"
+  },
+  {
+    "concept": "more",
+    "notes": [
+      "re",
+      "fa",
+      "mi"
+    ],
+    "solresol": "Refami",
+    "current": "Miredodo"
+  },
+  {
+    "concept": "stop",
+    "notes": [
+      "fa",
+      "re",
+      "sol"
+    ],
+    "solresol": "Faresol",
+    "current": "Fasisolla"
+  },
+  {
+    "concept": "done",
+    "notes": [
+      "sol",
+      "fa",
+      "sol",
+      "si"
+    ],
+    "solresol": "Solfasolsi",
+    "current": "Fadosi"
+  },
+  {
+    "concept": "again",
+    "notes": [
+      "la",
+      "si",
+      "sol",
+      "si"
+    ],
+    "solresol": "Lasisolsi",
+    "current": "Sifala"
+  },
+  {
+    "concept": "help",
+    "notes": [
+      "mi",
+      "re",
+      "do"
+    ],
+    "solresol": "Miredo",
+    "current": "Dosido"
+  },
+  {
+    "concept": "please",
+    "notes": [
+      "si",
+      "la",
+      "si",
+      "la"
+    ],
+    "solresol": "Silasila",
+    "current": "Mifare"
+  },
+  {
+    "concept": "thank you",
+    "notes": [
+      "si",
+      "la",
+      "do",
+      "mi"
+    ],
+    "solresol": "Siladomi",
+    "current": "Solsi"
+  },
+  {
+    "concept": "hello",
+    "notes": [
+      "fa",
+      "mi",
+      "re",
+      "mi"
+    ],
+    "solresol": "Famiremi",
+    "current": "Simi"
+  },
+  {
+    "concept": "eat",
+    "notes": [
+      "re",
+      "si",
+      "la"
+    ],
+    "solresol": "Resila",
+    "current": "Dolamisi"
+  },
+  {
+    "concept": "drink",
+    "notes": [
+      "do",
+      "mi",
+      "si"
+    ],
+    "solresol": "Domisi",
+    "current": "Dolamisol"
+  },
+  {
+    "concept": "water",
+    "notes": [
+      "la",
+      "fa",
+      "la",
+      "sol"
+    ],
+    "solresol": "Lafalasol",
+    "current": "Dolamire"
+  },
+  {
+    "concept": "tired",
+    "notes": [
+      "do",
+      "la",
+      "re"
+    ],
+    "solresol": "Dolare",
+    "current": "Resollado"
+  },
+  {
+    "concept": "hurt",
+    "notes": [
+      "si",
+      "do",
+      "sol"
+    ],
+    "solresol": "Sidosol",
+    "current": "Miresifa"
+  },
+  {
+    "concept": "toilet",
+    "notes": [
+      "re",
+      "mi",
+      "do"
+    ],
+    "solresol": "Remido",
+    "current": "Solsisido"
+  },
+  {
+    "concept": "hot",
+    "notes": [
+      "do",
+      "mi",
+      "sol",
+      "mi"
+    ],
+    "solresol": "Domisolmi",
+    "current": "Sisila"
+  },
+  {
+    "concept": "cold",
+    "notes": [
+      "mi",
+      "do",
+      "mi",
+      "re"
+    ],
+    "solresol": "Midomire",
+    "current": "Lasisi"
+  },
+  {
+    "concept": "want",
+    "notes": [
+      "do",
+      "fa",
+      "la",
+      "fa"
+    ],
+    "solresol": "Dofalafa",
+    "current": "Mifala"
+  },
+  {
+    "concept": "happy",
+    "notes": [
+      "la",
+      "sol",
+      "fa"
+    ],
+    "solresol": "Lasolfa",
+    "current": "Solsire"
+  },
+  {
+    "concept": "sad",
+    "notes": [
+      "do",
+      "fa",
+      "do"
+    ],
+    "solresol": "Dofado",
+    "current": "Resisol"
+  },
+  {
+    "concept": "love",
+    "notes": [
+      "mi",
+      "si",
+      "mi",
+      "si"
+    ],
+    "solresol": "Misimisi",
+    "current": "Milasi"
+  },
+  {
+    "concept": "afraid",
+    "notes": [
+      "fa",
+      "sol",
+      "fa",
+      "mi"
+    ],
+    "solresol": "Fasolfami",
+    "current": "Midosoldo"
+  },
+  {
+    "concept": "angry",
+    "notes": [
+      "sol",
+      "si",
+      "la",
+      "fa"
+    ],
+    "solresol": "Solsilafa",
+    "current": "Miresisol"
+  },
+  {
+    "concept": "I",
+    "notes": [
+      "la",
+      "si",
+      "mi"
+    ],
+    "solresol": "Lasimi",
+    "current": "Dore"
+  },
+  {
+    "concept": "you",
+    "notes": [
+      "sol",
+      "mi",
+      "la"
+    ],
+    "solresol": "Solmila",
+    "current": "Domi"
+  },
+  {
+    "concept": "parent",
+    "notes": [
+      "do",
+      "re",
+      "do",
+      "re"
+    ],
+    "solresol": "Doredore",
+    "current": "Residosi"
+  },
+  {
+    "concept": "home",
+    "notes": [
+      "sol",
+      "la",
+      "sol",
+      "la"
+    ],
+    "solresol": "Sollasolla",
+    "current": "Remifala"
+  },
+  {
+    "concept": "go",
+    "notes": [
+      "la",
+      "do",
+      "la",
+      "si"
+    ],
+    "solresol": "Ladolasi",
+    "current": "Farefa"
+  },
+  {
+    "concept": "come",
+    "notes": [
+      "re",
+      "do",
+      "si",
+      "do"
+    ],
+    "solresol": "Redosido",
+    "current": "Dosolfala"
+  },
+  {
+    "concept": "play",
+    "notes": [
+      "do",
+      "sol",
+      "si",
+      "sol"
+    ],
+    "solresol": "Dosolsisol",
+    "current": "Sifasire"
+  },
+  {
+    "concept": "good",
+    "notes": [
+      "do",
+      "re",
+      "fa",
+      "sol"
+    ],
+    "solresol": "Dorefasol",
+    "current": "Misol"
+  },
+  {
+    "concept": "bad",
+    "notes": [
+      "fa",
+      "si",
+      "fa",
+      "sol"
+    ],
+    "solresol": "Fasifasol",
+    "current": "Lafa"
+  }
+]
