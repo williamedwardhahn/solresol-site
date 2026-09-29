@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Maya</title>
+<title>Maya — talk with colour and sound</title>
 <style>
 /* ------------------------------------------------------------------ *
- * Maya — a voice made of colour and sound. Local. Offline. Hers.
+ * Maya — a voice made of colour and sound. Local. Offline. Yours.
  * Do = red = no (low, falling).   Si = violet = yes (high, rising).
  * Seven notes, seven colours: the rainbow is one optical octave.
  * ------------------------------------------------------------------ */
@@ -41,6 +41,7 @@
 :root[data-theme="dark"]{ --bg:#171310; --card:#221C18; --ink:#F5ECE2; --ink-soft:#A89A8C; --line:#302720; --shadow:0 12px 34px rgba(0,0,0,.45); }
 
 *{box-sizing:border-box}
+[hidden]{display:none !important}   /* .warn, .replay and .word set display, which would beat the attribute */
 html,body{margin:0;height:100%}
 body{
   background:var(--bg); color:var(--ink); font-family:var(--font);
@@ -59,11 +60,11 @@ header{display:flex; align-items:center; gap:12px; padding:4px 6px 14px}
 .brand .dots{display:flex; gap:5px; align-self:center}
 .brand .dots i{width:12px;height:12px;border-radius:50%}
 header .spacer{flex:1}
-.toggle{display:flex; align-items:center; gap:8px; font-weight:700; color:var(--ink-soft);
+.toggle{display:flex; white-space:nowrap; align-items:center; gap:8px; font-weight:700; color:var(--ink-soft);
   font-size:15px; background:var(--card); border:1px solid var(--line); padding:9px 14px; border-radius:999px; box-shadow:var(--shadow)}
 .toggle b{color:var(--ink)}
 
-/* say-bar — Maya's voice made visible, read across the room --------- */
+/* say-bar — the speaker's voice made visible, read across the room -- */
 .say{
   background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
   box-shadow:var(--shadow); padding:22px 24px; display:flex; align-items:center; gap:22px;
@@ -73,7 +74,7 @@ header .spacer{flex:1}
 .say .emoji{font-size:clamp(40px,8vw,64px)}
 .say .beads{display:flex; gap:9px; flex-wrap:wrap}
 .say .beads i{width:26px;height:26px;border-radius:50%; box-shadow:inset 0 -3px 6px rgba(0,0,0,.18)}
-.say .rest{color:var(--ink-soft); font-size:22px; font-weight:700; display:flex; align-items:center; gap:14px}
+.say .rest{color:var(--ink-soft); font-size:22px; font-weight:700; white-space:nowrap; display:flex; align-items:center; gap:14px}
 .say .spacer{flex:1}
 .replay{width:66px;height:66px;border-radius:50%; background:var(--bg); border:1px solid var(--line);
   box-shadow:var(--shadow); font-size:28px; display:grid; place-items:center; flex:none}
@@ -90,7 +91,7 @@ header .spacer{flex:1}
 }
 .big:active{transform:scale(.97)}
 .big .lbl{font-size:clamp(52px,11vw,104px); font-weight:900; letter-spacing:.5px; line-height:.9}
-.big .sub{font-size:20px; font-weight:800; opacity:.9; letter-spacing:.4px; display:flex; align-items:center; gap:10px}
+.big .sub{font-size:20px; font-weight:800; opacity:.9; letter-spacing:.4px; white-space:nowrap; display:flex; align-items:center; gap:10px}
 .big .sub i{width:16px;height:16px;border-radius:50%; background:rgba(255,255,255,.95)}
 .big.no{background:radial-gradient(120% 120% at 30% 20%, #ff6a6a, var(--no) 45%, var(--no-2))}
 .big.yes{background:radial-gradient(120% 120% at 70% 20%, #c79bff, var(--yes) 45%, var(--yes-2))}
@@ -114,6 +115,10 @@ header .spacer{flex:1}
 .tile .beads{display:flex; gap:5px}
 .tile .beads i{width:13px;height:13px;border-radius:50%; box-shadow:inset 0 -2px 3px rgba(0,0,0,.2)}
 .tile.mine .pin{position:absolute; top:8px; right:10px; font-size:13px; color:var(--ink-soft)}
+.tile .del{display:none; position:absolute; top:-8px; right:-8px; width:30px; height:30px; border-radius:50%;
+  background:var(--no); color:#fff; font-size:16px; font-weight:900; line-height:30px; box-shadow:var(--shadow)}
+body.editing .tile.mine .del{display:block}
+body.editing .tile.mine .pin{display:none}
 .tile.lit{box-shadow:0 0 0 4px var(--hl,var(--n5)), var(--shadow)}
 
 /* make-a-word ------------------------------------------------------ */
@@ -147,8 +152,16 @@ header .spacer{flex:1}
 .palette button.sel{box-shadow:0 0 0 3px var(--n4)}
 .namein{font-family:inherit; font-size:17px; font-weight:700; padding:11px 14px; border-radius:14px; border:1px solid var(--line); background:var(--bg); color:var(--ink); width:150px}
 footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 20px; font-weight:600}
+footer a{color:inherit}
 
 @media (max-width:560px){
+  .say{padding:16px 18px; min-height:96px; gap:14px}
+  .say .rest{font-size:19px}
+  .replay{width:56px; height:56px; font-size:24px}
+  .big{padding:22px 12px}
+  .big .sub{font-size:15px; gap:7px}
+  .big .sub i{width:12px; height:12px}
+  .brand .dots i{width:9px; height:9px}
   .say .word{gap:12px}
   .grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:10px}
   .tile .em{font-size:36px}.tile .w{font-size:17px}
@@ -156,6 +169,14 @@ footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 2
 }
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
 </style>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
+  <meta name="description" content="A free communication board: tap a word to say it aloud in speech, colour and tone. Works offline; your words stay on your device." />
+  <meta name="theme-color" content="#0e0f13" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Solresol" />
+  <meta property="og:title" content="Maya — talk with colour and sound" />
+  <meta property="og:description" content="A free communication board: tap a word to say it aloud in speech, colour and tone. Works offline; your words stay on your device." />
+  <meta name="twitter:card" content="summary" />
 </head>
 <body>
 
@@ -171,7 +192,7 @@ footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 2
   <button class="toggle" id="voiceBtn" aria-pressed="true">🔊 Voice <b id="voiceState">on</b></button>
 </header>
 
-<!-- Maya's voice, made visible and read aloud -->
+<!-- the speaker's voice, made visible and read aloud -->
 <section class="say" id="say" aria-live="polite">
   <div class="rest" id="sayRest">🌈 <span>Tap to talk</span></div>
   <div class="word" id="sayWord" hidden><span class="emoji" id="sayEmoji"></span><span id="sayText"></span></div>
@@ -196,10 +217,10 @@ footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 2
   </button>
 </section>
 
-<div class="h">Her words</div>
+<div class="h">Words</div>
 <section class="grid" id="grid"></section>
 
-<!-- Author: she writes, not only is read (Kay); live and hers (Ingalls) -->
+<!-- Author: the speaker writes, not only is read (Kay); live and theirs (Ingalls) -->
 <section class="make" id="make">
   <div class="top" id="makeTop">
     <h2>➕ Make a word</h2>
@@ -209,7 +230,7 @@ footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 2
     <div class="keys" id="keys"></div>
     <div class="compose">
       <div class="beads" id="cbeads"></div>
-      <span class="hint" id="chint">Press the colours to build a word — you’ll hear each one.</span>
+      <span class="hint" id="chint">Press the colours to build a word — you’ll hear each one. Words you made show × while this is open.</span>
       <span class="spacer"></span>
       <span class="warn" id="cwarn" hidden></span>
     </div>
@@ -217,13 +238,13 @@ footer{color:var(--ink-soft); font-size:13px; text-align:center; padding:8px 0 2
       <button class="mbtn" id="cplay">▶ Hear it</button>
       <button class="mbtn" id="cundo">⌫ Back</button>
       <span class="palette" id="palette" aria-label="pick a picture"></span>
-      <input class="namein" id="cname" placeholder="name (grown-up)" maxlength="14" aria-label="word name">
+      <input class="namein" id="cname" placeholder="name it" maxlength="14" aria-label="word name">
       <button class="mbtn go" id="ckeep" disabled>✓ Keep it</button>
     </div>
   </div>
 </section>
 
-<footer id="foot">Made for Maya · works with no internet · her words are saved on this computer</footer>
+<footer id="foot">Works with no internet · the words you make stay on this device · <a href="./index.html">Solresol</a></footer>
 
 <script>
 "use strict";
@@ -236,8 +257,11 @@ const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).
 /* ---- vocabulary: whole tiles, safe by place + picture + colour + speech.
         (note-distance safety is enforced in Make-a-word, where slips happen.) ---- */
 const CORE = [
+  {w:"want",   e:"👉", c:[1,2,2]},
   {w:"more",   e:"🔁", c:[5,2,5,1]},
   {w:"stop",   e:"✋", c:[3,0]},
+  {w:"all done",e:"✅", c:[0,0,1]},
+  {w:"wait",   e:"⏳", c:[0,1,2]},
   {w:"help",   e:"🆘", c:[0,6,0]},
   {w:"hurt",   e:"🤕", c:[2,1,6,3]},
   {w:"eat",    e:"🍽️", c:[0,5,2,6]},
@@ -250,6 +274,7 @@ const CORE = [
   {w:"sad",    e:"😢", c:[3,1,0]},
   {w:"music",  e:"🎵", c:[4,3,2,1]},
   {w:"outside",e:"🌳", c:[2,4,6]},
+  {w:"hello",  e:"👋", c:[0,2,3]},
   {w:"mom",    e:"👩", c:[5,3,5]},
   {w:"dad",    e:"👨", c:[0,3,0]},
 ];
@@ -319,12 +344,19 @@ document.querySelectorAll(".big").forEach(b=>{
 
 /* ---- word grid ---- */
 const grid=document.getElementById("grid");
-function tileEl(item, mine){
-  const t=document.createElement("button"); t.className="tile"+(mine?" mine":""); t.setAttribute("aria-label",item.w||"word");
+function tileEl(item, isMine){
+  const t=document.createElement("button"); t.className="tile"+(isMine?" mine":""); t.setAttribute("aria-label",item.w||"word");
   const hl = COLORS[item.c[0]];
-  t.innerHTML = `<span class="em">${item.e}</span><span class="w">${item.w||""}</span><span class="beads"></span>`+(mine?`<span class="pin">★</span>`:``);
+  t.innerHTML = `<span class="em">${item.e}</span><span class="w"></span><span class="beads"></span>`+(isMine?`<span class="pin">★</span><span class="del" role="button" aria-label="remove this word">×</span>`:``);
+  t.querySelector(".w").textContent = item.w||"";   // names are typed by people: never parse them as HTML
   beadsInto(t.querySelector(".beads"), item.c);
-  t.addEventListener("pointerdown", ()=>{ t.style.setProperty("--hl",hl); t.classList.add("lit"); setTimeout(()=>t.classList.remove("lit"),260); render(item); });
+  if(isMine) t.querySelector(".del").addEventListener("pointerdown", e=>{
+    e.stopPropagation();
+    if(!confirm(`Remove ${item.e} ${item.w||"this word"}?`)) return;
+    saveMine(mine().filter(x=>x.c.join()!==item.c.join()));
+    renderGrid();
+  });
+  t.addEventListener("pointerdown", e=>{ if(e.target.classList.contains("del")) return; t.style.setProperty("--hl",hl); t.classList.add("lit"); setTimeout(()=>t.classList.remove("lit"),260); render(item); });
   return t;
 }
 function renderGrid(){
@@ -333,7 +365,7 @@ function renderGrid(){
   mine().forEach(x=>grid.appendChild(tileEl(x,true)));
 }
 
-/* ---- her saved words (local, offline) ---- */
+/* ---- your saved words (local, offline) ---- */
 const KEY="maya-words-v1";
 function mine(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ return []; } }
 function saveMine(list){ localStorage.setItem(KEY, JSON.stringify(list)); }
@@ -347,7 +379,12 @@ const make=document.getElementById("make"), keys=document.getElementById("keys")
 let build=[], chosenEmoji="⭐";
 const EMOJI=["⭐","❤️","🍪","🎈","🐶","🎵","🚗","🌈","🧸","🍎","☀️","🎨"];
 
-document.getElementById("makeTop").addEventListener("click",()=>{ make.classList.toggle("open"); if(make.classList.contains("open"))audio(); });
+document.getElementById("makeTop").addEventListener("click",()=>{
+  make.classList.toggle("open");
+  const open=make.classList.contains("open");
+  document.body.classList.toggle("editing", open);   // your words show × while this is open
+  if(open)audio();
+});
 NOTE_NAMES.forEach((nm,n)=>{
   const k=document.createElement("button"); k.className="key"; k.style.background=COLORS[n]; k.textContent=nm;
   k.setAttribute("aria-label",nm);
@@ -357,6 +394,7 @@ NOTE_NAMES.forEach((nm,n)=>{
 EMOJI.forEach((e,i)=>{ const b=document.createElement("button"); b.textContent=e; if(i===0)b.classList.add("sel");
   b.addEventListener("click",()=>{ chosenEmoji=e; palette.querySelectorAll("button").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); }); palette.appendChild(b); });
 
+const escapeHTML = t => t.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function edit(a,b){ const n=a.length,m=b.length; const d=Array.from({length:n+1},(_,i)=>[i,...Array(m).fill(0)]);
   for(let j=0;j<=m;j++)d[0][j]=j;
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
@@ -381,12 +419,12 @@ cundo.addEventListener("click",()=>{ build.pop(); refreshBuild(); });
 ckeep.addEventListener("click",()=>{
   if(!build.length)return;
   const na=nearestAny(build);
-  if(na.e===0){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ that’s already ${na.x.e} <b>${na.x.w||"a word"}</b>`; return; }
+  if(na.e===0){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ that’s already ${na.x.e} <b>${escapeHTML(na.x.w||"a word")}</b>`; return; }
   const list=mine();
   list.push({w:(cname.value.trim()||""), e:chosenEmoji, c:build.slice()});
   saveMine(list);
   build=[]; cname.value=""; refreshBuild(); renderGrid();
-  render(list[list.length-1]);   // celebrate: say her new word
+  render(list[list.length-1]);   // celebrate: say the new word
 });
 
 /* ---- voice toggle ---- */

@@ -16,6 +16,14 @@
 </head>
 <body>
   <h1>No word travels this path</h1>
-  <p>That page is not in the book. <a href="/">Go back to the language</a>.</p>
+  <p>That page is not in the book. <a id="home" href="/">Go back to the language</a>.</p>
+  <script>
+    // Pages serves this page at whatever path was asked for. On a project
+    // site (user.github.io/repo/) the root is /repo/, not /.
+    if (location.hostname.endsWith(".github.io")) {
+      var seg = location.pathname.split("/")[1];
+      if (seg) document.getElementById("home").href = "/" + seg + "/";
+    }
+  </script>
 </body>
 </html>

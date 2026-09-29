@@ -66,6 +66,23 @@ html, body {
   background: var(--panel);
 }
 
+/* ---- intro: a first-time visitor's thirty seconds ---- */
+.intro { max-width: 36rem; margin: 1.4rem auto 0; }
+.intro p { margin: 0 0 1.2rem; color: var(--dim); line-height: 1.65; }
+.intro p b { color: var(--text); font-weight: 600; }
+.cta {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 120ms ease;
+}
+.cta:hover, .cta:focus-visible { transform: translateY(-1px); }
+#site { scroll-margin-top: 1rem; }
+
 main {
   max-width: 720px;
   margin: 0 auto;
@@ -347,6 +364,7 @@ main {
 
 /* sky */
 .sky { min-height: 300px; }
+.sky-hint { margin: 0.6rem 0 0; color: var(--dim); font-size: 0.85rem; text-align: center; }
 .sky canvas { display: block; width: 100%; border-radius: 12px; background: radial-gradient(circle at 50% 45%, #14161d, #0b0c10); cursor: crosshair; }
 
 /* discovery */

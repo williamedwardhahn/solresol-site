@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Solresol — one word, many voices</title>
   <meta name="description" content="Solresol: a language of light and sound that listens as well as speaks, remembers you, and teaches by being beautiful." />
-  <link rel="icon" href="data:," />
+  
   <style>
 /* Solresol — one word, many voices.
    A quiet dark stage so the colours of the language can speak. */
@@ -74,6 +74,23 @@ html, body {
   border-color: var(--faint);
   background: var(--panel);
 }
+
+/* ---- intro: a first-time visitor's thirty seconds ---- */
+.intro { max-width: 36rem; margin: 1.4rem auto 0; }
+.intro p { margin: 0 0 1.2rem; color: var(--dim); line-height: 1.65; }
+.intro p b { color: var(--text); font-weight: 600; }
+.cta {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 120ms ease;
+}
+.cta:hover, .cta:focus-visible { transform: translateY(-1px); }
+#site { scroll-margin-top: 1rem; }
 
 main {
   max-width: 720px;
@@ -356,6 +373,7 @@ main {
 
 /* sky */
 .sky { min-height: 300px; }
+.sky-hint { margin: 0.6rem 0 0; color: var(--dim); font-size: 0.85rem; text-align: center; }
 .sky canvas { display: block; width: 100%; border-radius: 12px; background: radial-gradient(circle at 50% 45%, #14161d, #0b0c10); cursor: crosshair; }
 
 /* discovery */
@@ -456,6 +474,13 @@ main {
 .mirror-line[hidden] { display: none; }
 
   </style>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#0e0f13" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Solresol" />
+  <meta property="og:title" content="Solresol — one word, many voices" />
+  <meta property="og:description" content="The whole Solresol app in one file: 3,152 words you can sing, paint, type or play." />
+  <meta name="twitter:card" content="summary" />
 </head>
 <body>
   <header class="masthead">
@@ -1403,7 +1428,10 @@ function mountConstellation(host, word, memory) {
   host.classList.add('sky');
   host.textContent = '';
   const canvas = document.createElement('canvas');
-  host.appendChild(canvas);
+  const hint = document.createElement('p');
+  hint.className = 'sky-hint';
+  hint.textContent = 'Every dot is a word, coloured by its first note. Tap one to hear it; the words you use shine brighter.';
+  host.append(canvas, hint);
   const ctx = canvas.getContext('2d');
 
   const stars = allWords().map((w) => {
@@ -1418,7 +1446,9 @@ function mountConstellation(host, word, memory) {
 
   function resize() {
     const dpr = window.devicePixelRatio || 1;
-    const w = host.clientWidth || 320, hgt = Math.max(260, host.clientHeight || 320);
+    // Height follows width, not the host: the host also holds the hint, so
+    // sizing from it would grow the canvas on every resize.
+    const w = host.clientWidth || 320, hgt = Math.round(Math.min(420, Math.max(260, w * 0.62)));
     canvas.width = w * dpr; canvas.height = hgt * dpr;
     canvas.style.width = w + 'px'; canvas.style.height = hgt + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1435,8 +1465,9 @@ function mountConstellation(host, word, memory) {
       const x = cx + Math.cos(s.angle) * s.radius * R * 1.5;
       const y = cy + Math.sin(s.angle) * s.radius * R * 1.5;
       s._x = x; s._y = y;
-      const a = 0.10 + strength * 0.9;
-      const r = 0.7 + strength * 2.3;
+      // Unlearned words stay dim but visible, so a first visit is not a black box.
+      const a = 0.35 + strength * 0.65;
+      const r = 1.1 + strength * 2.2;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fillStyle = s.color;

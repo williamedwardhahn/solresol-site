@@ -64,7 +64,10 @@ export function mountConstellation(host, word, memory) {
   host.classList.add('sky');
   host.textContent = '';
   const canvas = document.createElement('canvas');
-  host.appendChild(canvas);
+  const hint = document.createElement('p');
+  hint.className = 'sky-hint';
+  hint.textContent = 'Every dot is a word, coloured by its first note. Tap one to hear it; the words you use shine brighter.';
+  host.append(canvas, hint);
   const ctx = canvas.getContext('2d');
 
   const stars = allWords().map((w) => {
@@ -79,7 +82,9 @@ export function mountConstellation(host, word, memory) {
 
   function resize() {
     const dpr = window.devicePixelRatio || 1;
-    const w = host.clientWidth || 320, hgt = Math.max(260, host.clientHeight || 320);
+    // Height follows width, not the host: the host also holds the hint, so
+    // sizing from it would grow the canvas on every resize.
+    const w = host.clientWidth || 320, hgt = Math.round(Math.min(420, Math.max(260, w * 0.62)));
     canvas.width = w * dpr; canvas.height = hgt * dpr;
     canvas.style.width = w + 'px'; canvas.style.height = hgt + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -96,8 +101,9 @@ export function mountConstellation(host, word, memory) {
       const x = cx + Math.cos(s.angle) * s.radius * R * 1.5;
       const y = cy + Math.sin(s.angle) * s.radius * R * 1.5;
       s._x = x; s._y = y;
-      const a = 0.10 + strength * 0.9;
-      const r = 0.7 + strength * 2.3;
+      // Unlearned words stay dim but visible, so a first visit is not a black box.
+      const a = 0.35 + strength * 0.65;
+      const r = 1.1 + strength * 2.2;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fillStyle = s.color;
