@@ -128,3 +128,18 @@ select.field { font-size: 1rem; padding-right: 20px; }
 
 /* two columns that fold to one */
 .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px 40px; }
+
+/* grammar on a written word, shown without accents (see wordHTML).
+   These sit inside many containers whose own `span` rules (captions,
+   labels) must not reach them, hence the !important on type. */
+.w-stress {
+  font: inherit !important; letter-spacing: inherit !important; text-transform: none !important;
+  color: var(--rubric) !important;
+  text-decoration: underline; text-decoration-thickness: .07em; text-underline-offset: .14em;
+}
+.w-mark {
+  font-family: var(--sc) !important; font-size: max(.42em, .72rem) !important; font-style: normal !important; font-weight: 400 !important;
+  letter-spacing: .06em !important; color: var(--rubric) !important; text-transform: none !important;
+  vertical-align: super; line-height: 0; margin-left: .12em; display: inline !important;
+}
+.w-mark + .w-mark { margin-left: .3em; }

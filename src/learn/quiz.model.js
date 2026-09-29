@@ -1,5 +1,6 @@
 import { NOTES, parse, cap } from '../dictionary/notes.js';
 import { SEMANTIC_KEYS, accentForms, partOfSpeech, markWord, reverse, TENSE_MARKERS } from '../dictionary/grammar.js';
+import { wordHTML } from '../graphics/graphics.js';
 
 // The pure core of the School's examinations — no DOM, no storage, no
 // clock. Progress is a plain object passed in and handed back new;
@@ -339,7 +340,7 @@ export function microQuestions(notes, entries, rand = Math.random) {
     const wrongs = shuffle(accentForms(notes).filter((x) => x.role !== role), rand).slice(0, 2);
     out.push({
       id: 'accent:' + key, title: 'Its accent', word: key,
-      prompt: `Written <b>${cap(markWord(notes, { accent: f.accent }))}</b>, with the accent on the ${ORDINAL[f.accent]} syllable, it is…`,
+      prompt: `Written <b>${wordHTML(cap(markWord(notes, { accent: f.accent })))}</b>, with the accent on the ${ORDINAL[f.accent]} syllable, it is…`,
       options: opts({ label: ROLE_LABEL[role], value: role }, wrongs.map((x) => ({ label: ROLE_LABEL[x.role], value: x.role })), rand),
       answerWord: key,
     });

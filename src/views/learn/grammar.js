@@ -137,7 +137,7 @@ function markup() {
   <section class="ln-para" id="g-accent">
     ${head('accent')}
     <p>One root serves as verb, noun, adjective and adverb. What changes is the <b>tonic accent</b> — in speech a
-      <i>rinforzando</i> on one syllable, in writing a mark above it. The <b>verb</b> is the bare word; the accent on
+      <i>rinforzando</i> on one syllable, in writing a mark above it (Gajewski prints a circumflex; this book sets the stressed syllable <span class="w-stress">in red</span>). The <b>verb</b> is the bare word; the accent on
       the <b>first</b> syllable makes a noun of the thing, on the <b>second</b> a noun of the person, on the
       <b>penultimate</b> an adjective, on the <b>last</b> an adverb. Gajewski's paradigm is ${wordLink('sirelasi')}, <i>to constitute</i>:</p>
     <table class="ln-table ln-paradigm">
@@ -159,8 +159,9 @@ function markup() {
 
   <section class="ln-para" id="g-gender">
     ${head('gender')}
-    <p>Only the <b>feminine</b> is marked: the last vowel is lengthened in speech, and written with a bar (¯).
-      The <b>plural</b> is marked by an acute (´) on the last syllable, lengthened too. The masculine and the singular are unmarked.</p>
+    <p>Only the <b>feminine</b> is marked: the last vowel is lengthened in speech, and Gajewski writes a bar over it.
+      The <b>plural</b> lengthens the last syllable too, and he writes an acute on it. Here they are shown as small
+      labels, <span class="w-mark">fem.</span> and <span class="w-mark">pl.</span>, so no letter wears an accent. The masculine and the singular are unmarked.</p>
     <div class="ln-forms-grid">
       ${[
         ['dofa', {}, 'he'], ['dofa', { feminine: true }, 'she'], ['dofa', { plural: true }, 'they'], ['dofa', { feminine: true, plural: true }, 'they (fem.)'],
@@ -209,7 +210,7 @@ function markup() {
 
   <section class="ln-para" id="g-pronouns">
     ${head('pronouns')}
-    <p>The personal pronouns all begin with ${wordLink('do')}. Their plurals take the acute, the feminine the bar — as any word does.
+    <p>The personal pronouns all begin with ${wordLink('do')}. Their plurals and feminines take the same marks as any word.
       The possessives are the same words with the first note moved up to ${wordLink('re')}.</p>
     <div class="ln-two-tables">
       <table class="ln-table">

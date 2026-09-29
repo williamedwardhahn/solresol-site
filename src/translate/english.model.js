@@ -213,7 +213,7 @@ export function glossSolresol(index, text) {
 // Written marks: an acute on the last vowel = plural, a macron = feminine.
 function markOf(text) {
   const d = String(text).normalize('NFD');
-  return { plural: /́/.test(d), feminine: /̄/.test(d) };
+  return { plural: /\u0301/.test(d), feminine: /\u0304/.test(d) };
 }
 function pronounGloss(key, { plural, feminine }) {
   switch (key) {

@@ -298,7 +298,27 @@ const CRITICAL = [YES,NO,...CORE.filter(x=>["stop","help","hurt","eat","drink","
 
 /* ---- audio ---- */
 let AC=null;
-function audio(){ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state==="suspended")AC.resume(); return AC; }
+function audio(){ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state!=="running")AC.resume().catch(()=>{}); return AC; }
+/* phones: sound only starts from a touch, and iPhones mute web audio on the
+   silent switch unless the page plays as media. Unlock on every touch. */
+const SILENT_WAV="data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==";
+let silentTag=null, primed=false;
+function unlockAudio(){
+  try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+  if(!navigator.audioSession && !silentTag && /iPhone|iPad|iPod/.test(navigator.userAgent)){
+    silentTag=new Audio(SILENT_WAV); silentTag.loop=true; silentTag.volume=0.01; silentTag.setAttribute("playsinline","");
+  }
+  if(silentTag) silentTag.play().catch(()=>{});
+  const a=audio();
+  if(a.state!=="running") a.resume().catch(()=>{});
+  if(!primed){ const s=a.createBufferSource(); s.buffer=a.createBuffer(1,1,22050); s.connect(a.destination); s.start(0); primed=true; }
+}
+["pointerdown","touchend","keydown"].forEach(ev=>window.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible" && AC && AC.state!=="running") AC.resume().catch(()=>{});
+  if(document.visibilityState==="hidden" && silentTag) silentTag.pause();
+});
+
 function tone(freq, t0, dur, bend){
   const ac=audio();
   const o=ac.createOscillator(), o2=ac.createOscillator(), g=ac.createGain();
@@ -448,7 +468,6 @@ voiceBtn.addEventListener("click",()=>{ VOICE_ON=!VOICE_ON; voiceState.textConte
 
 /* ---- go ---- */
 renderGrid(); refreshBuild();
-window.addEventListener("pointerdown",()=>audio(),{once:true});
 </script>
 </body>
 </html>

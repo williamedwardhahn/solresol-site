@@ -67,7 +67,7 @@ export function accentForms(notes) {
 // Write a word with its marks, as Gajewski does: a circumflex on the
 // accented syllable (midôfa), a macron on the last vowel for the feminine
 // (dofā), an acute on the last vowel for the plural (doré).
-const MARK = { accent: '̂', feminine: '̄', plural: '́' };
+const MARK = { accent: '\u0302', feminine: '\u0304', plural: '\u0301' };
 export function markWord(notes, { accent = -1, feminine = false, plural = false } = {}) {
   return notes.map((n, i) => {
     const marks = [];

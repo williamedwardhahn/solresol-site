@@ -4,6 +4,7 @@ import { staffSVG, colorStripSVG } from '../../graphics/graphics.js';
 import { compose, writeOut, rulesInPlay, SLOTS, TENSES, PRONOUN_CHOICES } from '../../translate/composer.model.js';
 import { lookup, shortGloss, readNotes } from '../../translate/lookup.js';
 import { esc, swatches, written, encSentence } from './parts.js';
+import { wordHTML } from '../../graphics/graphics.js';
 
 // The composer — five slots for the parts of speech, a tense, a negation,
 // a mood. The grammar (src/translate/composer.model.js) puts the words in
@@ -35,7 +36,7 @@ export function mountComposerLeaf(el) {
           <p class="cm-slot-label"><span class="cm-slot-num">${SLOT_INFO[s].num}</span>${SLOT_INFO[s].label}<span class="cm-slot-hint">${SLOT_INFO[s].hint}</span></p>
           <div class="cm-chosen" data-chosen></div>
           ${s === 'subject' || s === 'object' ? `<div class="cm-prons" role="group" aria-label="Pronouns">${PRONOUN_CHOICES.map((p) =>
-            `<button type="button" class="cm-pron" data-pron="${p.en}" title="${p.en}">${esc(written(p.notes, p.form, { capital: false }))}</button>`).join('')}</div>` : ''}
+            `<button type="button" class="cm-pron" data-pron="${p.en}" title="${p.en}">${wordHTML(esc(written(p.notes, p.form, { capital: false })))}</button>`).join('')}</div>` : ''}
           <div class="cm-search-wrap">
             <input class="field cm-search" data-search type="search" placeholder="find ${/^[AO]/.test(SLOT_INFO[s].label) ? 'an' : 'a'} ${SLOT_INFO[s].label.toLowerCase()}…" autocomplete="off" spellcheck="false" aria-label="Find a ${SLOT_INFO[s].label.toLowerCase()}">
             <ul class="cm-results" data-results hidden></ul>
@@ -76,7 +77,7 @@ export function mountComposerLeaf(el) {
       const box = el.querySelector(`[data-slot="${s}"]`), v = slots[s];
       box.classList.toggle('is-filled', !!v);
       box.querySelector('[data-chosen]').innerHTML = v
-        ? `<button type="button" class="cm-chosen-word" data-open="${v.notes.join('-')}">${esc(written(v.notes, v.form || {}))}</button>
+        ? `<button type="button" class="cm-chosen-word" data-open="${v.notes.join('-')}">${wordHTML(esc(written(v.notes, v.form || {})))}</button>
            ${swatches(v.notes)}<span class="cm-chosen-en">${esc(v.en || '')}</span>
            <button type="button" class="cm-clear" data-clear="${s}" aria-label="Empty the ${s} slot" title="Empty">×</button>`
         : '<span class="cm-empty">—</span>';
@@ -117,7 +118,7 @@ export function mountComposerLeaf(el) {
     if (tense && !slots.verb) notes.push('<b>Tense</b> — a tense particle needs a verb to stand before.');
     if (rules.includes('negation')) notes.push(`<b>Negation</b> — <i>do</i>, once, immediately before the word it denies: here the ${negate} (§6.5).`);
     if (rules.includes('adjective')) notes.push(`<b>Adjective</b> — it follows its noun (§6.1).`);
-    if (ws.some((w) => w.accent >= 0)) notes.push('<b>Accent</b> — the circumflex marks the stressed note that tells a root its part: first for a noun, next-to-last for an adjective, last for an adverb. The verb is written plain (§6.2).');
+    if (ws.some((w) => w.accent >= 0)) notes.push('<b>Accent</b> — the syllable in red is the stressed note (Gajewski writes a circumflex) that tells a root its part: first for a noun, next-to-last for an adjective, last for an adverb. The verb is written plain (§6.2).');
     if (tense === 'solsol' && slots.subject) notes.push('<b>Imperative</b> — the subject is usually left out: <i>solsol sifala</i>, “repeat!”.');
 
     resultEl.innerHTML = `
@@ -131,7 +132,7 @@ export function mountComposerLeaf(el) {
           </li>`).join('')}
           <li class="cm-stop" aria-hidden="true">${question && slots.verb ? '?' : '.'}</li>
         </ol>
-        <p class="tr-read cm-read"><span class="tr-read-sol">${esc(line)}</span><span class="tr-read-en">${esc(english)}</span></p>
+        <p class="tr-read cm-read"><span class="tr-read-sol">${wordHTML(esc(line))}</span><span class="tr-read-en">${esc(english)}</span></p>
         <div class="tr-staff">${staffSVG(words)}</div>
         ${colorStripSVG(words, { height: 14 })}
         <div class="controls tr-score-acts">

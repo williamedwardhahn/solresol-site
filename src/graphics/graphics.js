@@ -86,3 +86,27 @@ export function colorStripSVG(words, { height = 28 } = {}) {
   });
   return `<svg class="strip" viewBox="0 0 ${Math.max(x, 1)} ${height}" preserveAspectRatio="none" role="img" aria-label="the sentence as colour">${rects.join('')}</svg>`;
 }
+
+// ── a written word, with its grammar shown without accents ─────────────
+// Gajewski writes the tonic accent as a circumflex, the feminine as a
+// macron and the plural as an acute. Old-style type has no clean glyphs
+// for most of these (î, ā …), and a reader needs no diacritics to see
+// them, so on the page the stressed syllable is set in rubric and
+// underlined, and feminine / plural get a small label. The text itself
+// keeps its canonical marks; this only changes how it is drawn.
+const SYLLABLE = /[sS][oO][\u0300-\u036f]*l|[dDrRmMfFsSlL][oeiaOEIA][\u0300-\u036f]*/g;
+export function wordHTML(text) {
+  return String(text).normalize('NFD').split(/(\s+)/).map((token) => {
+    if (!/[\u0302\u0304\u0301]/.test(token)) return token.normalize('NFC');
+    let feminine = false, plural = false;
+    const body = token.replace(SYLLABLE, (syl) => {
+      const plain = syl.replace(/[\u0300-\u036f]/g, '');
+      if (syl.includes('\u0304')) feminine = true;
+      if (syl.includes('\u0301')) plural = true;
+      return syl.includes('\u0302') ? `<span class="w-stress">${plain}</span>` : plain;
+    }).replace(/[\u0300-\u036f]/g, '');
+    const [, word, tail] = body.match(/^(.*?)([?!.,;:]*)$/s);
+    const marks = (feminine ? '<span class="w-mark">fem.</span>' : '') + (plural ? '<span class="w-mark">pl.</span>' : '');
+    return word + marks + tail;
+  }).join('');
+}

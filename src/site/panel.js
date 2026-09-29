@@ -5,7 +5,7 @@ import { Word } from '../lang/word.js';
 import { emit } from '../live/bus.js';
 import { playWord } from '../voices/index.js';
 import { mountChoir } from '../ui/choir.js';
-import { staffSVG, GLYPH_PATHS } from '../graphics/graphics.js';
+import { staffSVG, GLYPH_PATHS, wordHTML } from '../graphics/graphics.js';
 
 // The word panel — every word's own page. Opened from anywhere (a search
 // hit, a chip, a star on the map) through ctx.openWord, and addressable
@@ -40,7 +40,7 @@ export function mountPanel(host, ctx) {
 
     body.innerHTML = `
       <p class="panel-family">${family ? `${cap(notes[0])} · ${family}` : 'A particle'}</p>
-      <h2 class="panel-word">${cap(markWord(notes, form))}</h2>
+      <h2 class="panel-word">${wordHTML(cap(markWord(notes, form)))}</h2>
       <p class="panel-meaning">${meaning ? esc(meaning) : '<em>Not in the dictionary.</em>'}${own ? ' <span class="tag">your meaning</span>' : ''}</p>
       ${notes.length > 1 ? `<p class="panel-role">${form.accent < 0 ? 'Written plain, it is a <b>verb</b>' : `Accented so, it is a <b>${partOfSpeech(notes, form.accent)}</b>`}${form.feminine ? ', feminine' : ''}${form.plural ? ', plural' : ''}.</p>` : ''}
 
@@ -67,11 +67,11 @@ export function mountPanel(host, ctx) {
         <h3 class="rubric">Its forms <span class="rubric-note">the tonic accent decides the part of speech</span></h3>
         <div class="forms">
           ${forms.map((f) => `<button class="form ${form.accent === f.accent ? 'is-on' : ''}" data-accent="${f.accent}">
-              <b>${cap(markWord(notes, { ...form, accent: f.accent }))}</b><span>${f.role}</span></button>`).join('')}
+              <b>${wordHTML(cap(markWord(notes, { ...form, accent: f.accent })))}</b><span>${f.role}</span></button>`).join('')}
         </div>
         <div class="forms forms--marks">
-          <button class="form form--mark ${form.feminine ? 'is-on' : ''}" data-mark="feminine"><b>¯</b><span>feminine</span></button>
-          <button class="form form--mark ${form.plural ? 'is-on' : ''}" data-mark="plural"><b>´</b><span>plural</span></button>
+          <button class="form form--mark ${form.feminine ? 'is-on' : ''}" data-mark="feminine"><b>fem.</b><span>feminine</span></button>
+          <button class="form form--mark ${form.plural ? 'is-on' : ''}" data-mark="plural"><b>pl.</b><span>plural</span></button>
         </div>
       </section>` : ''}
 

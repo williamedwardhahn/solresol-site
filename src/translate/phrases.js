@@ -60,7 +60,7 @@ export const PHRASEBOOK = [
     ],
   },
   {
-    id: 'social', label: 'Social', note: 'Plural is an acute on the last syllable (doré, we); feminine a bar (dofā, she).',
+    id: 'social', label: 'Social', note: 'Plural and feminine are marked on the last syllable, shown here as small pl. and fem. labels: we is dore pl., she is dofa fem.',
     phrases: [
       { en: 'I love you', sol: 'Dore milasi domi', lit: ['I', 'love', 'you'] },
       { en: 'Well done!', sol: 'Misol!', lit: ['well done'] },

@@ -309,6 +309,26 @@ function voiceParams(step) {
 
 let ctx, master;
 
+/* phones: sound only starts from a touch, and iPhones mute web audio on the
+   silent switch unless the page plays as media. Unlock on every touch. */
+const SILENT_WAV="data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==";
+let silentTag=null, primed=false;
+function unlockAudio(){
+  try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+  if(!navigator.audioSession && !silentTag && /iPhone|iPad|iPod/.test(navigator.userAgent)){
+    silentTag=new Audio(SILENT_WAV); silentTag.loop=true; silentTag.volume=0.01; silentTag.setAttribute("playsinline","");
+  }
+  if(silentTag) silentTag.play().catch(()=>{});
+  const a=audio();
+  if(a.state!=="running") a.resume().catch(()=>{});
+  if(!primed){ const s=a.createBufferSource(); s.buffer=a.createBuffer(1,1,22050); s.connect(a.destination); s.start(0); primed=true; }
+}
+["pointerdown","touchend","keydown"].forEach(ev=>window.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible" && ctx && ctx.state!=="running") ctx.resume().catch(()=>{});
+  if(document.visibilityState==="hidden" && silentTag) silentTag.pause();
+});
+
 function audio() {
   if (ctx) return ctx;
   ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -339,7 +359,7 @@ function impulse(ac, seconds, decay) {
 // Start a note (do–si), return a handle you stop() on release.
 function voiceOn(note) {
   const ac = audio();
-  if (ac.state === 'suspended') ac.resume();
+  if (ac.state !== 'running') ac.resume().catch(() => {});
   const p = voiceParams(note.step);
   const t = ac.currentTime;
 

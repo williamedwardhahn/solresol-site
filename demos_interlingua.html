@@ -180,6 +180,26 @@ const BY={}; DATA.words.forEach(o=>BY[o.w]=o);
 
 /* ---------- audio ---------- */
 let ac=null;
+const audioCtx=()=>{ if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)(); if(ac.state!=="running") ac.resume().catch(()=>{}); return ac; };
+/* phones: sound only starts from a touch, and iPhones mute web audio on the
+   silent switch unless the page plays as media. Unlock on every touch. */
+const SILENT_WAV="data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==";
+let silentTag=null, primed=false;
+function unlockAudio(){
+  try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+  if(!navigator.audioSession && !silentTag && /iPhone|iPad|iPod/.test(navigator.userAgent)){
+    silentTag=new Audio(SILENT_WAV); silentTag.loop=true; silentTag.volume=0.01; silentTag.setAttribute("playsinline","");
+  }
+  if(silentTag) silentTag.play().catch(()=>{});
+  const a=audioCtx();
+  if(a.state!=="running") a.resume().catch(()=>{});
+  if(!primed){ const s=a.createBufferSource(); s.buffer=a.createBuffer(1,1,22050); s.connect(a.destination); s.start(0); primed=true; }
+}
+["pointerdown","touchend","keydown"].forEach(ev=>window.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible" && ac && ac.state!=="running") ac.resume().catch(()=>{});
+  if(document.visibilityState==="hidden" && silentTag) silentTag.pause();
+});
 function tone(freq,t,dur){
   const o=ac.createOscillator(),g=ac.createGain();
   o.type="sine"; o.frequency.value=freq;
@@ -194,7 +214,7 @@ function tone(freq,t,dur){
   o.start(t); o.stop(t+dur); o2.start(t); o2.stop(t+dur);
 }
 function playCode(code,cells){
-  if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
+  audioCtx();
   const step=.34, t0=ac.currentTime+.03;
   code.forEach((n,i)=>{
     tone(HZ[n],t0+i*step,step*1.15);
@@ -265,7 +285,7 @@ $("fumble").onclick=()=>{
     row.innerHTML=`<div class="expr"><b>${e.a}</b> − ${e.b} + ${e.c} = <b class="res-w">${e.result}</b>`+
       `<span class="swatches">${sw}</span></div>`+
       `<button class="eqbtn">► play result</button>`;
-    row.querySelector("button").onclick=()=>{ if(!ac) ac=new(window.AudioContext||window.webkitAudioContext)(); playCode(e.code,null); };
+    row.querySelector("button").onclick=()=>{ audioCtx(); playCode(e.code,null); };
     host.appendChild(row);
   });
 })();

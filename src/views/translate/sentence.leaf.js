@@ -3,6 +3,7 @@ import { getIndex } from '../../dictionary/dictionary.js';
 import { staffSVG, colorStripSVG } from '../../graphics/graphics.js';
 import { translateEnglish, glossSolresol } from '../../translate/english.model.js';
 import { esc, swatches, written, encSentence } from './parts.js';
+import { wordHTML } from '../../graphics/graphics.js';
 
 // A sentence, both ways, laid out as an interlinear gloss: the English
 // word, the Solresol word under it, its colours, its sense. Particles are
@@ -39,7 +40,7 @@ export function mountSentenceLeaf(el) {
     input.value = text[d];
     input.placeholder = d === 'en' ? 'an English sentence…' : 'a Solresol sentence — dore do falafa';
     input.classList.toggle('is-sol', d === 'sol');
-    tryEl.innerHTML = 'Try ' + (d === 'en' ? TRY_EN : TRY_SOL).map((s) => `<button type="button" class="tr-try-btn" data-try="${esc(s)}">${esc(s)}</button>`).join('');
+    tryEl.innerHTML = 'Try ' + (d === 'en' ? TRY_EN : TRY_SOL).map((s) => `<button type="button" class="tr-try-btn" data-try="${esc(s)}">${wordHTML(esc(s))}</button>`).join('');
     render();
   }
 
@@ -70,7 +71,7 @@ export function mountSentenceLeaf(el) {
       const src = dir === 'en' ? (it.from ? esc(it.from) : '<i aria-hidden="true">·</i>') : '';
       return `<li class="gl gl--${it.role}" data-wi="${idx}" style="--i:${k}">
         ${dir === 'en' ? `<span class="gl-src">${src}</span>` : ''}
-        <button type="button" class="gl-sol" data-open="${it.notes.join('-')}" title="${esc(it.definition || it.gloss)}">${esc(t)}</button>
+        <button type="button" class="gl-sol" data-open="${it.notes.join('-')}" title="${esc(it.definition || it.gloss)}">${wordHTML(esc(t))}</button>
         <span class="gl-sw">${swatches(it.notes)}</span>
         <span class="gl-sense">${esc(it.gloss)}</span>
         ${role ? `<span class="gl-role">${role}</span>` : ''}
@@ -87,7 +88,7 @@ export function mountSentenceLeaf(el) {
         <ol class="gloss" aria-label="Word by word">${cols}</ol>
         ${words.length ? `
         <figure class="plate tr-score">
-          <p class="tr-read"><span class="tr-read-sol">${esc(line)}</span>
+          <p class="tr-read"><span class="tr-read-sol">${wordHTML(esc(line))}</span>
             <span class="tr-read-en">${dir === 'en' ? `“${esc(q)}”` : esc(english)}</span></p>
           <div class="tr-staff">${staffSVG(words, { labels: false })}</div>
           ${colorStripSVG(words, { height: 16 })}

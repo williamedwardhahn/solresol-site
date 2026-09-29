@@ -1,5 +1,6 @@
 import { note, cap, parse } from '../../dictionary/notes.js';
 import { playNote } from '../../voices/index.js';
+import { wordHTML } from '../../graphics/graphics.js';
 
 // Small shared pieces for the School's pages: escaping, a word written
 // as a link into its panel, a word's colours, and speech with a tonic
@@ -11,7 +12,7 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&am
 // (with marks) when it differs from the dictionary key.
 export function wordLink(key, { shown = null, cls = '' } = {}) {
   const k = parse(key).join('');
-  return `<button type="button" class="ln-w ${cls}" data-word="${k}" title="Open ${cap(k)}">${esc(cap(shown || k))}</button>`;
+  return `<button type="button" class="ln-w ${cls}" data-word="${k}" title="Open ${cap(k)}">${wordHTML(esc(cap(shown || k)))}</button>`;
 }
 
 export const swatches = (notes) =>

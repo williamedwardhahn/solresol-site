@@ -2,6 +2,7 @@ import { parse } from '../../dictionary/notes.js';
 import { markWord } from '../../dictionary/grammar.js';
 import { fanSVG, staffSVG, scriptSVG, colorStripSVG } from '../../graphics/graphics.js';
 import { wordLink, sayWord } from './common.js';
+import { wordHTML } from '../../graphics/graphics.js';
 
 // History — Sudre's story, as a short illustrated timeline. Only the
 // facts SOLRESOL_MASTER §1–3 marks [canon] or [documented]; the popular
@@ -61,7 +62,7 @@ const EVENTS = [
     year: '1902', title: 'Gajewski’s grammar',
     text: `Boleslas Gajewski publishes the <i>Grammaire du Solrésol</i> (Paris, R. Moutier): some forty pages, the most
       complete account of the rules — the keys, the movable accent, the doubled particles of tense. This School follows it.`,
-    art: () => `<div class="ln-art-paradigm">${[-1, 0, 1, 2, 3].map((a) => `<button type="button" data-say="${a}">${markWord(parse('sirelasi'), { accent: a })}</button>`).join('')}</div>`,
+    art: () => `<div class="ln-art-paradigm">${[-1, 0, 1, 2, 3].map((a) => `<button type="button" data-say="${a}">${wordHTML(markWord(parse('sirelasi'), { accent: a }))}</button>`).join('')}</div>`,
     cap: 'one root, five parts of speech — touch to hear',
   },
 ];

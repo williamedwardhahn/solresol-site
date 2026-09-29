@@ -343,6 +343,21 @@ select.field { font-size: 1rem; padding-right: 20px; }
 /* two columns that fold to one */
 .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px 40px; }
 
+/* grammar on a written word, shown without accents (see wordHTML).
+   These sit inside many containers whose own `span` rules (captions,
+   labels) must not reach them, hence the !important on type. */
+.w-stress {
+  font: inherit !important; letter-spacing: inherit !important; text-transform: none !important;
+  color: var(--rubric) !important;
+  text-decoration: underline; text-decoration-thickness: .07em; text-underline-offset: .14em;
+}
+.w-mark {
+  font-family: var(--sc) !important; font-size: max(.42em, .72rem) !important; font-style: normal !important; font-weight: 400 !important;
+  letter-spacing: .06em !important; color: var(--rubric) !important; text-transform: none !important;
+  vertical-align: super; line-height: 0; margin-left: .12em; display: inline !important;
+}
+.w-mark + .w-mark { margin-left: .3em; }
+
 /* The instrument's parts, shared by every chapter: the seven keys, the
    choir of voices, the predictor's pips. */
 
@@ -2332,7 +2347,7 @@ const __m_dictionary_grammar = (() => {
   // Write a word with its marks, as Gajewski does: a circumflex on the
   // accented syllable (midôfa), a macron on the last vowel for the feminine
   // (dofā), an acute on the last vowel for the plural (doré).
-  const MARK = { accent: '̂', feminine: '̄', plural: '́' };
+  const MARK = { accent: '\u0302', feminine: '\u0304', plural: '\u0301' };
   function markWord(notes, { accent = -1, feminine = false, plural = false } = {}) {
     return notes.map((n, i) => {
       const marks = [];
@@ -2688,7 +2703,31 @@ const __m_graphics_graphics = (() => {
     });
     return `<svg class="strip" viewBox="0 0 ${Math.max(x, 1)} ${height}" preserveAspectRatio="none" role="img" aria-label="the sentence as colour">${rects.join('')}</svg>`;
   }
-  return { fanSVG, staffSVG, GLYPH_PATHS, glyphSVG, scriptSVG, colorStripSVG };
+
+  // ── a written word, with its grammar shown without accents ─────────────
+  // Gajewski writes the tonic accent as a circumflex, the feminine as a
+  // macron and the plural as an acute. Old-style type has no clean glyphs
+  // for most of these (î, ā …), and a reader needs no diacritics to see
+  // them, so on the page the stressed syllable is set in rubric and
+  // underlined, and feminine / plural get a small label. The text itself
+  // keeps its canonical marks; this only changes how it is drawn.
+  const SYLLABLE = /[sS][oO][\u0300-\u036f]*l|[dDrRmMfFsSlL][oeiaOEIA][\u0300-\u036f]*/g;
+  function wordHTML(text) {
+    return String(text).normalize('NFD').split(/(\s+)/).map((token) => {
+      if (!/[\u0302\u0304\u0301]/.test(token)) return token.normalize('NFC');
+      let feminine = false, plural = false;
+      const body = token.replace(SYLLABLE, (syl) => {
+        const plain = syl.replace(/[\u0300-\u036f]/g, '');
+        if (syl.includes('\u0304')) feminine = true;
+        if (syl.includes('\u0301')) plural = true;
+        return syl.includes('\u0302') ? `<span class="w-stress">${plain}</span>` : plain;
+      }).replace(/[\u0300-\u036f]/g, '');
+      const [, word, tail] = body.match(/^(.*?)([?!.,;:]*)$/s);
+      const marks = (feminine ? '<span class="w-mark">fem.</span>' : '') + (plural ? '<span class="w-mark">pl.</span>' : '');
+      return word + marks + tail;
+    }).join('');
+  }
+  return { fanSVG, staffSVG, GLYPH_PATHS, glyphSVG, scriptSVG, colorStripSVG, wordHTML };
 })();
 
 // === voices/staff.js ===
@@ -2897,7 +2936,48 @@ const __m_voices_tone = (() => {
   // one gentle envelope. A word plays as its notes in sequence.
 
   let audioCtx;
-  const audio = () => (audioCtx ||= new (window.AudioContext || window.webkitAudioContext)());
+  const audio = () => {
+    audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state !== 'running') audioCtx.resume().catch(() => {});
+    return audioCtx;
+  };
+
+  // Phones only let a page make sound once a person has touched it, and
+  // iPhones also mute web audio when the ring/silent switch is on unless the
+  // page says it is playing media. So on every touch or key we (1) mark the
+  // audio as playback, which plays through the silent switch on iOS 17+, or
+  // on older iOS start a looping silent <audio> that does the same;
+  // (2) create and resume the context inside the gesture; (3) play one silent
+  // frame, which is what actually unlocks older Safari. It repeats on every
+  // gesture because iOS suspends audio again after a call or a trip away.
+  const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+  let silentTag = null;
+  function unlockAudio() {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* not every Safari */ }
+    if (!navigator.audioSession && !silentTag && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      silentTag = new Audio(SILENT_WAV);
+      silentTag.loop = true;
+      silentTag.setAttribute('playsinline', '');
+      silentTag.volume = 0.01;
+    }
+    silentTag?.play().catch(() => {});
+    const ac = audio();
+    if (!unlockAudio.primed) {
+      const src = ac.createBufferSource();
+      src.buffer = ac.createBuffer(1, 1, 22050);
+      src.connect(ac.destination);
+      src.start(0);
+      unlockAudio.primed = true;
+    }
+  }
+  if (typeof window !== 'undefined') {
+    for (const ev of ['pointerdown', 'touchend', 'keydown']) window.addEventListener(ev, unlockAudio, { capture: true, passive: true });
+    // coming back to the page: wake the context (it may have been interrupted)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && audioCtx && audioCtx.state !== 'running') audioCtx.resume().catch(() => {});
+      if (document.visibilityState === 'hidden') silentTag?.pause();
+    });
+  }
 
   // The instrument's colour of sound — sine, triangle, sawtooth or square.
   let timbre = 'triangle';
@@ -2934,7 +3014,7 @@ const __m_voices_tone = (() => {
   }
 
   const tone = { name: 'tone', label: 'Tone', playNote, playWord, playSentence };
-  return { TIMBRES, setTimbre, playNote, playWord, playSentence, tone };
+  return { unlockAudio, TIMBRES, setTimbre, playNote, playWord, playSentence, tone };
 })();
 
 // === voices/index.js ===
@@ -6329,7 +6409,7 @@ const __m_translate_english_model = (() => {
   // Written marks: an acute on the last vowel = plural, a macron = feminine.
   function markOf(text) {
     const d = String(text).normalize('NFD');
-    return { plural: /́/.test(d), feminine: /̄/.test(d) };
+    return { plural: /\u0301/.test(d), feminine: /\u0304/.test(d) };
   }
   function pronounGloss(key, { plural, feminine }) {
     switch (key) {
@@ -6351,6 +6431,7 @@ const __m_views_translate_sentence_leaf = (() => {
   const { staffSVG, colorStripSVG } = __m_graphics_graphics;
   const { translateEnglish, glossSolresol } = __m_translate_english_model;
   const { esc, swatches, written, encSentence } = __m_views_translate_parts;
+  const { wordHTML } = __m_graphics_graphics;
 
   // A sentence, both ways, laid out as an interlinear gloss: the English
   // word, the Solresol word under it, its colours, its sense. Particles are
@@ -6387,7 +6468,7 @@ const __m_views_translate_sentence_leaf = (() => {
       input.value = text[d];
       input.placeholder = d === 'en' ? 'an English sentence…' : 'a Solresol sentence — dore do falafa';
       input.classList.toggle('is-sol', d === 'sol');
-      tryEl.innerHTML = 'Try ' + (d === 'en' ? TRY_EN : TRY_SOL).map((s) => `<button type="button" class="tr-try-btn" data-try="${esc(s)}">${esc(s)}</button>`).join('');
+      tryEl.innerHTML = 'Try ' + (d === 'en' ? TRY_EN : TRY_SOL).map((s) => `<button type="button" class="tr-try-btn" data-try="${esc(s)}">${wordHTML(esc(s))}</button>`).join('');
       render();
     }
 
@@ -6418,7 +6499,7 @@ const __m_views_translate_sentence_leaf = (() => {
         const src = dir === 'en' ? (it.from ? esc(it.from) : '<i aria-hidden="true">·</i>') : '';
         return `<li class="gl gl--${it.role}" data-wi="${idx}" style="--i:${k}">
           ${dir === 'en' ? `<span class="gl-src">${src}</span>` : ''}
-          <button type="button" class="gl-sol" data-open="${it.notes.join('-')}" title="${esc(it.definition || it.gloss)}">${esc(t)}</button>
+          <button type="button" class="gl-sol" data-open="${it.notes.join('-')}" title="${esc(it.definition || it.gloss)}">${wordHTML(esc(t))}</button>
           <span class="gl-sw">${swatches(it.notes)}</span>
           <span class="gl-sense">${esc(it.gloss)}</span>
           ${role ? `<span class="gl-role">${role}</span>` : ''}
@@ -6435,7 +6516,7 @@ const __m_views_translate_sentence_leaf = (() => {
           <ol class="gloss" aria-label="Word by word">${cols}</ol>
           ${words.length ? `
           <figure class="plate tr-score">
-            <p class="tr-read"><span class="tr-read-sol">${esc(line)}</span>
+            <p class="tr-read"><span class="tr-read-sol">${wordHTML(esc(line))}</span>
               <span class="tr-read-en">${dir === 'en' ? `“${esc(q)}”` : esc(english)}</span></p>
             <div class="tr-staff">${staffSVG(words, { labels: false })}</div>
             ${colorStripSVG(words, { height: 16 })}
@@ -6527,7 +6608,7 @@ const __m_translate_phrases = (() => {
       ],
     },
     {
-      id: 'social', label: 'Social', note: 'Plural is an acute on the last syllable (doré, we); feminine a bar (dofā, she).',
+      id: 'social', label: 'Social', note: 'Plural and feminine are marked on the last syllable, shown here as small pl. and fem. labels: we is dore pl., she is dofa fem.',
       phrases: [
         { en: 'I love you', sol: 'Dore milasi domi', lit: ['I', 'love', 'you'] },
         { en: 'Well done!', sol: 'Misol!', lit: ['well done'] },
@@ -6550,6 +6631,7 @@ const __m_views_translate_phrasebook_leaf = (() => {
   const { PHRASEBOOK, phraseWords } = __m_translate_phrases;
   const { readNotes } = __m_translate_lookup;
   const { esc, swatches, playBtn, addBtn } = __m_views_translate_parts;
+  const { wordHTML } = __m_graphics_graphics;
 
   // The phrasebook — a traveller's pages, each phrase checked against the
   // dictionary and the canonical grammar (see src/translate/phrases.js).
@@ -6562,7 +6644,7 @@ const __m_views_translate_phrasebook_leaf = (() => {
       let i = 0;
       const solHtml = esc(p.sol).replace(/[^\s,.!?]+/g, (w) => {
         const n = notes[i], lit = p.lit[i]; i++;
-        return `<button type="button" class="pb-w" data-open="${n.join('-')}" title="${esc(lit)}">${w}</button>`;
+        return `<button type="button" class="pb-w" data-open="${n.join('-')}" title="${esc(lit)}">${wordHTML(w)}</button>`;
       });
       return `<li class="pb-row" data-score style="--i:${k}">
         <p class="pb-en">${esc(p.en)}</p>
@@ -6708,6 +6790,7 @@ const __m_views_translate_composer_leaf = (() => {
   const { compose, writeOut, rulesInPlay, SLOTS, TENSES, PRONOUN_CHOICES } = __m_translate_composer_model;
   const { lookup, shortGloss, readNotes } = __m_translate_lookup;
   const { esc, swatches, written, encSentence } = __m_views_translate_parts;
+  const { wordHTML } = __m_graphics_graphics;
 
   // The composer — five slots for the parts of speech, a tense, a negation,
   // a mood. The grammar (src/translate/composer.model.js) puts the words in
@@ -6739,7 +6822,7 @@ const __m_views_translate_composer_leaf = (() => {
             <p class="cm-slot-label"><span class="cm-slot-num">${SLOT_INFO[s].num}</span>${SLOT_INFO[s].label}<span class="cm-slot-hint">${SLOT_INFO[s].hint}</span></p>
             <div class="cm-chosen" data-chosen></div>
             ${s === 'subject' || s === 'object' ? `<div class="cm-prons" role="group" aria-label="Pronouns">${PRONOUN_CHOICES.map((p) =>
-              `<button type="button" class="cm-pron" data-pron="${p.en}" title="${p.en}">${esc(written(p.notes, p.form, { capital: false }))}</button>`).join('')}</div>` : ''}
+              `<button type="button" class="cm-pron" data-pron="${p.en}" title="${p.en}">${wordHTML(esc(written(p.notes, p.form, { capital: false })))}</button>`).join('')}</div>` : ''}
             <div class="cm-search-wrap">
               <input class="field cm-search" data-search type="search" placeholder="find ${/^[AO]/.test(SLOT_INFO[s].label) ? 'an' : 'a'} ${SLOT_INFO[s].label.toLowerCase()}…" autocomplete="off" spellcheck="false" aria-label="Find a ${SLOT_INFO[s].label.toLowerCase()}">
               <ul class="cm-results" data-results hidden></ul>
@@ -6780,7 +6863,7 @@ const __m_views_translate_composer_leaf = (() => {
         const box = el.querySelector(`[data-slot="${s}"]`), v = slots[s];
         box.classList.toggle('is-filled', !!v);
         box.querySelector('[data-chosen]').innerHTML = v
-          ? `<button type="button" class="cm-chosen-word" data-open="${v.notes.join('-')}">${esc(written(v.notes, v.form || {}))}</button>
+          ? `<button type="button" class="cm-chosen-word" data-open="${v.notes.join('-')}">${wordHTML(esc(written(v.notes, v.form || {})))}</button>
              ${swatches(v.notes)}<span class="cm-chosen-en">${esc(v.en || '')}</span>
              <button type="button" class="cm-clear" data-clear="${s}" aria-label="Empty the ${s} slot" title="Empty">×</button>`
           : '<span class="cm-empty">—</span>';
@@ -6821,7 +6904,7 @@ const __m_views_translate_composer_leaf = (() => {
       if (tense && !slots.verb) notes.push('<b>Tense</b> — a tense particle needs a verb to stand before.');
       if (rules.includes('negation')) notes.push(`<b>Negation</b> — <i>do</i>, once, immediately before the word it denies: here the ${negate} (§6.5).`);
       if (rules.includes('adjective')) notes.push(`<b>Adjective</b> — it follows its noun (§6.1).`);
-      if (ws.some((w) => w.accent >= 0)) notes.push('<b>Accent</b> — the circumflex marks the stressed note that tells a root its part: first for a noun, next-to-last for an adjective, last for an adverb. The verb is written plain (§6.2).');
+      if (ws.some((w) => w.accent >= 0)) notes.push('<b>Accent</b> — the syllable in red is the stressed note (Gajewski writes a circumflex) that tells a root its part: first for a noun, next-to-last for an adjective, last for an adverb. The verb is written plain (§6.2).');
       if (tense === 'solsol' && slots.subject) notes.push('<b>Imperative</b> — the subject is usually left out: <i>solsol sifala</i>, “repeat!”.');
 
       resultEl.innerHTML = `
@@ -6835,7 +6918,7 @@ const __m_views_translate_composer_leaf = (() => {
             </li>`).join('')}
             <li class="cm-stop" aria-hidden="true">${question && slots.verb ? '?' : '.'}</li>
           </ol>
-          <p class="tr-read cm-read"><span class="tr-read-sol">${esc(line)}</span><span class="tr-read-en">${esc(english)}</span></p>
+          <p class="tr-read cm-read"><span class="tr-read-sol">${wordHTML(esc(line))}</span><span class="tr-read-en">${esc(english)}</span></p>
           <div class="tr-staff">${staffSVG(words)}</div>
           ${colorStripSVG(words, { height: 14 })}
           <div class="controls tr-score-acts">
@@ -7039,6 +7122,7 @@ const __m_views_translate_translate_view = (() => {
 const __m_views_learn_common = (() => {
   const { note, cap, parse } = __m_dictionary_notes;
   const { playNote } = __m_voices_index;
+  const { wordHTML } = __m_graphics_graphics;
 
   // Small shared pieces for the School's pages: escaping, a word written
   // as a link into its panel, a word's colours, and speech with a tonic
@@ -7050,7 +7134,7 @@ const __m_views_learn_common = (() => {
   // (with marks) when it differs from the dictionary key.
   function wordLink(key, { shown = null, cls = '' } = {}) {
     const k = parse(key).join('');
-    return `<button type="button" class="ln-w ${cls}" data-word="${k}" title="Open ${cap(k)}">${esc(cap(shown || k))}</button>`;
+    return `<button type="button" class="ln-w ${cls}" data-word="${k}" title="Open ${cap(k)}">${wordHTML(esc(cap(shown || k)))}</button>`;
   }
 
   const swatches = (notes) =>
@@ -7250,6 +7334,7 @@ const __m_views_learn_study = (() => {
 const __m_learn_quiz_model = (() => {
   const { NOTES, parse, cap } = __m_dictionary_notes;
   const { SEMANTIC_KEYS, accentForms, partOfSpeech, markWord, reverse, TENSE_MARKERS } = __m_dictionary_grammar;
+  const { wordHTML } = __m_graphics_graphics;
 
   // The pure core of the School's examinations — no DOM, no storage, no
   // clock. Progress is a plain object passed in and handed back new;
@@ -7589,7 +7674,7 @@ const __m_learn_quiz_model = (() => {
       const wrongs = shuffle(accentForms(notes).filter((x) => x.role !== role), rand).slice(0, 2);
       out.push({
         id: 'accent:' + key, title: 'Its accent', word: key,
-        prompt: `Written <b>${cap(markWord(notes, { accent: f.accent }))}</b>, with the accent on the ${ORDINAL[f.accent]} syllable, it is…`,
+        prompt: `Written <b>${wordHTML(cap(markWord(notes, { accent: f.accent })))}</b>, with the accent on the ${ORDINAL[f.accent]} syllable, it is…`,
         options: opts({ label: ROLE_LABEL[role], value: role }, wrongs.map((x) => ({ label: ROLE_LABEL[x.role], value: x.role })), rand),
         answerWord: key,
       });
@@ -7741,7 +7826,7 @@ const __m_views_learn_grammar = (() => {
     <section class="ln-para" id="g-accent">
       ${head('accent')}
       <p>One root serves as verb, noun, adjective and adverb. What changes is the <b>tonic accent</b> — in speech a
-        <i>rinforzando</i> on one syllable, in writing a mark above it. The <b>verb</b> is the bare word; the accent on
+        <i>rinforzando</i> on one syllable, in writing a mark above it (Gajewski prints a circumflex; this book sets the stressed syllable <span class="w-stress">in red</span>). The <b>verb</b> is the bare word; the accent on
         the <b>first</b> syllable makes a noun of the thing, on the <b>second</b> a noun of the person, on the
         <b>penultimate</b> an adjective, on the <b>last</b> an adverb. Gajewski's paradigm is ${wordLink('sirelasi')}, <i>to constitute</i>:</p>
       <table class="ln-table ln-paradigm">
@@ -7763,8 +7848,9 @@ const __m_views_learn_grammar = (() => {
 
     <section class="ln-para" id="g-gender">
       ${head('gender')}
-      <p>Only the <b>feminine</b> is marked: the last vowel is lengthened in speech, and written with a bar (¯).
-        The <b>plural</b> is marked by an acute (´) on the last syllable, lengthened too. The masculine and the singular are unmarked.</p>
+      <p>Only the <b>feminine</b> is marked: the last vowel is lengthened in speech, and Gajewski writes a bar over it.
+        The <b>plural</b> lengthens the last syllable too, and he writes an acute on it. Here they are shown as small
+        labels, <span class="w-mark">fem.</span> and <span class="w-mark">pl.</span>, so no letter wears an accent. The masculine and the singular are unmarked.</p>
       <div class="ln-forms-grid">
         ${[
           ['dofa', {}, 'he'], ['dofa', { feminine: true }, 'she'], ['dofa', { plural: true }, 'they'], ['dofa', { feminine: true, plural: true }, 'they (fem.)'],
@@ -7813,7 +7899,7 @@ const __m_views_learn_grammar = (() => {
 
     <section class="ln-para" id="g-pronouns">
       ${head('pronouns')}
-      <p>The personal pronouns all begin with ${wordLink('do')}. Their plurals take the acute, the feminine the bar — as any word does.
+      <p>The personal pronouns all begin with ${wordLink('do')}. Their plurals and feminines take the same marks as any word.
         The possessives are the same words with the first note moved up to ${wordLink('re')}.</p>
       <div class="ln-two-tables">
         <table class="ln-table">
@@ -7910,6 +7996,7 @@ const __m_views_learn_quiz = (() => {
   const { playNote, playWord } = __m_voices_index;
   const { LEVELS, UNLOCK_AT, QUIZ_KEY, normalize, isUnlocked, highestUnlocked, record, accuracy, dayStreak, weightOf, prepare, question, checkComposition, shortGloss, ROLE_LABEL, TENSE_EN } = __m_learn_quiz_model;
   const { esc, wordLink, swatches, sayWord, today, loadJSON, saveJSON } = __m_views_learn_common;
+  const { wordHTML } = __m_graphics_graphics;
 
   // The examinations — five levels, each opened by ten right answers in the
   // one before. Keys 1–7 answer; Enter goes on. The pure logic (questions,
@@ -8014,7 +8101,7 @@ const __m_views_learn_quiz = (() => {
           ${options(q.options, 'ln-options--words')}`;
         case 'accent': return `
           <h3 class="ln-q">Written with its accent on the ${ORD[q.accent]} syllable, what is this word?</h3>
-          <p class="ln-written-big">${esc(cap(q.written))}</p>
+          <p class="ln-written-big">${wordHTML(esc(cap(q.written)))}</p>
           <p class="ln-q-sub">the root ${wordLink(q.word.key)}: <i>${esc(shortGloss(q.word.def, 3))}</i></p>
           <div class="ln-q-stage">${hear('Hear the accent')}</div>
           ${options(q.options)}`;
@@ -8026,7 +8113,7 @@ const __m_views_learn_quiz = (() => {
           ${options(q.options)}`;
         case 'mark': return `
           <h3 class="ln-q">Read the marks on the last syllable. Gender and number?</h3>
-          <p class="ln-written-big">${esc(cap(q.written))}</p>
+          <p class="ln-written-big">${wordHTML(esc(cap(q.written)))}</p>
           <p class="ln-q-sub">the noun ${wordLink(q.word.key)}: <i>${esc(shortGloss(q.word.def, 2))}</i></p>
           <div class="ln-q-stage">${hear('Hear it')}</div>
           ${options(q.options)}`;
@@ -8101,7 +8188,7 @@ const __m_views_learn_quiz = (() => {
         case 'mirror-form': return `${wordLink(q.word.key)} <i>${esc(shortGloss(q.word.def, 1))}</i> reversed is ${wordLink(q.mirror.key)} <i>${esc(shortGloss(q.mirror.def, 1))}</i>.`;
         case 'accent': return `The accent on the ${ORD[q.accent]} syllable makes ${esc(ROLE_LABEL[q.role])}: ${accentRule(q)}.`;
         case 'tense': return `${wordLink(q.particle)} before the verb marks ${esc(TENSE_EN[q.particle])}.`;
-        case 'mark': return `${q.form.id === 'plain' ? 'No mark: masculine and singular.' : `${q.form.marks.feminine ? 'The bar (¯) is the feminine' : ''}${q.form.marks.feminine && q.form.marks.plural ? '; ' : ''}${q.form.marks.plural ? 'the acute (´) is the plural' : ''}.`}`;
+        case 'mark': return `${q.form.id === 'plain' ? 'No mark: masculine and singular.' : `${q.form.marks.feminine ? 'The fem. mark (a bar in Gajewski) is the feminine' : ''}${q.form.marks.feminine && q.form.marks.plural ? '; ' : ''}${q.form.marks.plural ? 'the pl. mark (an acute in Gajewski) is the plural' : ''}.`}`;
         default: return `${wordLink(q.word.key)} — ${q.target.map((n) => cap(n)).join(' · ')} — <i>${esc(shortGloss(q.word.def, 2))}</i>.`;
       }
     }
@@ -8570,6 +8657,7 @@ const __m_views_learn_history = (() => {
   const { markWord } = __m_dictionary_grammar;
   const { fanSVG, staffSVG, scriptSVG, colorStripSVG } = __m_graphics_graphics;
   const { wordLink, sayWord } = __m_views_learn_common;
+  const { wordHTML } = __m_graphics_graphics;
 
   // History — Sudre's story, as a short illustrated timeline. Only the
   // facts SOLRESOL_MASTER §1–3 marks [canon] or [documented]; the popular
@@ -8629,7 +8717,7 @@ const __m_views_learn_history = (() => {
       year: '1902', title: 'Gajewski’s grammar',
       text: `Boleslas Gajewski publishes the <i>Grammaire du Solrésol</i> (Paris, R. Moutier): some forty pages, the most
         complete account of the rules — the keys, the movable accent, the doubled particles of tense. This School follows it.`,
-      art: () => `<div class="ln-art-paradigm">${[-1, 0, 1, 2, 3].map((a) => `<button type="button" data-say="${a}">${markWord(parse('sirelasi'), { accent: a })}</button>`).join('')}</div>`,
+      art: () => `<div class="ln-art-paradigm">${[-1, 0, 1, 2, 3].map((a) => `<button type="button" data-say="${a}">${wordHTML(markWord(parse('sirelasi'), { accent: a }))}</button>`).join('')}</div>`,
       cap: 'one root, five parts of speech — touch to hear',
     },
   ];
@@ -9011,7 +9099,7 @@ const __m_site_panel = (() => {
   const { emit } = __m_live_bus;
   const { playWord } = __m_voices_index;
   const { mountChoir } = __m_ui_choir;
-  const { staffSVG, GLYPH_PATHS } = __m_graphics_graphics;
+  const { staffSVG, GLYPH_PATHS, wordHTML } = __m_graphics_graphics;
 
   // The word panel — every word's own page. Opened from anywhere (a search
   // hit, a chip, a star on the map) through ctx.openWord, and addressable
@@ -9046,7 +9134,7 @@ const __m_site_panel = (() => {
 
       body.innerHTML = `
         <p class="panel-family">${family ? `${cap(notes[0])} · ${family}` : 'A particle'}</p>
-        <h2 class="panel-word">${cap(markWord(notes, form))}</h2>
+        <h2 class="panel-word">${wordHTML(cap(markWord(notes, form)))}</h2>
         <p class="panel-meaning">${meaning ? esc(meaning) : '<em>Not in the dictionary.</em>'}${own ? ' <span class="tag">your meaning</span>' : ''}</p>
         ${notes.length > 1 ? `<p class="panel-role">${form.accent < 0 ? 'Written plain, it is a <b>verb</b>' : `Accented so, it is a <b>${partOfSpeech(notes, form.accent)}</b>`}${form.feminine ? ', feminine' : ''}${form.plural ? ', plural' : ''}.</p>` : ''}
 
@@ -9073,11 +9161,11 @@ const __m_site_panel = (() => {
           <h3 class="rubric">Its forms <span class="rubric-note">the tonic accent decides the part of speech</span></h3>
           <div class="forms">
             ${forms.map((f) => `<button class="form ${form.accent === f.accent ? 'is-on' : ''}" data-accent="${f.accent}">
-                <b>${cap(markWord(notes, { ...form, accent: f.accent }))}</b><span>${f.role}</span></button>`).join('')}
+                <b>${wordHTML(cap(markWord(notes, { ...form, accent: f.accent })))}</b><span>${f.role}</span></button>`).join('')}
           </div>
           <div class="forms forms--marks">
-            <button class="form form--mark ${form.feminine ? 'is-on' : ''}" data-mark="feminine"><b>¯</b><span>feminine</span></button>
-            <button class="form form--mark ${form.plural ? 'is-on' : ''}" data-mark="plural"><b>´</b><span>plural</span></button>
+            <button class="form form--mark ${form.feminine ? 'is-on' : ''}" data-mark="feminine"><b>fem.</b><span>feminine</span></button>
+            <button class="form form--mark ${form.plural ? 'is-on' : ''}" data-mark="plural"><b>pl.</b><span>plural</span></button>
           </div>
         </section>` : ''}
 

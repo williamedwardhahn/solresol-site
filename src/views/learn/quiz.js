@@ -8,6 +8,7 @@ import {
   weightOf, prepare, question, checkComposition, shortGloss, ROLE_LABEL, TENSE_EN,
 } from '../../learn/quiz.model.js';
 import { esc, wordLink, swatches, sayWord, today, loadJSON, saveJSON } from './common.js';
+import { wordHTML } from '../../graphics/graphics.js';
 
 // The examinations — five levels, each opened by ten right answers in the
 // one before. Keys 1–7 answer; Enter goes on. The pure logic (questions,
@@ -112,7 +113,7 @@ export function mountQuiz(host, ctx) {
         ${options(q.options, 'ln-options--words')}`;
       case 'accent': return `
         <h3 class="ln-q">Written with its accent on the ${ORD[q.accent]} syllable, what is this word?</h3>
-        <p class="ln-written-big">${esc(cap(q.written))}</p>
+        <p class="ln-written-big">${wordHTML(esc(cap(q.written)))}</p>
         <p class="ln-q-sub">the root ${wordLink(q.word.key)}: <i>${esc(shortGloss(q.word.def, 3))}</i></p>
         <div class="ln-q-stage">${hear('Hear the accent')}</div>
         ${options(q.options)}`;
@@ -124,7 +125,7 @@ export function mountQuiz(host, ctx) {
         ${options(q.options)}`;
       case 'mark': return `
         <h3 class="ln-q">Read the marks on the last syllable. Gender and number?</h3>
-        <p class="ln-written-big">${esc(cap(q.written))}</p>
+        <p class="ln-written-big">${wordHTML(esc(cap(q.written)))}</p>
         <p class="ln-q-sub">the noun ${wordLink(q.word.key)}: <i>${esc(shortGloss(q.word.def, 2))}</i></p>
         <div class="ln-q-stage">${hear('Hear it')}</div>
         ${options(q.options)}`;
@@ -199,7 +200,7 @@ export function mountQuiz(host, ctx) {
       case 'mirror-form': return `${wordLink(q.word.key)} <i>${esc(shortGloss(q.word.def, 1))}</i> reversed is ${wordLink(q.mirror.key)} <i>${esc(shortGloss(q.mirror.def, 1))}</i>.`;
       case 'accent': return `The accent on the ${ORD[q.accent]} syllable makes ${esc(ROLE_LABEL[q.role])}: ${accentRule(q)}.`;
       case 'tense': return `${wordLink(q.particle)} before the verb marks ${esc(TENSE_EN[q.particle])}.`;
-      case 'mark': return `${q.form.id === 'plain' ? 'No mark: masculine and singular.' : `${q.form.marks.feminine ? 'The bar (¯) is the feminine' : ''}${q.form.marks.feminine && q.form.marks.plural ? '; ' : ''}${q.form.marks.plural ? 'the acute (´) is the plural' : ''}.`}`;
+      case 'mark': return `${q.form.id === 'plain' ? 'No mark: masculine and singular.' : `${q.form.marks.feminine ? 'The fem. mark (a bar in Gajewski) is the feminine' : ''}${q.form.marks.feminine && q.form.marks.plural ? '; ' : ''}${q.form.marks.plural ? 'the pl. mark (an acute in Gajewski) is the plural' : ''}.`}`;
       default: return `${wordLink(q.word.key)} — ${q.target.map((n) => cap(n)).join(' · ')} — <i>${esc(shortGloss(q.word.def, 2))}</i>.`;
     }
   }
