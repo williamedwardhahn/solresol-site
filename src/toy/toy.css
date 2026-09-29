@@ -1,113 +1,170 @@
-/* The toy — a calm, luminous room where seven notes glow and sing.
-   Beauty is the goal; elegance is the restraint that gets there —
-   warm light, generous space, nothing gratuitous. */
+/* The toy — seven keys on a sheet of engraving paper. The same book as the
+   app (src/styles/base.css): paper, iron-gall ink, hairline staff rules;
+   the seven note colours are the only bright things, so every splash of
+   colour is a note you just played. Joy by touch, not by decoration. */
+
+:root {
+  --paper:        #f4ecd6;
+  --paper-raised: #faf5e6;
+  --ink:          #221b14;
+  --ink-2:        #4b4034;
+  --ink-3:        #76685a;
+  --rule:         #cbbb98;
+  --rubric:       #9c2a1c;
+  --display: 'IM Fell English', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --sc:      'IM Fell English SC', 'IM Fell English', 'Palatino Linotype', Georgia, serif;
+  --text:    'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  color-scheme: light;
+}
 
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; background: #08090d; overflow: hidden; }
+html, body { margin: 0; height: 100%; background: var(--paper); overflow: hidden; }
 body {
-  font: 16px/1.4 ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font: 16px/1.4 var(--text);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
   touch-action: none;
-  color: #fff;
+  color: var(--ink);
 }
 
 .toy-surface {
   position: fixed; inset: 0;
   display: grid; place-items: center;
-  background:
-    radial-gradient(130% 110% at 50% -10%, #1c2130 0%, #0c0e15 52%, #07080c 100%);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 250, 235, .75), transparent 60%),
+    radial-gradient(140% 120% at 50% 115%, rgba(150, 120, 70, .18), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-/* a faint vignette for depth */
-.toy-surface::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 100% at 50% 45%, transparent 55%, rgba(0,0,0,0.45) 100%);
+/* the plate: a double hairline frame, as round a figure in an old book */
+.toy-surface::before {
+  content: ""; position: absolute; pointer-events: none;
+  inset: clamp(10px, 2.2vw, 22px);
+  border: 1px solid var(--ink-2);
+  outline: 1px solid var(--ink-2); outline-offset: -6px;
 }
 
-/* a soft wash that warms to the last note's colour */
+/* a watercolour wash that blooms in the last note's colour */
 .toy-glow {
   position: absolute; inset: 0;
   opacity: 0; transition: opacity 1.1s ease, background 0.7s ease;
   pointer-events: none; filter: blur(30px);
 }
 
+/* the staff: five hairlines running behind the keys */
+.toy-staff {
+  position: absolute; left: clamp(10px, 2.2vw, 22px); right: clamp(10px, 2.2vw, 22px);
+  top: 50%; height: min(22vh, 150px); transform: translateY(-50%);
+  pointer-events: none;
+  --l: linear-gradient(var(--ink-3), var(--ink-3));
+  background:
+    var(--l) 0 0 / 100% 1px no-repeat, var(--l) 0 25% / 100% 1px no-repeat,
+    var(--l) 0 50% / 100% 1px no-repeat, var(--l) 0 75% / 100% 1px no-repeat,
+    var(--l) 0 100% / 100% 1px no-repeat;
+  opacity: .55;
+}
+
 .toy-keys {
   position: relative; z-index: 1;
-  display: flex; gap: clamp(10px, 1.8vw, 22px);
-  width: min(94vw, 880px); height: min(64vh, 540px);
+  display: flex; gap: clamp(8px, 1.8vw, 22px);
+  width: min(88vw, 860px); height: min(62vh, 520px);
 }
 
 .toy-key {
   --c: #888; --peak: 1.06; --glow: 60px;
-  flex: 1; height: 100%;
-  border: none; border-radius: clamp(16px, 2.4vw, 30px);
+  flex: 1; min-width: 0; height: 100%;
+  border: none; border-radius: 4px 4px clamp(10px, 1.6vw, 18px) clamp(10px, 1.6vw, 18px);
   cursor: pointer; position: relative; overflow: visible;
-  color: rgba(255,255,255,0.92);
-  /* luminous, faintly glassy colour field */
+  color: #fffdf6;
+  font: inherit;
+  /* a slab of pigment with the light of the page on its top edge */
   background:
-    linear-gradient(158deg,
-      color-mix(in srgb, var(--c) 74%, white 26%) 0%,
-      var(--c) 46%,
-      color-mix(in srgb, var(--c) 88%, black 12%) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, .10)),
+    var(--c);
   box-shadow:
-    inset 0 2px 1px rgba(255,255,255,0.30),
-    inset 0 -34px 60px -30px rgba(0,0,0,0.45),
-    0 22px 50px -18px rgba(0,0,0,0.65),
-    0 0 34px -10px var(--c);                 /* a gentle resting halo — alive, not flat */
+    inset 0 1px 0 rgba(255, 255, 255, .45),
+    inset 0 -10px 0 rgba(0, 0, 0, .16),
+    0 4px 0 rgba(34, 27, 20, .55),
+    0 22px 32px -18px rgba(34, 27, 20, .55);
   transition:
     transform 0.55s cubic-bezier(.2, 1.35, .35, 1),   /* soft spring */
-    filter 0.35s ease, box-shadow 0.4s ease;
+    filter 0.35s ease, box-shadow 0.35s ease;
   will-change: transform, filter;
+  -webkit-tap-highlight-color: transparent;
 }
-/* slow luminous breath so the keys feel alive at rest */
+.toy-key--light { color: var(--ink); }
+.toy-key:focus-visible { outline: 2px solid var(--rubric); outline-offset: 4px; }
+
+/* a slow breath of the key's own colour on the paper, so it feels alive */
 .toy-key::after {
-  content: ""; position: absolute; inset: -1px; border-radius: inherit;
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
   opacity: 0; pointer-events: none;
-  box-shadow: 0 0 40px -8px var(--c);
+  box-shadow: 0 14px 40px -10px var(--c);
   animation: toy-breathe 5.5s ease-in-out infinite;
   animation-delay: var(--brk, 0s);
 }
 @keyframes toy-breathe {
-  0%, 100% { opacity: 0.10; }
-  50%      { opacity: 0.34; }
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 0.7; }
 }
 
 .toy-key--on {
-  transform: scale(var(--peak)) translateY(-1.5%);
-  filter: brightness(1.22) saturate(1.08);
+  transform: scale(var(--peak)) translateY(-2%);
+  filter: brightness(1.08) saturate(1.1);
   box-shadow:
-    inset 0 2px 1px rgba(255,255,255,0.40),
-    0 26px 60px -20px rgba(0,0,0,0.6),
-    0 0 var(--glow) -4px var(--c),
-    0 0 calc(var(--glow) * 2) -20px var(--c);   /* deep, soft bloom */
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    inset 0 -6px 0 rgba(0, 0, 0, .14),
+    0 2px 0 rgba(34, 27, 20, .45),
+    0 0 0 3px var(--paper-raised),
+    0 0 0 4px var(--ink-2),
+    0 0 var(--glow) -6px var(--c),
+    0 0 calc(var(--glow) * 2) -18px var(--c);   /* colour bleeding into the paper */
   z-index: 2;
 }
 
 .toy-label {
-  position: absolute; left: 0; right: 0; bottom: 7%;
+  position: absolute; left: 0; right: 0; bottom: 6%;
+  display: flex; flex-direction: column; align-items: center; gap: .1em;
   text-align: center; pointer-events: none;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.35);
 }
+.toy-key:not(.toy-key--light) .toy-label { text-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
 .toy-note {
-  display: block; font-weight: 700; font-size: clamp(0.95rem, 2.4vw, 1.5rem);
-  letter-spacing: 0.01em; opacity: 0.92;
+  font-family: var(--display); font-size: clamp(1.05rem, 3.4vw, 2rem); line-height: 1.05;
+}
+.toy-num {
+  font-family: var(--text); font-size: clamp(.8rem, 1.8vw, 1.05rem);
+  font-variant-numeric: oldstyle-nums; opacity: .85;
 }
 .toy-key-hint {
-  display: block; font-size: clamp(0.6rem, 1.3vw, 0.78rem);
-  letter-spacing: 0.22em; opacity: 0.42; margin-top: 0.15em;
+  font-family: var(--sc); font-size: clamp(.62rem, 1.3vw, .82rem);
+  letter-spacing: .12em; opacity: .7;
+  border-top: 1px solid currentColor; padding-top: .2em; margin-top: .15em; min-width: 1.6em;
 }
 
-/* a ring of light blooming out of the point of contact */
+/* a ring of colour blooming out of the point of contact */
 .toy-ripple {
   position: absolute; left: 50%; top: 42%;
   width: 46%; aspect-ratio: 1; margin-left: -23%;
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--c) 60%, white) 0%, transparent 62%);
-  transform: scale(0.2); opacity: 0.55;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c) 45%, white) 0%, transparent 62%);
+  transform: scale(0.2); opacity: 0.6;
   animation: toy-ripple 0.8s ease-out forwards;
   pointer-events: none; mix-blend-mode: screen;
 }
 @keyframes toy-ripple { to { transform: scale(2.6); opacity: 0; } }
+
+@media (max-width: 520px) {
+  .toy-keys { width: calc(100vw - 44px); gap: 5px; height: min(58vh, 480px); }
+  .toy-key-hint { display: none; }   /* no keyboard on a phone */
+  /* narrow keys stand close: keep the bloom from muddying the neighbours */
+  .toy-key--on {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 -6px 0 rgba(0, 0, 0, .14),
+      0 0 0 2px var(--paper-raised), 0 0 0 3px var(--ink-2),
+      0 18px 40px -14px var(--c);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .toy-key { transition: filter 0.2s, box-shadow 0.2s; }

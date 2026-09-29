@@ -4,19 +4,41 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Not here — Solresol</title>
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#f4ecd6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" />
   <style>
-    body { margin:0; min-height:100vh; display:grid; place-content:center; gap:1rem;
-           text-align:center; background:#0e0f13; color:#e7e9ee;
-           font:16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; }
-    h1 { margin:0; font-size:2rem; font-weight:700; letter-spacing:-0.02em; }
-    p  { margin:0; color:#9aa0ab; }
-    a  { color:#43aa8b; }
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px 16px;
+           text-align:center; color:#221b14; background:#f4ecd6;
+           background-image: radial-gradient(120% 90% at 50% 0%, rgba(255,250,235,.7), transparent 60%),
+                             radial-gradient(140% 120% at 50% 110%, rgba(150,120,70,.14), transparent 55%);
+           font:18px/1.6 Newsreader, "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+    main { max-width:34rem; width:100%; padding:clamp(24px,6vw,44px) clamp(18px,5vw,40px);
+           background:#faf5e6; border:1px solid #4b4034; outline:1px solid #4b4034; outline-offset:4px;
+           box-shadow:0 1px 0 rgba(34,27,20,.06), 0 10px 28px -14px rgba(34,27,20,.35); }
+    .no { font:15px/1 "IM Fell English SC", "IM Fell English", Georgia, serif; letter-spacing:.14em;
+          color:#9c2a1c; margin:0 0 12px; }
+    h1 { margin:0; font:400 clamp(1.8rem,6vw,2.5rem)/1.1 "IM Fell English", "Iowan Old Style",
+         "Palatino Linotype", Georgia, serif; text-wrap:balance; }
+    .staff { display:flex; gap:4px; justify-content:center; align-items:center; margin:18px auto; max-width:240px; }
+    .staff::before, .staff::after { content:""; flex:1; height:1px; background:#4b4034; }
+    .staff i { width:12px; height:12px; border-radius:2px; }
+    p  { margin:0; color:#4b4034; font-style:italic; }
+    a  { color:#9c2a1c; text-decoration-thickness:1px; text-underline-offset:3px; font-style:normal; }
+    a:hover { color:#221b14; }
   </style>
 </head>
 <body>
-  <h1>No word travels this path</h1>
-  <p>That page is not in the book. <a id="home" href="/">Go back to the language</a>.</p>
+  <main>
+    <div class="no">Page 404</div>
+    <h1>No word travels this path</h1>
+    <div class="staff" aria-hidden="true"><i style="background:#e63946"></i><i style="background:#f3722c"></i><i style="background:#f9c74f"></i><i style="background:#43aa8b"></i><i style="background:#277da1"></i><i style="background:#4d5198"></i><i style="background:#7b2cbf"></i></div>
+    <p>That page is not in the book. <a id="home" href="/">Go back to the language</a>.</p>
+  </main>
   <script>
     // Pages serves this page at whatever path was asked for. On a project
     // site (user.github.io/repo/) the root is /repo/, not /.

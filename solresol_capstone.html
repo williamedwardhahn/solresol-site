@@ -4,80 +4,114 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solresol — a language you can see, hear, and grow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
 <style>
+  /* The treatise look of the Solresol app (src/styles/base.css), inlined so
+     this note stands alone: paper, iron-gall ink, rubric red, hairline rules.
+     The seven notes are the only saturated colours on the page. */
   :root{
-    --bg:#0a0810; --panel:#141019; --panel2:#100c17; --line:#271f33; --line2:#372c48;
-    --ink:#efe9f6; --mut:#a99fc0; --dim:#726889;
-    --do:#e63946; --re:#f3722c; --mi:#f9c74f; --fa:#43aa8b; --sol:#3d8fd1; --la:#6a6bd0; --si:#a24be0;
-    --glow:#b98cff; --good:#5bd1a0; --bad:#e8746b;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --paper:#f4ecd6; --paper-raised:#faf5e6; --paper-sunk:#ebe0c3;
+    --ink:#221b14; --ink-2:#4b4034; --ink-3:#76685a;
+    --rule:#cbbb98; --rule-soft:#ddd0b2; --rubric:#9c2a1c;
+    --do:#e63946; --re:#f3722c; --mi:#f9c74f; --fa:#43aa8b; --sol:#277da1; --la:#4d5198; --si:#7b2cbf;
+    --display:'IM Fell English','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+    --sc:'IM Fell English SC','IM Fell English','Palatino Linotype',Georgia,serif;
+    --text:'Newsreader','Iowan Old Style','Palatino Linotype',Georgia,serif;
+    --shadow:0 1px 0 rgba(34,27,20,.06),0 10px 28px -14px rgba(34,27,20,.35);
+    --home-measure:720px;   /* the build's way-home bar lines up with this column */
+    color-scheme:light;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:
-      radial-gradient(1100px 560px at 50% -10%, #1b1430 0%, rgba(27,20,48,0) 62%), var(--bg);
-    color:var(--ink);font-family:var(--sans);line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .wrap{max-width:760px;margin:0 auto;padding:56px 22px 100px}
-  .band{max-width:960px;margin:0 auto;padding:0 22px}
-  .eyebrow{font-family:var(--mono);font-size:.71rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
-  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,6.4vw,3.8rem);line-height:1.02;
-     letter-spacing:-.015em;margin:.3em 0 .35em;text-wrap:balance}
-  h1 em{font-style:italic;color:var(--glow)}
-  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,3.6vw,2rem);letter-spacing:-.01em;
-     margin:0 0 .5em;text-wrap:balance}
-  .spectrum{height:5px;border-radius:3px;margin:30px 0 6px;
-     background:linear-gradient(90deg,var(--do),var(--re),var(--mi),var(--fa),var(--sol),var(--la),var(--si))}
-  .lede{font-size:1.18rem;color:var(--mut)}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;color:var(--ink);font:400 18px/1.62 var(--text);font-optical-sizing:auto;
+    font-variant-numeric:oldstyle-nums;background-color:var(--paper);
+    background-image:
+      radial-gradient(120% 90% at 50% 0%,rgba(255,250,235,.7),transparent 60%),
+      radial-gradient(140% 120% at 50% 110%,rgba(150,120,70,.14),transparent 55%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-attachment:fixed;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:rgba(156,42,28,.18)}
+  :focus-visible{outline:2px solid var(--rubric);outline-offset:3px;border-radius:2px}
+  .wrap{max-width:720px;margin:0 auto;padding:52px clamp(16px,4vw,32px) 90px}
+
+  /* title page */
+  .eyebrow{font-family:var(--sc);font-size:.95rem;letter-spacing:.14em;color:var(--rubric);text-align:center}
+  h1{font-family:var(--display);font-weight:400;font-size:clamp(2.2rem,6.6vw,3.6rem);line-height:1.05;
+     margin:.25em 0 .2em;text-align:center;text-wrap:balance}
+  h1 em{font-style:italic}
+  /* the seven notes as a staff of colour under the title */
+  .spectrum{display:flex;gap:5px;justify-content:center;margin:22px auto 28px;max-width:280px;position:relative}
+  .spectrum::before,.spectrum::after{content:"";flex:1;height:1px;background:var(--ink-2);align-self:center}
+  .spectrum i{width:14px;height:14px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+  .lede{font-size:1.14rem;color:var(--ink-2);margin:0 auto}
+  .lede::first-letter{font-family:var(--display);float:left;font-size:3.4em;line-height:.82;
+     padding:.06em .08em 0 0;color:var(--rubric)}
   p{margin:0 0 1.05em}
-  section{margin-top:58px}
-  .num{font-family:var(--serif);font-style:italic;color:var(--glow)}
-  strong{color:#fff;font-weight:600}
-  em.k{font-style:normal;font-family:var(--mono);font-size:.9em;color:var(--la);letter-spacing:.02em}
-  a{color:var(--glow);text-decoration:none;border-bottom:1px solid #ffffff22}
+  section{margin-top:54px;border-top:1px solid var(--rule);padding-top:26px;position:relative}
+  section::before{content:"";position:absolute;top:3px;left:0;right:0;border-top:1px solid var(--rule-soft)}
+  h2{font-family:var(--display);font-weight:400;font-size:clamp(1.55rem,3.8vw,2.05rem);line-height:1.1;
+     margin:0 0 .55em;text-wrap:balance}
+  h2 .no{display:block;font-family:var(--sc);font-size:.9rem;letter-spacing:.14em;color:var(--rubric);margin-bottom:4px}
+  strong{font-weight:600}
+  em.k{font-style:italic;font-family:var(--display);font-size:1.05em;color:var(--ink)}
+  .mono{font-family:var(--display);font-style:italic}
+  a{color:var(--rubric);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{color:var(--ink)}
 
-  /* results table */
-  .tbl{width:100%;border-collapse:collapse;font-size:.95rem;margin:6px 0 4px}
-  .tbl th,.tbl td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
-  .tbl th{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:500}
-  .tbl td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
-  .tbl tr td:first-child{color:var(--ink)}
-  .win{color:var(--good)} .loss{color:var(--bad)}
-  .cap{font-size:.85rem;color:var(--dim);margin-top:8px}
+  /* results: a printed table between heavy rules */
+  .table-wrap{overflow-x:auto;margin:10px 0 4px;-webkit-overflow-scrolling:touch}
+  .tbl{width:100%;border-collapse:collapse;font-size:.98rem;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+  .tbl th,.tbl td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--rule-soft);vertical-align:baseline}
+  .tbl th{font-family:var(--sc);font-size:.9rem;letter-spacing:.08em;color:var(--ink-3);font-weight:400;border-bottom:1px solid var(--ink-2)}
+  .tbl td.n{text-align:right;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+  .tbl td.n .cap{display:block;white-space:normal;margin:0}
+  .tbl tr:last-child td{border-bottom:0}
+  .win{font-weight:600;color:var(--ink)} .win::before{content:"▲ ";font-size:.7em;color:var(--ink-3)}
+  .loss{font-weight:600;color:var(--rubric)} .loss::before{content:"▼ ";font-size:.7em}
+  .cap{font-size:.88rem;color:var(--ink-3);font-style:italic;margin-top:8px}
 
-  /* frontier two-col */
-  .frontier{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  /* the frontier: two plates */
+  .frontier{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:14px 5px 6px}
   @media(max-width:620px){.frontier{grid-template-columns:1fr}}
-  .col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 20px 8px}
-  .col.w{border-color:#2b5c47} .col.l{border-color:#5c2f2c}
-  .col h3{margin:0 0 12px;font-size:.95rem;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
-  .col.w h3{color:var(--good)} .col.l h3{color:var(--bad)}
+  .col{background:var(--paper-raised);border:1px solid var(--ink-2);outline:1px solid var(--ink-2);outline-offset:4px;
+     padding:20px 20px 6px;box-shadow:var(--shadow)}
+  .col h3{margin:0 0 12px;font-family:var(--sc);font-weight:400;font-size:1.05rem;letter-spacing:.1em;
+     padding-bottom:8px;border-bottom:1px solid var(--rule)}
+  .col.w h3{color:var(--ink)} .col.l h3{color:var(--rubric)}
   .col ul{margin:0;padding:0;list-style:none}
-  .col li{padding:0 0 14px 22px;position:relative;font-size:.96rem;color:var(--mut)}
+  .col li{padding:0 0 14px 22px;position:relative;font-size:.98rem;color:var(--ink-2)}
   .col li b{color:var(--ink);font-weight:600}
-  .col.w li:before{content:"▲";position:absolute;left:0;color:var(--good);font-size:.7rem;top:.35em}
-  .col.l li:before{content:"▼";position:absolute;left:0;color:var(--bad);font-size:.7rem;top:.35em}
+  .col.w li:before{content:"▲";position:absolute;left:0;color:var(--ink-2);font-size:.66rem;top:.5em}
+  .col.l li:before{content:"▼";position:absolute;left:0;color:var(--rubric);font-size:.66rem;top:.5em}
 
-  /* defect->asset */
-  .flip{border-left:2px solid var(--line2);padding:2px 0 2px 20px;margin:0 0 16px}
-  .flip .d{color:var(--mut)} .flip .a{color:var(--ink)}
-  .flip .a b{color:var(--glow);font-weight:600}
+  /* defect → asset: a marginal rule */
+  .flip{border-left:1px solid var(--ink-2);padding:2px 0 2px 18px;margin:0 0 18px}
+  .flip .d{color:var(--ink-3);font-style:italic} .flip .a{color:var(--ink)}
+  .flip .a b{font-weight:600}
 
-  blockquote{margin:26px 0;padding:2px 0 2px 22px;border-left:3px solid var(--glow);
-     font-family:var(--serif);font-size:1.22rem;font-style:italic;color:#e7dffb}
-  .cta{display:inline-block;margin-top:10px;background:linear-gradient(180deg,#7b48c9,#5b34a0);
-     border:1px solid #8b5fd6;border-radius:11px;padding:12px 22px;color:#fff;font-weight:600;font-family:var(--sans)}
-  footer{margin-top:70px;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line);padding-top:22px}
+  blockquote{margin:30px 0;padding:18px 8px;border-top:1px solid var(--ink-2);border-bottom:1px solid var(--ink-2);
+     font-family:var(--display);font-size:clamp(1.3rem,3.4vw,1.6rem);line-height:1.3;font-style:italic;text-align:center;color:var(--ink)}
+  .cta{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-family:var(--sc);font-size:1.05rem;letter-spacing:.04em;
+     line-height:1.2;padding:11px 18px 12px;min-height:44px;color:var(--paper-raised);background:var(--ink);text-decoration:none;
+     border:1px solid var(--ink);border-radius:4px;box-shadow:0 2px 0 #000;transition:transform .12s,box-shadow .12s}
+  .cta:hover{color:var(--paper-raised);background:#3a2f24}
+  .cta:active{transform:translateY(2px);box-shadow:0 0 0 #000}
+  footer{margin-top:64px;color:var(--ink-3);font-size:.9rem;font-style:italic;border-top:2px solid var(--ink);
+     padding-top:18px;text-align:center;position:relative}
+  footer::before{content:"❧";display:block;font-style:normal;color:var(--rubric);font-size:1.2rem;margin-bottom:6px}
+  @media(max-width:480px){body{font-size:17px}.tbl{font-size:.92rem}.tbl th,.tbl td{padding:9px 6px}}
 </style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
   <meta name="description" content="An honest field report: what a structured seven-symbol meaning code wins, what it loses, and what it is actually for." />
-  <meta name="theme-color" content="#0e0f13" />
+  <meta name="theme-color" content="#f4ecd6" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Solresol" />
   <meta property="og:title" content="A language you can see, hear, and grow — Solresol" />
   <meta property="og:description" content="An honest field report: what a structured seven-symbol meaning code wins, what it loses, and what it is actually for." />
   <meta name="twitter:card" content="summary" />
-  <style>.solresol-home{font:600 13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#9aa0ab;text-decoration:none;padding:7px 12px;border:1px solid rgba(154,160,171,.35);border-radius:999px;background:rgba(14,15,19,.72);display:inline-block}.solresol-home:hover,.solresol-home:focus-visible{color:#e7e9ee;border-color:#9aa0ab}.solresol-home-bar{padding:14px 16px 0;max-width:1100px;margin:0 auto}.solresol-home-float{position:fixed;top:14px;left:14px;z-index:10}</style>
+  <style>.solresol-home{font:400 15px/1 'IM Fell English SC','IM Fell English','Palatino Linotype',Palatino,Georgia,serif;letter-spacing:.08em;color:#4b4034;text-decoration:none;display:inline-flex;align-items:center;gap:.4em;min-height:36px;padding:8px 12px 9px;border:1px solid #cbbb98;border-radius:3px;background:rgba(250,245,230,.92)}.solresol-home:hover,.solresol-home:focus-visible{color:#9c2a1c;border-color:#4b4034}.solresol-home:focus-visible{outline:2px solid #9c2a1c;outline-offset:3px}.solresol-home-bar{max-width:var(--home-measure,900px);margin:0 auto;padding:14px clamp(16px,4vw,32px) 0}.solresol-home-bar .solresol-home{border:0;border-bottom:1px solid #cbbb98;border-radius:0;background:none;padding:8px 2px 7px}.solresol-home-bar .solresol-home:hover{border-bottom-color:#9c2a1c}.solresol-home-float{position:fixed;z-index:10;top:max(calc(clamp(10px,2.2vw,22px) + 14px),env(safe-area-inset-top));left:calc(clamp(10px,2.2vw,22px) + 14px)}</style>
 </head>
 <body>
 <div class="solresol-home-bar"><a class="solresol-home" href="./index.html">← Solresol</a></div>
@@ -86,14 +120,14 @@
 <div class="wrap">
   <div class="eyebrow">A research note · Solresol</div>
   <h1>A language you can <em>see</em>, <em>hear</em>, and <em>grow</em></h1>
-  <div class="spectrum"></div>
+  <div class="spectrum" aria-hidden="true"><i style="background:var(--do)"></i><i style="background:var(--re)"></i><i style="background:var(--mi)"></i><i style="background:var(--fa)"></i><i style="background:var(--sol)"></i><i style="background:var(--la)"></i><i style="background:var(--si)"></i></div>
   <p class="lede">A nearly 200-year-old idea — seven syllables that are also seven notes and seven colours —
     rebuilt as a shared <strong>meaning space</strong>: one structured code an LLM can reason in, a
     person can perceive, and agents can invent for themselves. This is the honest field report —
     what won, what lost, and what the evidence says it's actually for.</p>
 
   <section>
-    <h2>The bet</h2>
+    <h2><span class="no">I</span>The bet</h2>
     <p>Natural language ties meaning to form <em>arbitrarily</em> — <span class="mono">cat</span>,
       <span class="mono">cats</span>, and <span class="mono">feline</span> are unrelated symbols a
       model must memorise. The bet here is the opposite: make the <strong>form encode the
@@ -107,10 +141,10 @@
   </section>
 
   <section>
-    <h2>What the evidence says</h2>
+    <h2><span class="no">II</span>What the evidence says</h2>
     <p>Every number below is from a run that's in the repo, most of it trained from scratch on a
       laptop in seconds.</p>
-    <table class="tbl">
+    <div class="table-wrap"><table class="tbl">
       <tr><th>question</th><th>structured code</th><th>the alternative</th></tr>
       <tr><td>Generalise to <b>unseen</b> concepts?</td>
           <td class="n win">1.00</td><td class="n">0.00 <span class="cap">(arbitrary / hash)</span></td></tr>
@@ -120,7 +154,7 @@
           <td class="n win">0.92</td><td class="n">0.17 <span class="cap">(chance)</span></td></tr>
       <tr><td>Beat a hash embedding at <b>topic classification</b>?</td>
           <td class="n loss">0.623</td><td class="n">0.748 <span class="cap">(BERT-Hash)</span></td></tr>
-    </table>
+    </table></div>
     <p class="cap">Learnability &amp; robustness: a tiny transformer, structured vs arbitrary codes.
       Self-play: a discrimination game with a population of agents, zero-shot on held-out meanings.
       Classification: 20-Newsgroups, structured 448 params vs hash 262K vs a full table 1.5M.</p>
@@ -132,7 +166,7 @@
   </section>
 
   <section>
-    <h2>The frontier, drawn by data</h2>
+    <h2><span class="no">III</span>The frontier, drawn by data</h2>
     <div class="frontier">
       <div class="col w">
         <h3>Where structure wins</h3>
@@ -169,7 +203,7 @@
   </section>
 
   <section>
-    <h2>Turning the defects into the spec</h2>
+    <h2><span class="no">IV</span>Turning the defects into the spec</h2>
     <p>Grace Hopper kept a nanosecond of wire on her desk to make a limit teach something. Read the
       "weaknesses" that way and they name the mission:</p>
     <div class="flip"><div class="d">A code with no out-of-vocabulary fallback…</div>
@@ -183,7 +217,7 @@
   </section>
 
   <section>
-    <h2>Where it goes</h2>
+    <h2><span class="no">V</span>Where it goes</h2>
     <p>One shared meaning space; an LLM as the reasoner that reads and writes it; and a renderer for
       each party — sound and colour for people, the code itself for machines, a transposed signal for
       other species. The self-play result is the engine: a language that <strong>generates its own

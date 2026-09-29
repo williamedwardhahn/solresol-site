@@ -1,0 +1,68 @@
+/* The word panel: a leaf that slides in from the right edge of the book,
+   or up from the bottom on a phone. */
+
+.panel { position: fixed; inset: 0; z-index: 50; }
+.panel-scrim { position: absolute; inset: 0; background: rgba(34, 27, 20, .28); animation: fade .25s ease both; }
+@keyframes fade { from { opacity: 0; } }
+.panel-sheet {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(560px, 100%);
+  overflow-y: auto; overscroll-behavior: contain;
+  background: var(--paper-raised);
+  border-left: 3px double var(--ink-2);
+  box-shadow: -24px 0 50px -30px rgba(34, 27, 20, .7);
+  padding: 30px clamp(18px, 4vw, 36px) 40px;
+  animation: slide-in .38s var(--ease) both;
+}
+@keyframes slide-in { from { transform: translateX(40px); opacity: 0; } }
+.panel-close {
+  position: sticky; top: 0; float: right; margin: -14px -10px 0 0;
+  width: 40px; height: 40px; border: 1px solid var(--rule); border-radius: 50%;
+  background: var(--paper-raised); font-size: 1.5rem; line-height: 1; color: var(--ink-2);
+}
+.panel-close:hover { border-color: var(--ink-2); color: var(--ink); }
+
+.panel-family { font-family: var(--sc); letter-spacing: .1em; color: var(--rubric); font-size: .92rem; margin: 0 0 2px; }
+.panel-word { font-size: clamp(2.6rem, 8vw, 3.6rem); line-height: 1.05; margin: 0 0 6px; overflow-wrap: anywhere; }
+.panel-meaning { font-size: 1.2rem; color: var(--ink-2); margin: 0 0 4px; }
+.panel-role { color: var(--ink-3); font-style: italic; margin: 0 0 14px; }
+.panel-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+.panel-section { border-top: 1px solid var(--rule); padding-top: 16px; margin-top: 20px; }
+.panel-section .choir { justify-content: start; }
+.panel-staff { overflow-x: auto; }
+.panel-staff svg { height: 96px; width: auto; }
+
+.forms { display: flex; flex-wrap: wrap; gap: 8px; }
+.forms--marks { margin-top: 10px; }
+.form {
+  display: grid; justify-items: start; gap: 0; text-align: left;
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); padding: 6px 12px 7px;
+}
+.form b { font-family: var(--display); font-weight: 400; font-size: 1.25rem; }
+.form span { font-family: var(--sc); font-size: .78rem; letter-spacing: .06em; color: var(--ink-3); }
+.form:hover { border-color: var(--ink-2); }
+.form.is-on { border-color: var(--rubric); background: rgba(156, 42, 28, .06); }
+.form.is-on span { color: var(--rubric); }
+.form--mark b { font-size: 1.4rem; line-height: .9; }
+
+.mirror-link {
+  display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 12px; width: 100%;
+  text-align: left; background: transparent; border: 1px dashed var(--rule); border-radius: var(--radius); padding: 10px 12px;
+}
+.mirror-link:hover { border-style: solid; border-color: var(--ink-2); }
+.mirror-link b { font-family: var(--display); font-weight: 400; font-size: 1.3rem; }
+.mirror-link span:last-child { color: var(--ink-2); font-style: italic; }
+
+.propose { display: flex; gap: 10px; align-items: end; }
+.propose input { flex: 1; font: 1.1rem var(--text); background: transparent; border: 0; border-bottom: 1.5px solid var(--ink-2); padding: 6px 2px; }
+.propose input:focus { outline: none; border-bottom-color: var(--rubric); }
+
+body.has-panel { overflow: hidden; }
+
+@media (max-width: 640px) {
+  .panel-sheet {
+    top: auto; left: 0; width: 100%; max-height: 90vh;
+    border-left: 0; border-top: 3px double var(--ink-2); border-radius: 12px 12px 0 0;
+    animation-name: sheet-up;
+  }
+  @keyframes sheet-up { from { transform: translateY(60px); opacity: 0; } }
+}

@@ -1,14 +1,21 @@
 import { loadDictionary, wordCount } from './dictionary/dictionary.js';
 import { Word } from './lang/word.js';
+import { Phrase } from './lang/phrase.js';
 import { createMemory } from './memory/memory.js';
-import { emit } from './live/bus.js';
+import { emit, on } from './live/bus.js';
+import { setTimbre } from './voices/index.js';
+import { createState } from './site/state.js';
+import { createRouter } from './site/router.js';
 import { renderSite } from './site/site.js';
 
-// Load the one book of truth, build the shared kernel, render the cards.
+// Load the one book of truth, build the shared kernel, bind the book.
 await loadDictionary();
 
-const word = Word();               // the one live building-word
+const word = Word();               // the one live building-word (the instrument)
+const sentence = Phrase();         // the sentence being said, shared by every chapter
 const memory = createMemory();     // listens on the bus for word:used
+const state = createState();       // prefs, stars, recent, saved sentences, own meanings
+const { route, go } = createRouter();
 
 // Commit the building word into the sentence, then clear it.
 function commit() {
@@ -17,12 +24,26 @@ function commit() {
   word.clear();
 }
 
-// ctx is the shared kernel every card connects through.
-const ctx = { word, memory, commit };
+// Words reach the sentence from anywhere: the instrument, a panel, a phrase.
+const addToSentence = (notes) => {
+  if (!notes || !notes.length) return;
+  sentence.add(Word(notes));
+  emit('word:used', { key: notes.join(''), channel: 'sentence' });
+};
+on('word:commit', addToSentence);
+on('sentence:add', addToSentence);
 
-// Keep the teardown handle: every card returns a working destroy(), so the
-// whole site can be cleanly unmounted (no leaked watchers/listeners).
-const site = renderSite(document.getElementById('site'), ctx);
-window.__solresol = { ctx, site };   // handle for debugging / future re-render
+state.prefs.watch((p) => setTimbre(p.timbre));
 
-document.getElementById('count').textContent = wordCount().toLocaleString();
+// ctx is the shared kernel every chapter connects through:
+//   word      the live building-word          sentence  the live Phrase being said
+//   memory    strength and decay per word     state     prefs · stars · recent · saved · meanings
+//   route     where we are (live)             go(path)  move there ('dictionary/families')
+//   commit()  building-word → sentence        openWord(text | notes)  show a word's own page
+const ctx = { word, sentence, memory, state, route, go, commit, openWord: () => {} };
+
+const standalone = !!window.__SOLRESOL_STANDALONE;
+const site = renderSite(document.getElementById('site'), ctx, { standalone });
+window.__solresol = { ctx, site };   // handle for debugging and the QC harness
+
+site.colophon.querySelector('[data-count]').textContent = wordCount().toLocaleString();

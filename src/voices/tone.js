@@ -9,15 +9,20 @@ import { schedule } from '../compose/sentence.model.js';
 let audioCtx;
 const audio = () => (audioCtx ||= new (window.AudioContext || window.webkitAudioContext)());
 
+// The instrument's colour of sound — sine, triangle, sawtooth or square.
+let timbre = 'triangle';
+export const TIMBRES = ['sine', 'triangle', 'sawtooth', 'square'];
+export function setTimbre(t) { if (TIMBRES.includes(t)) timbre = t; }
+
 export function playNote(name, when = 0, dur = 0.5) {
   const ac = audio();
   const t = ac.currentTime + when;
   const osc = ac.createOscillator();
   const gain = ac.createGain();
-  osc.type = 'sine';
+  osc.type = timbre;
   osc.frequency.value = note(name).freq;
   gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(0.28, t + 0.02);
+  gain.gain.exponentialRampToValueAtTime(timbre === 'sine' ? 0.28 : timbre === 'triangle' ? 0.24 : 0.09, t + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   osc.connect(gain).connect(ac.destination);
   osc.start(t);

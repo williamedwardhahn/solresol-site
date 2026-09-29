@@ -5,16 +5,20 @@ import { voiceOn } from './synth.js';
 // The toy — seven keys you mash to feel them respond. No meaning, no gate,
 // no score, nothing to fail. Touch, hold, sweep. It just sings back.
 
+const LIGHT_NOTES = new Set(['re', 'mi', 'fa']);
+
 export function mountToy(root) {
   root.classList.add('toy-surface');
-  root.innerHTML = `<div class="toy-glow"></div><div class="toy-keys"></div>`;
+  root.innerHTML = `<div class="toy-glow"></div><div class="toy-staff" aria-hidden="true"></div><div class="toy-keys"></div>`;
   const glow = root.querySelector('.toy-glow');
   const keysEl = root.querySelector('.toy-keys');
 
   const keyEls = {};
   for (const n of NOTES) {
     const el = document.createElement('button');
-    el.className = 'toy-key';
+    // pale pigments (re, mi, fa) carry ink lettering; the deep ones carry paper
+    el.className = 'toy-key' + (LIGHT_NOTES.has(n.name) ? ' toy-key--light' : '');
+    el.setAttribute('aria-label', cap(n.name));
     el.dataset.note = n.name;
     el.style.setProperty('--c', n.color);
     // low notes bloom bigger & glow more (weight); high notes lighter
@@ -25,6 +29,7 @@ export function mountToy(root) {
     el.innerHTML =
       `<span class="toy-label">` +
         `<span class="toy-note">${cap(n.name)}</span>` +
+        `<span class="toy-num">${n.num}</span>` +
         `<span class="toy-key-hint">${(keyForNote(n.name) || '').toUpperCase()}</span>` +
       `</span>`;
     keysEl.appendChild(el);
@@ -119,7 +124,7 @@ export function mountToy(root) {
   }
   let bleedT;
   function bleed(note) {
-    glow.style.background = `radial-gradient(60% 60% at 50% 60%, ${note.color}44, transparent 70%)`;
+    glow.style.background = `radial-gradient(60% 60% at 50% 60%, ${note.color}3a, transparent 70%)`;
     glow.style.opacity = '1';
     clearTimeout(bleedT);
     bleedT = setTimeout(() => { glow.style.opacity = '0'; }, 900);

@@ -1,0 +1,87 @@
+/* Solresol — the treatise, played.
+   A book of 1866 reprinted as an instrument: engraving paper, iron-gall
+   ink, rubric red for headings, hairline staff rules. The seven notes are
+   the only saturated things on the page, so colour always means a note. */
+
+:root {
+  /* paper and ink */
+  --paper:        #f4ecd6;
+  --paper-raised: #faf5e6;
+  --paper-sunk:   #ebe0c3;
+  --ink:          #221b14;
+  --ink-2:        #4b4034;
+  --ink-3:        #76685a;
+  --rule:         #cbbb98;
+  --rule-soft:    #ddd0b2;
+  --rubric:       #9c2a1c;   /* the red of printed headings */
+  --rubric-soft:  #c7584a;
+
+  /* the seven notes — canonical, and the only bright colours */
+  --do:  #e63946;
+  --re:  #f3722c;
+  --mi:  #f9c74f;
+  --fa:  #43aa8b;
+  --sol: #277da1;
+  --la:  #4d5198;
+  --si:  #7b2cbf;
+
+  /* type */
+  --display: 'IM Fell English', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --sc:      'IM Fell English SC', 'IM Fell English', 'Palatino Linotype', Georgia, serif;
+  --text:    'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+
+  /* measure */
+  --page: 1120px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --cell: 58px;
+  --gap: 8px;
+  --radius: 4px;
+
+  --shadow: 0 1px 0 rgba(34, 27, 20, .06), 0 10px 28px -14px rgba(34, 27, 20, .35);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font: 400 18px/1.6 var(--text);
+  font-optical-sizing: auto;
+  font-variant-numeric: oldstyle-nums;
+  background-color: var(--paper);
+  /* laid paper: a faint grain and a warmer edge, like an old sheet */
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 250, 235, .7), transparent 60%),
+    radial-gradient(140% 120% at 50% 110%, rgba(150, 120, 70, .14), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: rgba(156, 42, 28, .18); }
+
+a { color: var(--rubric); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--ink); }
+
+h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.1; margin: 0; }
+p { margin: 0 0 .9em; }
+em { font-style: italic; }
+b, strong { font-weight: 600; }
+
+button { font: inherit; color: inherit; }
+button:not(:disabled) { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; border-radius: 2px; }
+
+img { max-width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+}

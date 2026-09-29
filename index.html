@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Solresol — one word, many voices</title>
-  <meta name="description" content="Solresol: a language of light and sound that listens as well as speaks, remembers you, and teaches by being beautiful." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Solresol — the universal musical language</title>
+  <meta name="description" content="Solresol, Sudre's 1827 language of seven notes that are also seven colours, numbers and signs. Play it, look up any of its 3,152 words, translate, and learn." />
   
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" />
   <link rel="stylesheet" href="./src/styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
-  <meta name="theme-color" content="#0e0f13" />
+  <meta name="theme-color" content="#f4ecd6" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Solresol" />
   <meta property="og:title" content="Solresol — one word, many voices" />
@@ -16,35 +19,9 @@
   <meta name="twitter:card" content="summary" />
 </head>
 <body>
-  <header class="masthead">
-    <h1>Solresol</h1>
-    <p class="tagline">A language of light and sound — that listens, remembers, and teaches by being beautiful.</p>
-
-    <!-- data-site-nav: stripped from the single-file build, which travels alone. -->
-    <div class="intro" data-site-nav>
-      <p>In 1827 the composer François Sudre invented a language made of just seven syllables:
-        <b>do re mi fa sol la si</b>. Each one is also a note, a colour and a number, so the same
-        word can be sung, painted, typed or played. This is Solresol, rebuilt for the browser.
-        It has 3,152 words, can hear you and remembers what you learn.</p>
-      <a class="cta" href="#site">Build your first word ↓</a>
-      <nav class="sitenav" aria-label="Elsewhere on this site">
-        <a href="./toy.html">Toy — seven keys</a>
-        <a href="./maya.html">Maya — talk with colour</a>
-        <a href="./demos_interlingua.html">Interlingua demo</a>
-        <a href="./solresol_capstone.html">Research note</a>
-      </nav>
-    </div>
-    <!-- /data-site-nav -->
-  </header>
-
-  <!-- The whole site is a grid of connected cards, rendered from the registry. -->
-  <main id="site"></main>
-
-  <footer class="footer">
-    <span><b id="count">0</b> words · one truth</span>
-    <span>Canonical Solresol · Soli Deo Gloria</span>
-  </footer>
-
+  <div id="site">
+    <noscript><p style="padding:2rem;font:18px Georgia,serif">Solresol is an instrument you play in the browser; it needs JavaScript to sound.</p></noscript>
+  </div>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>

@@ -16,12 +16,15 @@ export function mountKeyboard(host, word, { onCommit } = {}) {
   for (const n of NOTES) {
     const key = document.createElement('button');
     key.className = 'key';
+    key.dataset.note = n.name;
+    key.setAttribute('aria-label', `${n.name}, ${n.num}`);
     key.style.setProperty('--key-color', n.color);
     key.innerHTML =
       `<span class="key-letter">${(keyForNote(n.name) || '').toUpperCase()}</span>` +
       `<span class="key-solfege">${cap(n.name)}</span>` +
       `<span class="key-num">${n.num}</span>`;
     key.addEventListener('click', () => strike(n.name));
+    key.addEventListener('mousedown', (e) => e.preventDefault());   // a clicked key doesn't steal Space
     host.appendChild(key);
     keyEls[n.name] = key;
   }
@@ -42,25 +45,41 @@ export function mountKeyboard(host, word, { onCommit } = {}) {
   function onKey(e) {
     if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
     if (isTyping(e.target)) return;                 // don't fight text fields
+    if (document.body.classList.contains('has-panel')) return;   // a word's page is open over us
 
     const letter = noteForKey(e.key);               // home row A S D F J K L
     if (letter) { e.preventDefault(); strike(letter); return; }
 
     const byNum = noteByNumber(e.key);              // 1–7 still work
-    if (byNum) { strike(byNum.name); return; }
+    if (byNum) { e.preventDefault(); strike(byNum.name); return; }
 
     if (e.key === 'Backspace') { e.preventDefault(); word.removeLast(); }
     else if (e.key === 'Escape') { word.clear(); }
-    else if (isCommitKey(e.key)) { e.preventDefault(); onCommit?.(); }
+    else if (isCommitKey(e.key)) {
+      if (isKeyboardFocused(e.target)) return;      // Space/Enter on a focused control presses it
+      e.preventDefault(); onCommit?.();
+    }
   }
   window.addEventListener('keydown', onKey);
 
   return {
+    strike,
     destroy() {
       window.removeEventListener('keydown', onKey);
       host.textContent = '';
     },
   };
+}
+
+// A control someone reached with Tab keeps its own Space/Enter; one that
+// was clicked with a pointer doesn't, so Space still finishes the word.
+let tabbed = false;
+if (typeof window !== 'undefined') {
+  window.addEventListener('keydown', (e) => { if (e.key === 'Tab') tabbed = true; }, true);
+  window.addEventListener('pointerdown', () => { tabbed = false; }, true);
+}
+function isKeyboardFocused(el) {
+  return tabbed && !!el && !!el.closest && !!el.closest('button, a, [role="button"], summary');
 }
 
 // True when focus is in a text field, so playing notes doesn't hijack typing.

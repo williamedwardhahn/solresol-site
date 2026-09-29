@@ -4,98 +4,120 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solresol — a thought you can see and hear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
 <style>
+  /* The treatise look of the Solresol app (src/styles/base.css), inlined so
+     this demo stands alone. The seven notes are the only saturated colours. */
   :root{
-    --bg:#0b0910; --bg2:#120f1a; --panel:#171320; --line:#2a2436;
-    --ink:#efe9f6; --mut:#a99fc0; --dim:#6f6689;
-    --do:#e63946; --re:#f3722c; --mi:#f9c74f; --fa:#43aa8b; --sol:#3d8fd1; --la:#6a6bd0; --si:#a24be0;
-    --glow:#b98cff;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --paper:#f4ecd6; --paper-raised:#faf5e6; --paper-sunk:#ebe0c3;
+    --ink:#221b14; --ink-2:#4b4034; --ink-3:#76685a;
+    --rule:#cbbb98; --rule-soft:#ddd0b2; --rubric:#9c2a1c;
+    --do:#e63946; --re:#f3722c; --mi:#f9c74f; --fa:#43aa8b; --sol:#277da1; --la:#4d5198; --si:#7b2cbf;
+    --display:'IM Fell English','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+    --sc:'IM Fell English SC','IM Fell English','Palatino Linotype',Georgia,serif;
+    --text:'Newsreader','Iowan Old Style','Palatino Linotype',Georgia,serif;
+    --shadow:0 1px 0 rgba(34,27,20,.06),0 10px 28px -14px rgba(34,27,20,.35);
+    --ease:cubic-bezier(.2,.7,.2,1);
+    color-scheme:light;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:
-      radial-gradient(1200px 620px at 50% -8%, #1c1630 0%, rgba(28,22,48,0) 60%),
-      linear-gradient(#0b0910,#0b0910);
-    color:var(--ink);font-family:var(--sans);line-height:1.5;
-    -webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .wrap{max-width:940px;margin:0 auto;padding:48px 22px 90px}
-  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
-  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.1rem,6vw,3.5rem);line-height:1.02;
-    letter-spacing:-.01em;margin:.35em 0 .3em;text-wrap:balance}
-  h1 em{font-style:italic;color:var(--glow)}
-  .lede{color:var(--mut);max-width:60ch;font-size:1.06rem;margin:0 auto}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;color:var(--ink);font:400 18px/1.55 var(--text);font-optical-sizing:auto;
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(120% 90% at 50% 0%,rgba(255,250,235,.7),transparent 60%),
+      radial-gradient(140% 120% at 50% 110%,rgba(150,120,70,.14),transparent 55%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-attachment:fixed;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:rgba(156,42,28,.18)}
+  .wrap{max-width:900px;margin:0 auto;padding:48px clamp(16px,4vw,32px) 80px}
+  .eyebrow{font-family:var(--sc);font-size:.95rem;letter-spacing:.14em;color:var(--rubric)}
+  h1{font-family:var(--display);font-weight:400;font-size:clamp(2.1rem,6.2vw,3.4rem);line-height:1.05;
+    margin:.25em 0 .3em;text-wrap:balance}
+  .lede{color:var(--ink-2);max-width:58ch;font-size:1.1rem;margin:0 auto}
   header{text-align:center;margin-bottom:34px}
+  header::after{content:"❧";display:block;color:var(--rubric);margin-top:18px}
 
-  /* instrument */
-  .stage{background:linear-gradient(180deg,#151021,#0f0b18);border:1px solid var(--line);
-    border-radius:20px;padding:30px 26px 26px;box-shadow:0 30px 80px -40px #000, inset 0 1px 0 #ffffff10}
-  .word{font-family:var(--serif);font-size:clamp(2rem,7vw,3.1rem);font-weight:600;text-align:center;
-    letter-spacing:-.01em;min-height:1.1em}
-  .family{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
-    text-align:center;color:var(--dim);margin-top:2px;min-height:1em}
-  .cells{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:26px 0 8px}
-  .cell{width:104px;height:120px;border-radius:16px;position:relative;display:flex;flex-direction:column;
-    align-items:center;justify-content:flex-end;padding-bottom:12px;color:#0c0910;font-weight:700;
-    transition:transform .18s ease, box-shadow .25s ease, filter .25s ease;filter:saturate(1.05)}
-  .cell .nm{font-family:var(--serif);font-size:1.5rem;line-height:1}
-  .cell .hz{font-family:var(--mono);font-size:.66rem;opacity:.72;margin-top:5px}
-  .cell.on{transform:translateY(-8px) scale(1.04)}
-  @media (max-width:560px){.cells{gap:8px;flex-wrap:nowrap}.cell{flex:1 1 0;min-width:0;max-width:84px;width:auto;height:96px}.cell .nm{font-size:1.15rem}.cell .hz{font-size:.58rem}}
+  /* the instrument: a plate */
+  .stage{background:var(--paper-raised);border:1px solid var(--ink-2);outline:1px solid var(--ink-2);outline-offset:4px;
+    margin:0 5px;padding:clamp(20px,4vw,34px) clamp(14px,3vw,28px) 24px;box-shadow:var(--shadow)}
+  .word{font-family:var(--display);font-size:clamp(2.2rem,7vw,3.2rem);text-align:center;line-height:1.1;min-height:1.1em}
+  .family{font-family:var(--sc);font-size:.95rem;letter-spacing:.1em;text-align:center;color:var(--ink-3);margin-top:4px;min-height:1.2em}
+  .family .fn{color:var(--rubric)}
+  /* the notes stand on a staff rule */
+  .cells{display:flex;gap:12px;justify-content:center;margin:26px 0 8px;padding-bottom:14px;
+    background:linear-gradient(var(--ink-2),var(--ink-2)) bottom/100% 1px no-repeat}
+  .cell{width:100px;height:120px;border-radius:3px 3px 9px 9px;position:relative;display:flex;flex-direction:column;
+    align-items:center;justify-content:flex-end;padding-bottom:12px;color:#fffdf6;
+    background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 38%),var(--c);
+    box-shadow:inset 0 -7px 0 rgba(0,0,0,.18),0 3px 0 rgba(34,27,20,.55),0 10px 18px -10px rgba(34,27,20,.6);
+    text-shadow:0 1px 1px rgba(0,0,0,.25);
+    transition:transform .18s var(--ease),box-shadow .25s var(--ease)}
+  .cell.light{color:var(--ink);text-shadow:none}
+  .cell .nm{font-family:var(--display);font-size:1.6rem;line-height:1}
+  .cell .hz{font-family:var(--sc);font-size:.8rem;letter-spacing:.06em;opacity:.85;margin-top:4px}
+  .cell.on{transform:translateY(-8px);box-shadow:inset 0 -7px 0 rgba(0,0,0,.18),0 11px 0 -4px rgba(34,27,20,.3),0 0 0 3px var(--paper-raised),0 0 0 4px var(--ink-2),0 18px 26px -12px rgba(34,27,20,.6)}
+  @media (max-width:560px){.cells{gap:7px}.cell{flex:1 1 0;min-width:0;max-width:84px;width:auto;height:98px}.cell .nm{font-size:1.25rem}.cell .hz{font-size:.68rem}}
 
-  .controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
-  button{font-family:var(--sans);font-size:.92rem;font-weight:600;color:var(--ink);cursor:pointer;
-    background:#221c33;border:1px solid var(--line);border-radius:11px;padding:11px 20px;
-    transition:border-color .2s,background .2s,transform .05s}
-  button:hover{border-color:#4a3f66;background:#2a2340}
-  button:active{transform:translateY(1px)}
-  button:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
-  .play{background:linear-gradient(180deg,#7b48c9,#5b34a0);border-color:#8b5fd6;padding:11px 30px}
-  .play:hover{background:linear-gradient(180deg,#8a55d8,#6a3fb4)}
-  .slipline{text-align:center;color:var(--mut);min-height:1.4em;margin-top:16px;font-size:.98rem}
-  .slipline b{color:var(--ink)}
-  .slipline .arrow{color:var(--glow);margin:0 .4em}
+  .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+  button{font-family:var(--sc);font-size:1rem;letter-spacing:.04em;line-height:1;color:var(--ink);cursor:pointer;
+    background:var(--paper-raised);border:1px solid var(--ink-2);border-radius:4px;padding:10px 16px 11px;min-height:44px;
+    box-shadow:0 2px 0 var(--ink-2);transition:transform .12s var(--ease),box-shadow .12s var(--ease),background .2s}
+  button:hover{background:#fffaf0}
+  button:active{transform:translateY(2px);box-shadow:0 0 0 var(--ink-2)}
+  button:focus-visible{outline:2px solid var(--rubric);outline-offset:3px}
+  .play{background:var(--ink);color:var(--paper-raised);border-color:var(--ink);box-shadow:0 2px 0 #000;padding:10px 22px 11px}
+  .play:hover{background:#3a2f24}
+  .slipline{text-align:center;color:var(--ink-2);font-style:italic;min-height:1.5em;margin-top:16px;font-size:1rem}
+  .slipline b{font-family:var(--display);font-style:normal;font-weight:400;font-size:1.12em;color:var(--ink)}
+  .slipline .arrow{color:var(--rubric);font-style:normal;margin:0 .4em}
+  .slipline .pct{color:var(--ink-3)}
 
-  /* palette / families */
-  section{margin-top:44px}
-  .h2{font-family:var(--serif);font-size:1.35rem;font-weight:600;margin:0 0 4px}
-  .sub{color:var(--mut);font-size:.96rem;margin:0 0 18px;max-width:64ch}
-  .families{display:flex;flex-direction:column;gap:12px}
-  .fam{display:flex;gap:14px;align-items:flex-start}
-  .fam-key{flex:0 0 74px;font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;
-    padding-top:8px;text-align:right}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{font-size:.9rem;padding:7px 13px;border-radius:999px;background:#1a1526;border:1px solid var(--line);
-    color:var(--mut);cursor:pointer;transition:all .16s}
-  .chip:hover{color:var(--ink);border-color:#4a3f66;transform:translateY(-1px)}
-  .chip.sel{color:#0c0910;font-weight:700}
+  /* families */
+  section{margin-top:52px;border-top:1px solid var(--rule);padding-top:24px}
+  .h2{font-family:var(--display);font-size:clamp(1.5rem,3.6vw,1.95rem);font-weight:400;line-height:1.15;margin:0 0 6px}
+  .sub{color:var(--ink-2);font-size:1rem;margin:0 0 20px;max-width:64ch}
+  .families{display:flex;flex-direction:column;gap:0}
+  .fam{display:flex;gap:16px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--rule-soft)}
+  .fam-key{flex:0 0 66px;font-family:var(--display);font-size:1.3rem;line-height:1;padding-top:6px;
+    display:flex;align-items:center;gap:8px;justify-content:flex-end}
+  .fam-key i{width:12px;height:12px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);flex:none}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+  .chip{font-family:var(--display);font-size:1.05rem;letter-spacing:0;padding:4px 12px 5px;min-height:34px;border-radius:99px;
+    background:var(--paper-raised);border:1px solid var(--rule);color:var(--ink);box-shadow:none}
+  .chip:hover{border-color:var(--ink-2);background:#fffaf0}
+  .chip:active{transform:translateY(1px);box-shadow:none}
+  .chip.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  @media (max-width:480px){.fam{gap:10px}.fam-key{flex-basis:46px;font-size:1.1rem}.fam-key i{display:none}}
 
   /* algebra */
-  .eqs{display:grid;gap:12px}
-  .eq{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);
-    border-radius:13px;padding:14px 16px}
-  .eq .expr{font-family:var(--serif);font-size:1.12rem}
-  .eq .expr b{color:var(--glow);font-style:italic}
-  .eq .eqbtn{margin-left:auto}
-  .eq .res{font-family:var(--mono);font-size:.82rem;color:var(--mut)}
-  .swatches{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px}
-  .sw{width:13px;height:13px;border-radius:3px;display:inline-block}
+  .eqs{display:grid;gap:0;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+  .eq{display:flex;align-items:center;gap:12px 14px;flex-wrap:wrap;padding:12px 4px;border-bottom:1px solid var(--rule-soft)}
+  .eq:last-child{border-bottom:0}
+  .eq .expr{font-family:var(--text);font-size:1.12rem;color:var(--ink-2)}
+  .eq .expr b{font-family:var(--display);font-weight:400;font-size:1.15em;color:var(--ink)}
+  .eq .expr .res-w{color:var(--rubric)}
+  .eq .eqbtn{margin-left:auto;min-height:36px;padding:7px 12px 8px;font-size:.92rem}
+  .swatches{display:inline-flex;gap:3px;vertical-align:middle;margin-left:8px}
+  .sw{width:14px;height:14px;border-radius:2px;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
 
-  footer{margin-top:54px;color:var(--dim);font-size:.85rem;text-align:center;line-height:1.7}
-  footer b{color:var(--mut);font-weight:600}
-  a{color:var(--glow);text-decoration:none}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  footer{margin-top:56px;color:var(--ink-3);font-size:.92rem;text-align:center;line-height:1.7;border-top:2px solid var(--ink);padding-top:18px}
+  footer b{font-family:var(--sc);font-weight:400;letter-spacing:.08em;color:var(--rubric)}
+  footer .src{font-style:italic}
+  a{color:var(--rubric)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
   <meta name="description" content="Every meaning is a short run of seven notes and seven colours. Pick a word, play it, then fumble a note and hear it land on a neighbour." />
-  <meta name="theme-color" content="#0e0f13" />
+  <meta name="theme-color" content="#f4ecd6" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Solresol" />
   <meta property="og:title" content="A thought you can see and hear — Solresol" />
   <meta property="og:description" content="Every meaning is a short run of seven notes and seven colours. Pick a word, play it, then fumble a note and hear it land on a neighbour." />
   <meta name="twitter:card" content="summary" />
-  <style>.solresol-home{font:600 13px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#9aa0ab;text-decoration:none;padding:7px 12px;border:1px solid rgba(154,160,171,.35);border-radius:999px;background:rgba(14,15,19,.72);display:inline-block}.solresol-home:hover,.solresol-home:focus-visible{color:#e7e9ee;border-color:#9aa0ab}.solresol-home-bar{padding:14px 16px 0;max-width:1100px;margin:0 auto}.solresol-home-float{position:fixed;top:14px;left:14px;z-index:10}</style>
+  <style>.solresol-home{font:400 15px/1 'IM Fell English SC','IM Fell English','Palatino Linotype',Palatino,Georgia,serif;letter-spacing:.08em;color:#4b4034;text-decoration:none;display:inline-flex;align-items:center;gap:.4em;min-height:36px;padding:8px 12px 9px;border:1px solid #cbbb98;border-radius:3px;background:rgba(250,245,230,.92)}.solresol-home:hover,.solresol-home:focus-visible{color:#9c2a1c;border-color:#4b4034}.solresol-home:focus-visible{outline:2px solid #9c2a1c;outline-offset:3px}.solresol-home-bar{max-width:var(--home-measure,900px);margin:0 auto;padding:14px clamp(16px,4vw,32px) 0}.solresol-home-bar .solresol-home{border:0;border-bottom:1px solid #cbbb98;border-radius:0;background:none;padding:8px 2px 7px}.solresol-home-bar .solresol-home:hover{border-bottom-color:#9c2a1c}.solresol-home-float{position:fixed;z-index:10;top:max(calc(clamp(10px,2.2vw,22px) + 14px),env(safe-area-inset-top));left:calc(clamp(10px,2.2vw,22px) + 14px)}</style>
 </head>
 <body>
 <div class="solresol-home-bar"><a class="solresol-home" href="./index.html">← Solresol</a></div>
@@ -141,7 +163,7 @@
     <b>How it works.</b> A word → its meaning vector → a residual code over 7 symbols → a melody in the
     C-major octave and a sweep of the visible spectrum (one optical octave). A one-note slip decodes to
     a nearby meaning, not nonsense — the robustness that makes it safe to fumble.<br>
-    Built from the real engine · <span style="opacity:.7">tools/interlingua.py</span>
+    Built from the real engine · <span class="src">tools/interlingua.py</span>
   </footer>
 </div>
 
@@ -149,7 +171,8 @@
 const NOTES=["do","re","mi","fa","sol","la","si"];
 const NAME={do:"Do",re:"Re",mi:"Mi",fa:"Fa",sol:"Sol",la:"La",si:"Si"};
 const HZ={do:261.63,re:293.66,mi:329.63,fa:349.23,sol:392.00,la:440.00,si:493.88};
-const COL={do:"#e63946",re:"#f3722c",mi:"#f9c74f",fa:"#43aa8b",sol:"#3d8fd1",la:"#6a6bd0",si:"#a24be0"};
+const COL={do:"#e63946",re:"#f3722c",mi:"#f9c74f",fa:"#43aa8b",sol:"#277da1",la:"#4d5198",si:"#7b2cbf"};
+const LIGHT={re:1,mi:1,fa:1}; // pale notes carry ink text, dark ones paper;
 const FAM={do:"nature & sky",re:"elements & states",mi:"animals & appetite",fa:"actions & places",
            sol:"distress & force",la:"feeling & greeting",si:"people"};
 const DATA={"words": [{"w": "happy", "code": ["la", "mi", "mi", "mi"], "slip": {"pos": 3, "to": "love", "cos": 0.91}}, {"w": "sad", "code": ["la", "sol", "re", "do"], "slip": {"pos": 0, "to": "father", "cos": 0.83}}, {"w": "angry", "code": ["sol", "mi", "sol", "sol"], "slip": {"pos": 2, "to": "afraid", "cos": 0.93}}, {"w": "afraid", "code": ["sol", "mi", "fa", "sol"], "slip": {"pos": 0, "to": "come", "cos": 0.92}}, {"w": "tired", "code": ["sol", "re", "re", "mi"], "slip": {"pos": 1, "to": "afraid", "cos": 0.88}}, {"w": "calm", "code": ["sol", "mi", "sol", "sol"], "slip": {"pos": 2, "to": "afraid", "cos": 0.93}}, {"w": "love", "code": ["la", "mi", "sol", "fa"], "slip": {"pos": 0, "to": "mother", "cos": 0.94}}, {"w": "hate", "code": ["la", "sol", "fa", "la"], "slip": {"pos": 0, "to": "child", "cos": 0.85}}, {"w": "fear", "code": ["sol", "mi", "la", "sol"], "slip": {"pos": 0, "to": "take", "cos": 0.97}}, {"w": "joy", "code": ["la", "mi", "sol", "re"], "slip": {"pos": 0, "to": "father", "cos": 0.87}}, {"w": "hungry", "code": ["mi", "mi", "re", "sol"], "slip": {"pos": 2, "to": "eat", "cos": 0.94}}, {"w": "sick", "code": ["mi", "mi", "re", "mi"], "slip": {"pos": 2, "to": "eat", "cos": 0.9}}, {"w": "hurt", "code": ["sol", "sol", "la", "fa"], "slip": {"pos": 3, "to": "fear", "cos": 0.88}}, {"w": "dog", "code": ["mi", "re", "sol", "mi"], "slip": {"pos": 2, "to": "cat", "cos": 0.9}}, {"w": "cat", "code": ["mi", "re", "sol", "mi"], "slip": {"pos": 2, "to": "dog", "cos": 0.91}}, {"w": "bird", "code": ["mi", "sol", "do", "mi"], "slip": {"pos": 2, "to": "sick", "cos": 0.9}}, {"w": "fish", "code": ["mi", "la", "mi", "sol"], "slip": {"pos": 0, "to": "water", "cos": 0.92}}, {"w": "horse", "code": ["mi", "fa", "sol", "do"], "slip": {"pos": 1, "to": "dog", "cos": 0.85}}, {"w": "cow", "code": ["mi", "sol", "la", "fa"], "slip": {"pos": 1, "to": "fish", "cos": 0.9}}, {"w": "lion", "code": ["do", "re", "sol", "sol"], "slip": {"pos": 0, "to": "hot", "cos": 0.83}}, {"w": "mouse", "code": ["do", "re", "la", "si"], "slip": {"pos": 2, "to": "river", "cos": 0.91}}, {"w": "mother", "code": ["si", "mi", "re", "fa"], "slip": {"pos": 2, "to": "friend", "cos": 0.91}}, {"w": "father", "code": ["si", "mi", "sol", "mi"], "slip": {"pos": 3, "to": "mother", "cos": 0.94}}, {"w": "baby", "code": ["mi", "mi", "sol", "fa"], "slip": {"pos": 1, "to": "cat", "cos": 0.89}}, {"w": "child", "code": ["si", "mi", "la", "la"], "slip": {"pos": 2, "to": "mother", "cos": 0.9}}, {"w": "friend", "code": ["si", "mi", "mi", "fa"], "slip": {"pos": 2, "to": "mother", "cos": 0.97}}, {"w": "teacher", "code": ["si", "sol", "mi", "si"], "slip": {"pos": 3, "to": "child", "cos": 0.86}}, {"w": "doctor", "code": ["si", "mi", "la", "si"], "slip": {"pos": 3, "to": "child", "cos": 0.96}}, {"w": "king", "code": ["si", "mi", "sol", "sol"], "slip": {"pos": 3, "to": "mother", "cos": 0.94}}, {"w": "queen", "code": ["si", "re", "sol", "sol"], "slip": {"pos": 1, "to": "father", "cos": 0.91}}, {"w": "eat", "code": ["mi", "mi", "mi", "sol"], "slip": {"pos": 0, "to": "come", "cos": 0.94}}, {"w": "drink", "code": ["mi", "mi", "mi", "re"], "slip": {"pos": 3, "to": "eat", "cos": 0.9}}, {"w": "sleep", "code": ["re", "mi", "re", "si"], "slip": {"pos": 0, "to": "sick", "cos": 0.85}}, {"w": "run", "code": ["fa", "fa", "la", "mi"], "slip": {"pos": 1, "to": "take", "cos": 0.96}}, {"w": "walk", "code": ["fa", "fa", "re", "sol"], "slip": {"pos": 1, "to": "come", "cos": 0.92}}, {"w": "jump", "code": ["fa", "re", "la", "si"], "slip": {"pos": 1, "to": "star", "cos": 0.93}}, {"w": "play", "code": ["fa", "mi", "mi", "mi"], "slip": {"pos": 1, "to": "big", "cos": 0.91}}, {"w": "sing", "code": ["la", "mi", "sol", "si"], "slip": {"pos": 0, "to": "father", "cos": 0.88}}, {"w": "help", "code": ["fa", "mi", "la", "sol"], "slip": {"pos": 2, "to": "come", "cos": 0.92}}, {"w": "stop", "code": ["sol", "fa", "la", "sol"], "slip": {"pos": 1, "to": "afraid", "cos": 0.89}}, {"w": "go", "code": ["fa", "mi", "la", "mi"], "slip": {"pos": 1, "to": "run", "cos": 0.92}}, {"w": "come", "code": ["fa", "mi", "la", "sol"], "slip": {"pos": 2, "to": "take", "cos": 0.92}}, {"w": "give", "code": ["fa", "mi", "la", "sol"], "slip": {"pos": 2, "to": "come", "cos": 0.92}}, {"w": "take", "code": ["fa", "mi", "la", "sol"], "slip": {"pos": 2, "to": "come", "cos": 0.92}}, {"w": "water", "code": ["re", "la", "la", "re"], "slip": {"pos": 0, "to": "fish", "cos": 0.85}}, {"w": "fire", "code": ["re", "sol", "sol", "sol"], "slip": {"pos": 1, "to": "water", "cos": 0.91}}, {"w": "sun", "code": ["do", "mi", "mi", "mi"], "slip": {"pos": 0, "to": "hot", "cos": 0.89}}, {"w": "moon", "code": ["do", "mi", "sol", "mi"], "slip": {"pos": 0, "to": "cold", "cos": 0.88}}, {"w": "rain", "code": ["re", "fa", "do", "sol"], "slip": {"pos": 0, "to": "bird", "cos": 0.84}}, {"w": "tree", "code": ["do", "si", "la", "mi"], "slip": {"pos": 1, "to": "sea", "cos": 0.92}}, {"w": "flower", "code": ["do", "si", "sol", "sol"], "slip": {"pos": 2, "to": "tree", "cos": 0.93}}, {"w": "sky", "code": ["do", "mi", "sol", "mi"], "slip": {"pos": 0, "to": "cold", "cos": 0.88}}, {"w": "star", "code": ["fa", "do", "la", "mi"], "slip": {"pos": 1, "to": "big", "cos": 0.89}}, {"w": "big", "code": ["fa", "re", "mi", "sol"], "slip": {"pos": 1, "to": "star", "cos": 0.97}}, {"w": "small", "code": ["fa", "la", "sol", "la"], "slip": {"pos": 0, "to": "fish", "cos": 0.86}}, {"w": "hot", "code": ["re", "re", "mi", "mi"], "slip": {"pos": 2, "to": "dirty", "cos": 0.93}}, {"w": "cold", "code": ["re", "mi", "sol", "mi"], "slip": {"pos": 0, "to": "dog", "cos": 0.87}}, {"w": "good", "code": ["fa", "mi", "mi", "do"], "slip": {"pos": 1, "to": "big", "cos": 0.9}}, {"w": "bad", "code": ["sol", "re", "la", "do"], "slip": {"pos": 0, "to": "big", "cos": 0.88}}, {"w": "fast", "code": ["sol", "fa", "mi", "si"], "slip": {"pos": 1, "to": "slow", "cos": 0.87}}, {"w": "slow", "code": ["sol", "fa", "la", "si"], "slip": {"pos": 2, "to": "fast", "cos": 0.86}}, {"w": "new", "code": ["fa", "sol", "sol", "mi"], "slip": {"pos": 3, "to": "city", "cos": 0.9}}, {"w": "old", "code": ["si", "fa", "fa", "mi"], "slip": {"pos": 1, "to": "father", "cos": 0.88}}, {"w": "clean", "code": ["re", "sol", "la", "sol"], "slip": {"pos": 1, "to": "water", "cos": 0.93}}, {"w": "dirty", "code": ["re", "re", "fa", "mi"], "slip": {"pos": 2, "to": "hot", "cos": 0.93}}, {"w": "home", "code": ["fa", "fa", "sol", "mi"], "slip": {"pos": 1, "to": "new", "cos": 0.93}}, {"w": "house", "code": ["fa", "sol", "sol", "sol"], "slip": {"pos": 2, "to": "take", "cos": 0.91}}, {"w": "school", "code": ["si", "sol", "mi", "re"], "slip": {"pos": 3, "to": "teacher", "cos": 0.87}}, {"w": "city", "code": ["fa", "sol", "sol", "re"], "slip": {"pos": 3, "to": "new", "cos": 0.93}}, {"w": "river", "code": ["do", "fa", "si", "mi"], "slip": {"pos": 2, "to": "mountain", "cos": 0.82}}, {"w": "mountain", "code": ["do", "fa", "mi", "sol"], "slip": {"pos": 0, "to": "hot", "cos": 0.86}}, {"w": "sea", "code": ["do", "la", "la", "mi"], "slip": {"pos": 1, "to": "tree", "cos": 0.95}}, {"w": "yes", "code": ["la", "sol", "la", "mi"], "slip": {"pos": 0, "to": "hurt", "cos": 0.87}}, {"w": "no", "code": ["fa", "mi", "la", "do"], "slip": {"pos": 3, "to": "take", "cos": 0.9}}, {"w": "more", "code": ["fa", "sol", "re", "sol"], "slip": {"pos": 2, "to": "new", "cos": 0.88}}, {"w": "please", "code": ["la", "mi", "la", "sol"], "slip": {"pos": 0, "to": "afraid", "cos": 0.89}}, {"w": "hello", "code": ["la", "re", "sol", "mi"], "slip": {"pos": 0, "to": "father", "cos": 0.87}}], "algebra": [{"a": "king", "b": "man", "c": "woman", "code": ["si", "mi", "sol", "sol"], "result": "father"}, {"a": "happy", "b": "good", "c": "bad", "code": ["sol", "re", "re", "do"], "result": "tired"}, {"a": "dog", "b": "big", "c": "small", "code": ["mi", "la", "sol", "la"], "result": "fish"}, {"a": "mother", "b": "woman", "c": "man", "code": ["si", "mi", "sol", "fa"], "result": "mother"}]};
@@ -176,9 +199,9 @@ function playCode(code,cells){
   code.forEach((n,i)=>{
     tone(HZ[n],t0+i*step,step*1.15);
     if(cells){const el=cells[i];
-      setTimeout(()=>{el.classList.add("on"); el.style.boxShadow=`0 0 46px -2px ${COL[n]}, 0 0 14px ${COL[n]}`;},
+      setTimeout(()=>{el.classList.add("on");},
         (t0-ac.currentTime+i*step)*1000);
-      setTimeout(()=>{el.classList.remove("on"); el.style.boxShadow="";},
+      setTimeout(()=>{el.classList.remove("on");},
         (t0-ac.currentTime+i*step+step)*1000);
     }
   });
@@ -190,23 +213,19 @@ let current="happy";
 function renderWord(w){
   current=w; const o=BY[w]; if(!o) return;
   $("word").textContent=w;
-  $("family").textContent="first note "+NAME[o.code[0]]+" · "+FAM[o.code[0]];
+  $("family").innerHTML="first note <span class=\"fn\">"+NAME[o.code[0]]+"</span> · "+FAM[o.code[0]];
   const box=$("cells"); box.innerHTML="";
   o.code.forEach(n=>{
-    const c=document.createElement("div"); c.className="cell";
-    c.style.background=`radial-gradient(120% 120% at 50% 18%, ${COL[n]}, ${shade(COL[n])})`;
+    const c=document.createElement("div"); c.className="cell"+(LIGHT[n]?" light":"");
+    c.style.setProperty("--c",COL[n]);
     c.innerHTML=`<span class="nm">${NAME[n]}</span><span class="hz">${HZ[n].toFixed(0)} Hz</span>`;
     box.appendChild(c);
   });
   $("slip").innerHTML="";
   document.querySelectorAll(".chip").forEach(ch=>{
     const on=ch.dataset.w===w; ch.classList.toggle("sel",on);
-    ch.style.background=on?COL[BY[w].code[0]]:""; ch.style.borderColor=on?"transparent":"";
+    const f=BY[w].code[0]; ch.style.background=on?COL[f]:""; ch.style.color=on?(LIGHT[f]?"var(--ink)":"#fffdf6"):"";
   });
-}
-function shade(hex){ // darker version for gradient base
-  const n=parseInt(hex.slice(1),16); const r=n>>16,g=(n>>8)&255,b=n&255;
-  return `rgb(${r*.42|0},${g*.42|0},${b*.42|0})`;
 }
 function cells(){return [...document.querySelectorAll("#cells .cell")];}
 
@@ -216,7 +235,7 @@ $("fumble").onclick=()=>{
   const o=BY[current], s=o.slip;
   const cs=cells(); cs[s.pos].animate([{transform:"translateY(0)"},{transform:"translateY(-14px)"},{transform:"translateY(0)"}],{duration:420});
   $("slip").innerHTML=`a slip on note ${s.pos+1} of <b>${current}</b><span class="arrow">→</span>lands on <b>${s.to}</b> `+
-     `<span style="color:var(--dim)">(${(s.cos*100).toFixed(0)}% the same meaning)</span>`;
+     `<span class="pct">(${(s.cos*100).toFixed(0)}% the same meaning)</span>`;
   setTimeout(()=>{renderWord(s.to); playCode(BY[s.to].code,cells());},650);
 };
 
@@ -226,7 +245,7 @@ $("fumble").onclick=()=>{
   const host=$("families");
   NOTES.forEach(n=>{ if(!groups[n]) return;
     const row=document.createElement("div"); row.className="fam";
-    row.innerHTML=`<div class="fam-key" style="color:${COL[n]}">${NAME[n]}</div>`;
+    row.innerHTML=`<div class="fam-key">${NAME[n]}<i style="background:${COL[n]}"></i></div>`;
     const chips=document.createElement("div"); chips.className="chips";
     groups[n].forEach(w=>{
       const c=document.createElement("button"); c.className="chip"; c.dataset.w=w; c.textContent=w;
@@ -243,7 +262,7 @@ $("fumble").onclick=()=>{
   DATA.algebra.forEach(e=>{
     const sw=e.code.map(n=>`<span class="sw" style="background:${COL[n]}"></span>`).join("");
     const row=document.createElement("div"); row.className="eq";
-    row.innerHTML=`<div class="expr"><b>${e.a}</b> − ${e.b} + ${e.c} = <b>${e.result}</b>`+
+    row.innerHTML=`<div class="expr"><b>${e.a}</b> − ${e.b} + ${e.c} = <b class="res-w">${e.result}</b>`+
       `<span class="swatches">${sw}</span></div>`+
       `<button class="eqbtn">► play result</button>`;
     row.querySelector("button").onclick=()=>{ if(!ac) ac=new(window.AudioContext||window.webkitAudioContext)(); playCode(e.code,null); };

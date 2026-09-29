@@ -1,4 +1,5 @@
-import { NOTES, note, parse } from '../dictionary/notes.js';
+import { NOTES, note, parse, cap } from '../dictionary/notes.js';
+import { semanticKey } from '../dictionary/grammar.js';
 import { allWords, meaningOf } from '../dictionary/dictionary.js';
 import { emit } from '../live/bus.js';
 
@@ -8,15 +9,16 @@ import { emit } from '../live/bus.js';
 
 // ---- the trie (pure: pass the word list, or default to the Dictionary) ----
 export function buildTrie(words = allWords()) {
-  const root = { count: 0, terminal: false, children: {} };
+  const root = { count: 0, terminal: false, key: null, children: {} };
   for (const w of words) {
     let node = root;
     node.count++;
     for (const n of parse(w.solresol)) {
-      node = node.children[n] || (node.children[n] = { count: 0, terminal: false, children: {} });
+      node = node.children[n] || (node.children[n] = { count: 0, terminal: false, key: null, children: {} });
       node.count++;
     }
     node.terminal = true;
+    node.key = w.solresol.toLowerCase();
   }
   return root;
 }
@@ -27,36 +29,103 @@ export function descend(root, notes) {
   return node;
 }
 
+// A few whole words still reachable below a node, nearest first
+// (breadth-first, in note order), not counting the node itself.
+export function sampleWords(node, limit = 5) {
+  const out = [], queue = node ? NOTES.map((n) => node.children[n.name]).filter(Boolean) : [];
+  while (queue.length && out.length < limit) {
+    const cur = queue.shift();
+    if (cur.terminal) out.push(cur.key);
+    for (const n of NOTES) if (cur.children[n.name]) queue.push(cur.children[n.name]);
+  }
+  return out;
+}
+
 // ---- Predictor: what can this word still become? ----
-export function mountPredictor(host, word) {
+//
+// Seven pips — how many words each next note still leads to — then a few
+// of those words to open, and at a dead end the analysis: what family the
+// word would belong to, whether its reversal (its antonym) exists, and an
+// invitation to give it a meaning.
+// Options: openWord(notes) opens a word's page; meanings is a live map of
+// a person's own meanings.
+export function mountPredictor(host, word, { openWord = null, meanings = null } = {}) {
   const root = buildTrie();
   host.classList.add('predictor');
   host.textContent = '';
+  host.setAttribute('aria-live', 'polite');
   const status = document.createElement('div'); status.className = 'pred-status';
   const branches = document.createElement('div'); branches.className = 'pred-branches';
-  host.append(status, branches);
+  const samples = document.createElement('div'); samples.className = 'pred-samples';
+  host.append(branches, status, samples);
 
-  const unwatch = word.watch((notes) => {
+  const own = (key) => (meanings ? meanings.get()[key] : null) || null;
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const first = (m) => String(m).split(/[,;]/)[0];
+
+  function render(notes) {
     branches.textContent = '';
+    samples.textContent = '';
+    host.classList.toggle('predictor--dead', false);
+    if (!notes.length) {
+      status.innerHTML = `Seven notes to begin — <b>${root.count.toLocaleString()}</b> words lie ahead`;
+    }
     const node = descend(root, notes);
-    if (!node) { status.textContent = 'no word travels this path'; return; }
-    const here = meaningOf(notes.join(''));
-    status.textContent = here
-      ? `“${here}” — and ${node.count - (node.terminal ? 1 : 0)} words continue`
-      : `${node.count} words continue`;
+    if (notes.length && !node) { renderDead(notes); return; }
+    if (notes.length) {
+      const here = meaningOf(notes.join(''));
+      const onward = node.count - (node.terminal ? 1 : 0);
+      status.innerHTML = onward
+        ? `<b>${onward.toLocaleString()}</b> word${onward === 1 ? '' : 's'} go on from here`
+        : (here ? 'a whole word, and the end of this path' : 'no word goes further');
+    }
     for (const n of NOTES) {
       const child = node.children[n.name];
-      if (!child) continue;
       const pip = document.createElement('button');
-      pip.className = 'pip';
+      pip.className = 'pip' + (child ? '' : ' pip--none');
       pip.style.setProperty('--c', n.color);
-      pip.innerHTML = `<span>${child.count}</span>`;
-      pip.title = `${n.name} → ${child.count} words`;
+      pip.dataset.note = n.name;
+      pip.innerHTML = `<span class="pip-name">${n.name}</span><span class="pip-count">${child ? child.count : '·'}</span>`;
+      pip.title = child ? `${n.name} → ${child.count} word${child.count === 1 ? '' : 's'}` : `${n.name} → no word`;
+      pip.setAttribute('aria-label', pip.title);
       pip.addEventListener('click', () => word.add(n.name));
       branches.appendChild(pip);
     }
+    if (!notes.length) return;
+    const keys = sampleWords(node, 5);
+    if (keys.length) {
+      samples.innerHTML = `<span class="pred-label">for instance</span>` + keys.map((k) =>
+        `<button class="pred-word" data-open="${k}"><b>${cap(k)}</b><i>${esc(first(own(k) || meaningOf(k) || ''))}</i></button>`).join('');
+    }
+  }
+
+  function renderDead(notes) {
+    host.classList.add('predictor--dead');
+    const key = notes.join(''), opp = notes.slice().reverse(), oppKey = opp.join('');
+    const oppMeaning = own(oppKey) || meaningOf(oppKey);
+    const fam = semanticKey(notes);
+    const mine = own(key);
+    status.innerHTML = `<b>${cap(key)}</b> is not in Sudre’s dictionary`;
+    samples.innerHTML = `
+      <p class="pred-dead-line">${fam ? `A ${notes.length}-note word beginning on <i>${notes[0]}</i> would belong to the family <b>${esc(fam)}</b>.` : ''}</p>
+      <p class="pred-dead-line">${oppMeaning && oppKey !== key
+        ? `Its mirror <button class="pred-link" data-open="${oppKey}">${cap(oppKey)}</button> means “${esc(first(oppMeaning))}” — so this might mean its opposite.`
+        : oppKey === key ? 'It reads the same backwards: it is its own mirror.' : `Its mirror, ${cap(oppKey)}, is empty too.`}</p>
+      <p class="pred-dead-line">${mine
+        ? `You gave it a meaning: “${esc(mine)}”. <button class="pred-link" data-propose>change it</button>`
+        : `<button class="pred-link pred-link--strong" data-propose>Propose a meaning for ${cap(key)} →</button>`}</p>`;
+  }
+
+  samples.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b || !openWord) return;
+    if (b.dataset.open) openWord(parse(b.dataset.open));
+    else if (b.dataset.propose !== undefined) openWord(word.notes);
   });
-  return { destroy() { unwatch(); host.textContent = ''; } };
+
+  const unwatch = word.watch(render);
+  const unmeanings = meanings ? meanings.watch(() => render(word.notes)) : () => {};
+  return { destroy() { unwatch(); unmeanings(); host.textContent = ''; } };
 }
 
 // ---- Constellation: the lexicon as a sky, brightened by memory ----

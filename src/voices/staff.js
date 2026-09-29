@@ -1,19 +1,15 @@
-import { note } from '../dictionary/notes.js';
+import { staffSVG } from '../graphics/graphics.js';
 
-// The Staff voice — a note as its height on a staff.
-// The dot is placed once and simply moved when the note changes.
+// The Staff voice — a note as a coloured head on a real treble staff.
 export const staff = {
   name: 'staff',
   label: 'Staff',
   mount() {
     const el = document.createElement('div');
     el.className = 'cell cell--staff';
-    const dot = document.createElement('span');
-    dot.className = 'staff-dot';
-    el.appendChild(dot);
     return el;
   },
   update(el, n) {
-    el.firstChild.style.setProperty('--step', note(n).step);
+    el.innerHTML = staffSVG([n], { cls: 'staff-cell', compact: true });
   },
 };

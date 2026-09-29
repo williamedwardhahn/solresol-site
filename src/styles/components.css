@@ -1,0 +1,130 @@
+/* The shared parts every chapter builds with. Chapter-specific styling
+   lives beside each chapter (src/views/<id>/<id>.css). */
+
+/* ── headings inside a chapter ── */
+.rubric {
+  font-family: var(--sc); font-size: 1rem; letter-spacing: .12em; color: var(--rubric);
+  margin: 0 0 10px; font-weight: 400;
+}
+.rubric-note { font-family: var(--text); font-style: italic; letter-spacing: 0; color: var(--ink-3); font-size: .92rem; margin-left: 8px; }
+.section-title { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 6px; }
+.lede { font-size: 1.15rem; color: var(--ink-2); max-width: 62ch; }
+.hint { color: var(--ink-3); font-size: .95rem; font-style: italic; margin: 6px 0 0; }
+.tag {
+  display: inline-block; font-family: var(--sc); font-size: .78rem; letter-spacing: .08em;
+  padding: 0 7px; border: 1px solid var(--rule); border-radius: 99px; color: var(--ink-3); vertical-align: middle;
+}
+
+/* ── a plate: the framed figure of an old book ── */
+.plate {
+  background: var(--paper-raised);
+  border: 1px solid var(--ink-2);
+  outline: 1px solid var(--ink-2); outline-offset: 4px;
+  padding: clamp(16px, 3vw, 28px);
+  margin: 6px 5px 28px;
+  box-shadow: var(--shadow);
+}
+.plate-caption {
+  text-align: center; font-family: var(--sc); letter-spacing: .1em; color: var(--ink-3);
+  font-size: .85rem; margin-top: 12px;
+}
+/* a quieter box, ruled not framed */
+.leaf { border-top: 1px solid var(--rule); padding: 18px 0 8px; }
+
+/* ── buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: var(--sc); font-size: 1rem; letter-spacing: .04em; line-height: 1;
+  padding: 9px 15px 10px; min-height: 40px;
+  color: var(--ink); background: var(--paper-raised);
+  border: 1px solid var(--ink-2); border-radius: var(--radius);
+  box-shadow: 0 2px 0 var(--ink-2);
+  transition: transform .12s var(--ease), box-shadow .12s var(--ease), background .2s;
+}
+.btn:hover { background: #fffaf0; }
+.btn:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink-2); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn--ink { background: var(--ink); color: var(--paper-raised); border-color: var(--ink); box-shadow: 0 2px 0 #000; }
+.btn--ink:hover { background: #3a2f24; }
+.btn--rubric { background: var(--rubric); color: #fff8ec; border-color: #6e1c12; box-shadow: 0 2px 0 #6e1c12; }
+.btn--ghost { background: transparent; box-shadow: none; border-color: var(--rule); color: var(--ink-2); }
+.btn--ghost:hover { border-color: var(--ink-2); background: transparent; }
+.btn--small { min-height: 32px; padding: 6px 10px 7px; font-size: .9rem; }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--paper-raised); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+/* ── tabs: small-cap words over a rule ── */
+.tabs { display: flex; flex-wrap: wrap; gap: 4px 22px; border-bottom: 1px solid var(--rule); margin: 0 0 22px; }
+.tab {
+  background: none; border: 0; padding: 8px 0 9px; margin-bottom: -1px;
+  font-family: var(--sc); font-size: 1.08rem; letter-spacing: .05em; color: var(--ink-3);
+  border-bottom: 2px solid transparent; text-decoration: none;
+}
+.tab:hover { color: var(--ink); }
+.tab.is-on, .tab[aria-selected="true"] { color: var(--rubric); border-bottom-color: var(--rubric); }
+
+/* ── fields: written on a line ── */
+.field, .search {
+  width: 100%;
+  font: 400 1.25rem/1.3 var(--text);
+  color: var(--ink);
+  background: transparent;
+  border: 0; border-bottom: 1.5px solid var(--ink-2);
+  padding: 8px 2px 7px;
+  border-radius: 0;
+}
+.field::placeholder, .search::placeholder { color: var(--ink-3); font-style: italic; opacity: .85; }
+.field:focus, .search:focus { outline: none; border-bottom-color: var(--rubric); box-shadow: 0 1.5px 0 var(--rubric); }
+select.field { font-size: 1rem; padding-right: 20px; }
+
+/* ── a segmented choice ── */
+.seg { display: inline-flex; border: 1px solid var(--ink-2); border-radius: var(--radius); overflow: hidden; }
+.seg-btn { border: 0; background: transparent; padding: 7px 12px; font-family: var(--sc); letter-spacing: .04em; color: var(--ink-2); }
+.seg-btn + .seg-btn { border-left: 1px solid var(--rule); }
+.seg-btn.is-on, .seg-btn[aria-pressed="true"] { background: var(--ink); color: var(--paper-raised); }
+
+/* ── a word as a clickable chip ── */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip-word {
+  font-family: var(--display); font-size: 1.05rem; background: var(--paper-raised);
+  border: 1px solid var(--rule); border-radius: 99px; padding: 3px 12px 4px; color: var(--ink);
+}
+.chip-word:hover { border-color: var(--ink-2); }
+
+/* colour swatches for a word */
+.swatches { display: inline-flex; gap: 3px; vertical-align: middle; }
+.swatches i { width: 14px; height: 14px; border-radius: 2px; display: inline-block; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+
+/* a result row: word · swatches · meaning */
+.results { display: grid; gap: 0; }
+.result {
+  display: grid; grid-template-columns: minmax(7rem, auto) auto 1fr; align-items: baseline; gap: 14px;
+  text-align: left; background: none; border: 0; border-bottom: 1px solid var(--rule-soft);
+  padding: 9px 4px;
+}
+.result:hover { background: rgba(255, 250, 235, .7); }
+.result b { font-family: var(--display); font-weight: 400; font-size: 1.2rem; }
+.result span { color: var(--ink-2); }
+
+/* the sentence as a strip of light */
+.strip { display: block; width: 100%; height: 26px; border-radius: 2px; }
+
+/* staff SVGs */
+.staff-line { stroke: var(--ink-2); stroke-width: .9; }
+.staff-ledger { stroke: var(--ink-2); stroke-width: .9; }
+.staff-head { stroke: rgba(0, 0, 0, .35); stroke-width: .6; }
+.staff-label { font: italic 10px var(--text); fill: var(--ink-3); }
+
+/* the fan */
+.fan-label { font: 700 9px var(--text); fill: #fff; letter-spacing: .04em; }
+
+/* Sudre's script */
+.script-word { display: inline-flex; gap: 2px; vertical-align: middle; }
+.glyph { width: 1.3em; height: 1.3em; display: inline-block; }
+
+/* a rule with an ornament */
+.ornament { text-align: center; color: var(--rubric); margin: 26px 0; }
+.ornament::before { content: '❧'; }
+
+/* two columns that fold to one */
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px 40px; }

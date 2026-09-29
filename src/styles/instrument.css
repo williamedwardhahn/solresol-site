@@ -1,0 +1,79 @@
+/* The instrument's parts, shared by every chapter: the seven keys, the
+   choir of voices, the predictor's pips. */
+
+/* ── the keyboard: seven slabs of colour ── */
+.keyboard { display: flex; justify-content: center; gap: clamp(5px, 1.4vw, 12px); }
+.key {
+  --key-color: #888;
+  position: relative; flex: 0 1 78px; min-width: 0; height: clamp(104px, 18vw, 150px);
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 1px;
+  padding-bottom: 10px;
+  border: 0; border-radius: 3px 3px 9px 9px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 38%),
+    var(--key-color);
+  color: #fffdf6;
+  box-shadow: inset 0 -7px 0 rgba(0,0,0,.18), 0 3px 0 rgba(34,27,20,.55), 0 10px 18px -10px rgba(34,27,20,.6);
+  transition: transform .08s var(--ease), box-shadow .08s var(--ease), filter .2s;
+  text-shadow: 0 1px 1px rgba(0,0,0,.25);
+}
+.key:hover { filter: brightness(1.05) saturate(1.05); }
+.key:active, .key--hit {
+  transform: translateY(3px);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.2), 0 0 0 rgba(34,27,20,.55), 0 4px 10px -8px rgba(34,27,20,.6);
+}
+.key-letter { font-family: var(--sc); font-size: .8rem; opacity: .85; letter-spacing: .1em; }
+.key-solfege { font-family: var(--display); font-size: clamp(1.1rem, 2.6vw, 1.55rem); line-height: 1.1; }
+.key-num { font-family: var(--text); font-size: .85rem; opacity: .85; }
+/* mi is pale: ink reads better on it */
+.key[style*="#f9c74f"] { color: var(--ink); text-shadow: none; }
+
+/* ── the choir: every voice, one row each, notes in columns ── */
+.choir { display: grid; gap: 6px; justify-content: center; }
+.choir--empty { display: none; }
+.voice-row { display: flex; align-items: center; gap: 14px; }
+.voice-label {
+  width: 5.2rem; flex: none; text-align: right;
+  font-family: var(--sc); font-size: .88rem; letter-spacing: .08em; color: var(--ink-3);
+}
+.voice-cells { display: flex; gap: var(--gap); min-height: var(--cell); }
+.cell {
+  width: var(--cell); height: var(--cell); flex: none;
+  display: grid; place-items: center;
+  border-radius: 3px; background: var(--paper-raised);
+  border: 1px solid var(--rule-soft);
+  cursor: pointer;
+  animation: cell-in .28s var(--ease) both;
+}
+@keyframes cell-in { from { transform: translateY(6px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+.cell--ring { animation: ring .45s var(--ease); }
+@keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(156,42,28,.5); } 100% { box-shadow: 0 0 0 10px rgba(156,42,28,0); } }
+.cell--text { font-family: var(--display); font-size: 1.45rem; color: var(--ink); }
+.cell--binary { font-family: var(--text); font-size: 1rem; letter-spacing: .08em; font-variant-numeric: lining-nums tabular-nums; }
+.cell--braille { font-size: 1.9rem; line-height: 1; }
+.cell--color { border: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.14); }
+.cell--staff { padding: 0; overflow: hidden; }
+.cell--staff .staff-cell { width: 100%; height: 100%; }
+.cell--hand { padding: 0; overflow: hidden; background: #fbf5de; }
+.cell--hand img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+.cell--script { color: var(--ink); }
+.cell--script .glyph { width: 70%; height: 70%; }
+
+/* ── the predictor: how many words each next note still leads to ── */
+.predictor { display: grid; gap: 8px; justify-items: center; }
+.pred-status { font-style: italic; color: var(--ink-2); text-align: center; }
+.pred-branches { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.pip {
+  --c: #888; min-width: 44px; height: 30px; padding: 0 8px;
+  border: 0; border-radius: 3px; background: var(--c); color: #fffdf6;
+  font: 600 .88rem var(--text); font-variant-numeric: lining-nums tabular-nums;
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+}
+.pip:hover { transform: translateY(-1px); }
+
+@media (max-width: 560px) {
+  :root { --cell: 44px; }
+  .voice-label { width: 3.9rem; font-size: .76rem; }
+  .cell--text { font-size: 1.15rem; }
+  .cell--binary { font-size: .8rem; }
+}
