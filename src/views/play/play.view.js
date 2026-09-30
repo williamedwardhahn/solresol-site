@@ -22,6 +22,7 @@ import { emit } from '../../live/bus.js';
 // mountPlayView(host, ctx, route) → { update(route), destroy() }.
 
 const TIMBRES = [
+  { id: 'bell', label: 'Celesta' },
   { id: 'sine', label: 'Flute' },
   { id: 'triangle', label: 'Reed' },
   { id: 'sawtooth', label: 'Bowed' },
@@ -73,7 +74,7 @@ export function mountPlayView(host, ctx, route) {
         <div class="stops-group">
           <span class="stops-label">Timbre</span>
           <div class="seg" data-timbres role="group" aria-label="Timbre">
-            ${TIMBRES.map((t) => `<button class="seg-btn" data-timbre="${t.id}" aria-pressed="false" title="${t.id}">${t.label}</button>`).join('')}
+            ${TIMBRES.map((t) => `<button class="seg-btn" data-timbre="${t.id}" aria-pressed="false" title="${t.label}">${t.label}</button>`).join('')}
           </div>
         </div>
       </div>
@@ -179,7 +180,7 @@ export function mountPlayView(host, ctx, route) {
       state.setPref('voices', VOICES.map((v) => v.name).filter((n) => on.has(n)));
     }
     if (b.dataset.timbre) {
-      state.setPref('timbre', b.dataset.timbre);
+      state.setPref('timbre', b.dataset.timbre); state.setPref('timbreChosen', true);
       playWord({ notes: ['do', 'mi', 'sol'] });
     }
     if (b.dataset.replay !== undefined) startIntro(true);

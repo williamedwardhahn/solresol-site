@@ -319,17 +319,34 @@ document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden" && silentTag) silentTag.pause();
 });
 
+/* a small room and a soft limiter: notes sound like an instrument, never clip */
+let HALL=null;
+function hall(ac){
+  if(HALL) return HALL;
+  const input=ac.createGain(), lim=ac.createDynamicsCompressor();
+  lim.threshold.value=-16; lim.knee.value=12; lim.ratio.value=4; lim.attack.value=.004; lim.release.value=.22;
+  const len=Math.floor(ac.sampleRate*1.6), ir=ac.createBuffer(2,len,ac.sampleRate);
+  for(let ch=0;ch<2;ch++){ const d=ir.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)*Math.min(1,i/(ac.sampleRate*.012)); }
+  const room=ac.createConvolver(); room.buffer=ir; const wet=ac.createGain(); wet.gain.value=.2;
+  input.connect(lim); input.connect(room); room.connect(wet).connect(lim); lim.connect(ac.destination);
+  return HALL=input;
+}
 function tone(freq, t0, dur, bend){
-  const ac=audio();
-  const o=ac.createOscillator(), o2=ac.createOscillator(), g=ac.createGain();
-  o.type="triangle"; o2.type="sine"; o2.detune.value=6;
-  o.frequency.setValueAtTime(freq,t0); o2.frequency.setValueAtTime(freq,t0);
-  if(bend){ const f2=freq*Math.pow(2,bend/12); o.frequency.linearRampToValueAtTime(f2,t0+dur*.9); o2.frequency.linearRampToValueAtTime(f2,t0+dur*.9); }
+  const ac=audio(), out=hall(ac);
+  const g=ac.createGain(), lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=2600+freq*2; lp.Q.value=.5;
+  const f2=bend ? freq*Math.pow(2,bend/12) : freq;
+  // a rounded voice: the fundamental, a soft octave and a whisper of the fifth above it
+  [[1,1,"sine",0],[2,.22,"sine",4],[3,.07,"triangle",-3]].forEach(([r,amp,type,det])=>{
+    const o=ac.createOscillator(), og=ac.createGain(); o.type=type; o.detune.value=det; og.gain.value=amp;
+    o.frequency.setValueAtTime(freq*r,t0); if(bend) o.frequency.linearRampToValueAtTime(f2*r,t0+dur*.9);
+    o.connect(og).connect(lp); o.start(t0); o.stop(t0+dur+.45);
+  });
   g.gain.setValueAtTime(0.0001,t0);
-  g.gain.exponentialRampToValueAtTime(0.32,t0+0.02);
-  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  o.connect(g); o2.connect(g); g.connect(ac.destination);
-  o.start(t0); o2.start(t0); o.stop(t0+dur+.05); o2.stop(t0+dur+.05);
+  g.gain.exponentialRampToValueAtTime(0.3,t0+0.018);
+  g.gain.setTargetAtTime(0.22,t0+0.03,0.12);
+  g.gain.setValueAtTime(0.22,t0+dur*.8);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur+.4);
+  lp.connect(g).connect(out);
 }
 function playCode(code, bend){
   const ac=audio(); let t=ac.currentTime+0.02; const step=code.length>1?0.19:0.42;

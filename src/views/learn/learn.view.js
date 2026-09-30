@@ -1,16 +1,18 @@
 import { mountStudy } from './study.js';
 import { mountGrammar } from './grammar.js';
 import { mountQuiz } from './quiz.js';
+import { mountSing } from './sing.js';
 import { mountGames } from './games.js';
 import { mountHistory } from './history.js';
 import { mountYours } from './yours.js';
 import { bindWordLinks } from './common.js';
 
 // The Learn chapter — the School. mountLearnView(host, ctx, route) → { update(route), destroy() }.
-// Six leaves, each its own route so every one is linkable:
+// Seven leaves, each its own route so every one is linkable:
 //   #/learn           Study — the seven notes, every voice
 //   #/learn/grammar   Grammar — Gajewski's rules, playable
 //   #/learn/quiz      Examinations — five levels that unlock
+//   #/learn/sing      The singing lesson — a tuner that teaches
 //   #/learn/games     Games — the learning cards, and the sky
 //   #/learn/history   History — Sudre's story
 //   #/learn/yours     Yours — your stars, sentences and memory
@@ -19,6 +21,7 @@ const LEAVES = [
   { id: '',        label: 'Study',    mount: mountStudy },
   { id: 'grammar', label: 'Grammar',  mount: mountGrammar },
   { id: 'quiz',    label: 'Quiz',     mount: mountQuiz },
+  { id: 'sing',    label: 'Sing',     mount: mountSing },
   { id: 'games',   label: 'Games',    mount: mountGames },
   { id: 'history', label: 'History',  mount: mountHistory },
   { id: 'yours',   label: 'Yours',    mount: mountYours },

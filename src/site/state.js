@@ -22,7 +22,8 @@ export function persisted(key, initial) {
 export const VOICE_IDS = ['solfege', 'number', 'color', 'staff', 'hand', 'script', 'braille', 'binary'];
 
 export const DEFAULT_PREFS = {
-  timbre: 'triangle',                                   // sine | triangle | sawtooth | square
+  timbre: 'bell',                                       // bell (celesta) | sine | triangle | sawtooth | square
+  timbreChosen: false,                                  // true once a person picks one
   voices: ['solfege', 'number', 'color', 'staff', 'hand', 'script'],
   onboarded: false,
 };
@@ -35,6 +36,9 @@ export function createState() {
   const meanings = persisted('solresol:meanings', {});    // user-proposed meanings: key → text
 
   const setPref = (k, v) => prefs.set({ ...prefs.get(), [k]: v });
+
+  // Everyone who never chose a sound moves to the celesta; a choice is kept.
+  if (!prefs.get().timbreChosen && prefs.get().timbre !== 'bell') setPref('timbre', 'bell');
 
   const isStarred = (key) => stars.get().includes(key);
   const toggleStar = (key) => {

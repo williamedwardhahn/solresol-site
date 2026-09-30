@@ -200,18 +200,32 @@ document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="visible" && ac && ac.state!=="running") ac.resume().catch(()=>{});
   if(document.visibilityState==="hidden" && silentTag) silentTag.pause();
 });
+/* a small room and a soft limiter: notes sound like an instrument, never clip */
+let HALL=null;
+function hall(ac){
+  if(HALL) return HALL;
+  const input=ac.createGain(), lim=ac.createDynamicsCompressor();
+  lim.threshold.value=-16; lim.knee.value=12; lim.ratio.value=4; lim.attack.value=.004; lim.release.value=.22;
+  const len=Math.floor(ac.sampleRate*1.6), ir=ac.createBuffer(2,len,ac.sampleRate);
+  for(let ch=0;ch<2;ch++){ const d=ir.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)*Math.min(1,i/(ac.sampleRate*.012)); }
+  const room=ac.createConvolver(); room.buffer=ir; const wet=ac.createGain(); wet.gain.value=.2;
+  input.connect(lim); input.connect(room); room.connect(wet).connect(lim); lim.connect(ac.destination);
+  return HALL=input;
+}
 function tone(freq,t,dur){
+  const out=hall(ac);
   const o=ac.createOscillator(),g=ac.createGain();
   o.type="sine"; o.frequency.value=freq;
   const o2=ac.createOscillator(),g2=ac.createGain();
-  o2.type="triangle"; o2.frequency.value=freq*2; g2.gain.value=0;
-  o.connect(g); o2.connect(g2); g.connect(ac.destination); g2.connect(ac.destination);
-  const a=.012,r=dur*.7;
-  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.22,t+a);
-  g.gain.exponentialRampToValueAtTime(.0008,t+r);
-  g2.gain.setValueAtTime(0,t); g2.gain.linearRampToValueAtTime(.05,t+a);
-  g2.gain.exponentialRampToValueAtTime(.0006,t+r);
-  o.start(t); o.stop(t+dur); o2.start(t); o2.stop(t+dur);
+  o2.type="triangle"; o2.frequency.value=freq*2; o2.detune.value=5; g2.gain.value=0;
+  const lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=3000+freq*2;
+  o.connect(g); o2.connect(g2); g.connect(lp); g2.connect(lp); lp.connect(out);
+  const a=.016,r=dur*.95;
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(.24,t+a);
+  g.gain.exponentialRampToValueAtTime(.0005,t+r+.35);
+  g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(.045,t+a);
+  g2.gain.exponentialRampToValueAtTime(.0003,t+r);
+  o.start(t); o.stop(t+r+.4); o2.start(t); o2.stop(t+r+.4);
 }
 function playCode(code,cells){
   audioCtx();
