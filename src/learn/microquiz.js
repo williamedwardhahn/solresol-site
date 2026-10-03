@@ -1,10 +1,10 @@
-import { allWords } from '../dictionary/dictionary.js';
-import { cap } from '../dictionary/notes.js';
-import { on } from '../live/bus.js';
-import { prepare, microQuestions } from './quiz.model.js';
+import { allWords } from '../dictionary/dictionary.js?v=ea2512429f';
+import { cap } from '../dictionary/notes.js?v=ea2512429f';
+import { on } from '../live/bus.js?v=ea2512429f';
+import { prepare, microQuestions } from './quiz.model.js?v=ea2512429f';
 import {
   SRS_KEY, normalizeSrs, noteUse, shouldAsk, chooseDue, markAsked, recordAnswer, stopAsking,
-} from './srs.model.js';
+} from './srs.model.js?v=ea2512429f';
 
 // The micro-quiz — now and then, a small question about a word you just
 // used: its mirror, its family, its part of speech by accent. Scheduled

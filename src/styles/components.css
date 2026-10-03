@@ -113,7 +113,7 @@ select.field { font-size: 1rem; padding-right: 20px; }
 .staff-line { stroke: var(--ink-2); stroke-width: .9; }
 .staff-ledger { stroke: var(--ink-2); stroke-width: .9; }
 .staff-head { stroke: rgba(0, 0, 0, .35); stroke-width: .6; }
-.staff-label { font: italic 10px var(--text); fill: var(--ink-3); }
+.staff-label { font: italic 10px var(--text); }   /* fill: each note's own ink, set on the label */
 
 /* the fan */
 .fan-label { font: 700 9px var(--text); fill: #fff; letter-spacing: .04em; }
@@ -143,3 +143,27 @@ select.field { font-size: 1rem; padding-right: 20px; }
   vertical-align: super; line-height: 0; margin-left: .12em; display: inline !important;
 }
 .w-mark + .w-mark { margin-left: .3em; }
+
+/* the connected script */
+.cursive { display: inline-block; vertical-align: middle; overflow: visible; }
+
+/* a Curwen hand sign drawn in a colour: the engraving's lines are a mask */
+.hand-ink {
+  display: block; width: 100%; height: 100%;
+  background-color: var(--hc, var(--ink));
+  -webkit-mask: var(--m) center / contain no-repeat;
+          mask: var(--m) center / contain no-repeat;
+}
+.hand-ink--plate { aspect-ratio: 348 / 298; height: auto; }
+
+/* Text in a note's colour — the very colour of its key. Its legibility on
+   paper comes from a fine ink edge, never from darkening the colour: a halo
+   for small text, a drawn outline for big words. */
+.nt { text-shadow: 0 0 1px rgba(34, 27, 20, .9), 0 0 .5px rgba(34, 27, 20, .7); }
+.panel-word .nt, .readout-word .nt, .sg-syllable {
+  text-shadow: none;
+  -webkit-text-stroke: .024em rgba(34, 27, 20, .78);
+  paint-order: stroke fill;
+}
+/* a hand sign in its key's colour, edged in ink along its own engraved lines */
+.hand-ink--colour { filter: drop-shadow(0 0 .6px rgba(34, 27, 20, .95)) drop-shadow(0 0 .4px rgba(34, 27, 20, .85)); }

@@ -1,14 +1,17 @@
-import { cap } from '../../dictionary/notes.js';
-import { meaningOf, wordCount } from '../../dictionary/dictionary.js';
-import { playWord, VOICES } from '../../voices/index.js';
-import { mountChoir } from '../../ui/choir.js';
-import { mountKeyboard } from '../../ui/keyboard.js';
-import { mountPredictor } from '../../map/map.js';
-import { mountSentence } from '../../compose/compose.js';
-import { mountColorIn, mountNumberIn, mountToneIn, mountMidiIn } from '../../sense/inputs.js';
-import { mountSequencer } from '../../sequencer/sequencer.js';
-import { mountOnboarding } from '../../onboarding/onboarding.js';
-import { emit } from '../../live/bus.js';
+import { cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { meaningOf, wordCount } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { playWord, VOICES } from '../../voices/index.js?v=ea2512429f';
+import { mountChoir } from '../../ui/choir.js?v=ea2512429f';
+import { mountKeyboard } from '../../ui/keyboard.js?v=ea2512429f';
+import { mountPredictor } from '../../map/map.js?v=ea2512429f';
+import { mountSentence } from '../../compose/compose.js?v=ea2512429f';
+import { mountColorIn, mountNumberIn, mountToneIn, mountMidiIn } from '../../sense/inputs.js?v=ea2512429f';
+import { mountSequencer } from '../../sequencer/sequencer.js?v=ea2512429f';
+import { mountOnboarding } from '../../onboarding/onboarding.js?v=ea2512429f';
+import { emit } from '../../live/bus.js?v=ea2512429f';
+import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
+import { cursiveSVG } from '../../graphics/cursive.js?v=ea2512429f';
+import { mountWriting, reopenLast } from '../../compose/writing.js?v=ea2512429f';
 
 // Chapter I — Play: the instrument, and its companions.
 //
@@ -47,6 +50,7 @@ export function mountPlayView(host, ctx, route) {
       <div class="readout" aria-live="polite">
         <p class="readout-family" data-family></p>
         <h2 class="readout-word" data-word></h2>
+        <div class="readout-script" data-script aria-hidden="true"></div>
         <p class="readout-meaning" data-meaning></p>
         <p class="readout-more" data-more></p>
         <div class="readout-actions">
@@ -61,6 +65,8 @@ export function mountPlayView(host, ctx, route) {
         <div data-keyboard></div>
         <div data-predictor></div>
       </div>
+
+      <div data-writing></div>
 
       <div class="instrument-choir" data-choir-wrap><div data-choir></div></div>
 
@@ -78,7 +84,7 @@ export function mountPlayView(host, ctx, route) {
           </div>
         </div>
       </div>
-      <figcaption class="plate-caption">Plate I · The seven keys — <span class="keys-legend"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd> <kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> or <kbd>1</kbd>–<kbd>7</kbd> play · <kbd>Space</kbd> says the word · <kbd>⌫</kbd> takes a note back · <kbd>Esc</kbd> clears</span></figcaption>
+      <figcaption class="plate-caption">Plate I · The seven keys — <span class="keys-legend"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd> <kbd>J</kbd><kbd>K</kbd><kbd>L</kbd> or <kbd>1</kbd>–<kbd>7</kbd> play · <kbd>Space</kbd> or <kbd>;</kbd> next word · <kbd>⌫</kbd> takes a note back · <kbd>Esc</kbd> clears</span></figcaption>
     </figure>
     <p class="play-replay"><button class="linkish" data-replay>Replay the introduction</button></p>
 
@@ -123,7 +129,8 @@ export function mountPlayView(host, ctx, route) {
   const commit = () => ctx.commit();
 
   const kids = [
-    mountKeyboard(q('[data-keyboard]'), word, { onCommit: commit }),
+    mountKeyboard(q('[data-keyboard]'), word, { onCommit: commit, onEmptyBackspace: () => reopenLast(ctx) }),
+    mountWriting(q('[data-writing]'), ctx),
     mountPredictor(q('[data-predictor]'), word, { openWord: ctx.openWord, meanings: state.meanings }),
     mountChoir(q('[data-choir]'), word, { prefs: state.prefs }),
     mountSentence(q('[data-sentence]'), ctx),
@@ -135,7 +142,7 @@ export function mountPlayView(host, ctx, route) {
   ];
 
   // ── the readout ──
-  const els = { family: q('[data-family]'), word: q('[data-word]'), meaning: q('[data-meaning]'), more: q('[data-more]') };
+  const els = { family: q('[data-family]'), word: q('[data-word]'), meaning: q('[data-meaning]'), more: q('[data-more]'), script: q('[data-script]') };
   const echo = q('[data-echo]');
   const ownMeaning = (key) => state.meanings.get()[key] || null;
 
@@ -149,9 +156,11 @@ export function mountPlayView(host, ctx, route) {
       els.word.innerHTML = '<span class="readout-ghost">Play a note</span>';
       els.meaning.innerHTML = 'Strike the keys, and a word appears here.';
       els.more.textContent = '';
+      els.script.innerHTML = '';
     } else {
       els.family.textContent = notes.length === 1 ? 'a particle' : (word.family || '');
-      els.word.textContent = word.text;
+      els.word.innerHTML = wordHTML(word.text, { color: true });      // each syllable in its note's colour
+      els.script.innerHTML = cursiveSVG(notes, { size: 22 });          // and the whole word in Sudre's hand
       els.meaning.innerHTML = m
         ? `“${esc(parts[0])}”${own ? ' <span class="tag">your meaning</span>' : ''}`
         : '<span class="readout-none">not in the dictionary — yet</span>';

@@ -1,6 +1,7 @@
-import { note, cap } from '../../dictionary/notes.js';
-import { allWords } from '../../dictionary/dictionary.js';
-import { prepare } from './lexicon.model.js';
+import { note, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { allWords } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { prepare } from './lexicon.model.js?v=ea2512429f';
+import { numbersHTML } from '../../graphics/graphics.js?v=ea2512429f';
 
 // Small shared pieces of the Dictionary chapter: the prepared lexicon
 // (built once per loaded word list) and the markup every tab writes.
@@ -25,7 +26,8 @@ export const fmt = (n) => Number(n).toLocaleString('en-US');
 export const swatches = (notes, cls = '') =>
   `<span class="swatches ${cls}" aria-hidden="true">${notes.map((n) => `<i style="background:${note(n).color}"></i>`).join('')}</span>`;
 
-export const digits = (notes) => notes.map((n) => note(n).num).join('');
+// a word's figures, each in its note's colour (HTML)
+export const digits = (notes) => numbersHTML(notes);
 
 export const playBtn = (key, label = cap(key)) =>
   `<button class="dx-play" data-play="${key}" aria-label="Hear ${label}" title="Hear ${label}">▶</button>`;

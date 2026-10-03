@@ -1,6 +1,6 @@
-import { NOTES, noteByNumber, cap } from '../dictionary/notes.js';
-import { noteForKey, keyForNote, isCommitKey } from './keymap.js';
-import { playNote } from '../voices/index.js';
+import { NOTES, noteByNumber, cap } from '../dictionary/notes.js?v=ea2512429f';
+import { noteForKey, keyForNote, isCommitKey } from './keymap.js?v=ea2512429f';
+import { playNote } from '../voices/index.js?v=ea2512429f';
 
 // The seven-note keyboard — an instrument and a typewriter.
 //
@@ -8,7 +8,7 @@ import { playNote } from '../voices/index.js';
 // sound do re mi fa sol la si; Space (or ; / Enter) finishes a word. It
 // holds no rules and knows no meanings — it just strikes notes.
 
-export function mountKeyboard(host, word, { onCommit } = {}) {
+export function mountKeyboard(host, word, { onCommit, onEmptyBackspace } = {}) {
   host.classList.add('keyboard');
   host.textContent = '';
 
@@ -53,7 +53,7 @@ export function mountKeyboard(host, word, { onCommit } = {}) {
     const byNum = noteByNumber(e.key);              // 1–7 still work
     if (byNum) { e.preventDefault(); strike(byNum.name); return; }
 
-    if (e.key === 'Backspace') { e.preventDefault(); word.removeLast(); }
+    if (e.key === 'Backspace') { e.preventDefault(); if (word.length) word.removeLast(); else onEmptyBackspace?.(); }
     else if (e.key === 'Escape') { word.clear(); }
     else if (isCommitKey(e.key)) {
       if (isKeyboardFocused(e.target)) return;      // Space/Enter on a focused control presses it

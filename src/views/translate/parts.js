@@ -1,5 +1,6 @@
-import { note, cap } from '../../dictionary/notes.js';
-import { markWord } from '../../dictionary/grammar.js';
+import { note, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { markWord } from '../../dictionary/grammar.js?v=ea2512429f';
+import { numbersHTML } from '../../graphics/graphics.js?v=ea2512429f';
 
 // Small markup helpers shared by the Translation chapter's four leaves.
 // A word travels in attributes as hyphenated notes ("do-mi-sol"); a
@@ -33,4 +34,5 @@ export function markMatch(definition, q) {
   return text.replace(new RegExp(`\\b(${w}\\w*)`, 'i'), '<mark>$1</mark>');
 }
 
-export const numbersOf = (notes) => notes.map((n) => note(n).num).join(' ');
+// a word's figures, each in its note's colour (HTML)
+export const numbersOf = (notes) => numbersHTML(notes, ' ');

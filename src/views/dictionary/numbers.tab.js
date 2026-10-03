@@ -1,6 +1,6 @@
-import { parse, cap } from '../../dictionary/notes.js';
-import { toSolresol, TABLE } from './numbers.model.js';
-import { lexicon, esc, fmt, swatches, digits } from './common.js';
+import { parse, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { toSolresol, TABLE } from './numbers.model.js?v=ea2512429f';
+import { lexicon, esc, fmt, swatches, digits } from './common.js?v=ea2512429f';
 
 // Numbers — any whole number said in Solresol. The base words are the
 // dictionary's own; how they join is marked as the reading it is.

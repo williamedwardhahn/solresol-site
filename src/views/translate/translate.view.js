@@ -1,11 +1,11 @@
-import { emit } from '../../live/bus.js';
-import { playWord, playSentence } from '../../voices/index.js';
-import { schedule } from '../../compose/sentence.model.js';
-import { decSentence } from './parts.js';
-import { mountWordsLeaf } from './words.leaf.js';
-import { mountSentenceLeaf } from './sentence.leaf.js';
-import { mountPhrasebookLeaf } from './phrasebook.leaf.js';
-import { mountComposerLeaf } from './composer.leaf.js';
+import { emit } from '../../live/bus.js?v=ea2512429f';
+import { playWord, playSentence } from '../../voices/index.js?v=ea2512429f';
+import { schedule } from '../../compose/sentence.model.js?v=ea2512429f';
+import { decSentence } from './parts.js?v=ea2512429f';
+import { mountWordsLeaf } from './words.leaf.js?v=ea2512429f';
+import { mountSentenceLeaf } from './sentence.leaf.js?v=ea2512429f';
+import { mountPhrasebookLeaf } from './phrasebook.leaf.js?v=ea2512429f';
+import { mountComposerLeaf } from './composer.leaf.js?v=ea2512429f';
 
 // Chapter III · Translation — four leaves, each its own address:
 //   #/translate             words, both ways

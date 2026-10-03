@@ -1,17 +1,19 @@
-import { mountStudy } from './study.js';
-import { mountGrammar } from './grammar.js';
-import { mountQuiz } from './quiz.js';
-import { mountSing } from './sing.js';
-import { mountGames } from './games.js';
-import { mountHistory } from './history.js';
-import { mountYours } from './yours.js';
-import { bindWordLinks } from './common.js';
+import { mountStudy } from './study.js?v=ea2512429f';
+import { mountGrammar } from './grammar.js?v=ea2512429f';
+import { mountQuiz } from './quiz.js?v=ea2512429f';
+import { mountSing } from './sing.js?v=ea2512429f';
+import { mountWrite } from './write.js?v=ea2512429f';
+import { mountGames } from './games.js?v=ea2512429f';
+import { mountHistory } from './history.js?v=ea2512429f';
+import { mountYours } from './yours.js?v=ea2512429f';
+import { bindWordLinks } from './common.js?v=ea2512429f';
 
 // The Learn chapter — the School. mountLearnView(host, ctx, route) → { update(route), destroy() }.
-// Seven leaves, each its own route so every one is linkable:
+// Eight leaves, each its own route so every one is linkable:
 //   #/learn           Study — the seven notes, every voice
 //   #/learn/grammar   Grammar — Gajewski's rules, playable
 //   #/learn/quiz      Examinations — five levels that unlock
+//   #/learn/write     Write — learn sentences by typing them on the keys
 //   #/learn/sing      The singing lesson — a tuner that teaches
 //   #/learn/games     Games — the learning cards, and the sky
 //   #/learn/history   History — Sudre's story
@@ -21,6 +23,7 @@ const LEAVES = [
   { id: '',        label: 'Study',    mount: mountStudy },
   { id: 'grammar', label: 'Grammar',  mount: mountGrammar },
   { id: 'quiz',    label: 'Quiz',     mount: mountQuiz },
+  { id: 'write',   label: 'Write',    mount: mountWrite },
   { id: 'sing',    label: 'Sing',     mount: mountSing },
   { id: 'games',   label: 'Games',    mount: mountGames },
   { id: 'history', label: 'History',  mount: mountHistory },

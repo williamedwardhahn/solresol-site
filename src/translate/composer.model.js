@@ -1,4 +1,4 @@
-import { TENSE_MARKERS, partOfSpeech, markWord } from '../dictionary/grammar.js';
+import { TENSE_MARKERS, partOfSpeech, markWord } from '../dictionary/grammar.js?v=ea2512429f';
 
 // The composer — a sentence built from slots, ordered by the canonical
 // grammar (Gajewski; docs/SOLRESOL_MASTER.md §6). Pure: no DOM.

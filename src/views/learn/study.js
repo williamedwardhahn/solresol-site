@@ -1,13 +1,13 @@
-import { NOTES, note, parse, cap } from '../../dictionary/notes.js';
-import { meaningOf } from '../../dictionary/dictionary.js';
-import { semanticKey } from '../../dictionary/grammar.js';
-import { Word } from '../../lang/word.js';
-import { emit } from '../../live/bus.js';
-import { playNote, playWord } from '../../voices/index.js';
-import { mountChoir } from '../../ui/choir.js';
-import { fanSVG, glyphSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js';
-import { HAND_PLATES } from '../../assets/assets.js';
-import { esc } from './common.js';
+import { NOTES, note, parse, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { meaningOf } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { semanticKey } from '../../dictionary/grammar.js?v=ea2512429f';
+import { Word } from '../../lang/word.js?v=ea2512429f';
+import { emit } from '../../live/bus.js?v=ea2512429f';
+import { playNote, playWord } from '../../voices/index.js?v=ea2512429f';
+import { mountChoir } from '../../ui/choir.js?v=ea2512429f';
+import { fanSVG, glyphSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
+import { esc } from './common.js?v=ea2512429f';
+import { handMark } from '../../voices/hand.js?v=ea2512429f';
 
 // Study — the seven notes, and one word shown in every voice at once.
 
@@ -44,13 +44,13 @@ export function mountStudy(host, ctx) {
         </div>
         ${NOTES.map((n) => `
         <button type="button" class="ln-nt-row" role="listitem" data-note="${n.name}" style="--c:${n.color}" aria-label="${cap(n.name)}: number ${n.num}, ${COLOUR[n.name]}, ${LETTER[n.name]}. Play it.">
-          <span class="ln-nt-num">${n.num}</span>
-          <span class="ln-nt-hand"><img src="${HAND_PLATES[n.name]}" alt="Curwen's hand sign for ${n.name}" loading="lazy" decoding="async"></span>
-          <span class="ln-nt-name"><b>${cap(n.name)}</b><i class="ln-nt-band"></i><small>${COLOUR[n.name]}</small></span>
-          <span class="ln-nt-stroke">${glyphSVG(n.name, { color: false })}</span>
+          <span class="ln-nt-num nt" style="color:${n.color}">${n.num}</span>
+          <span class="ln-nt-hand">${handMark(n.name, { plate: true })}</span>
+          <span class="ln-nt-name"><b class="nt" style="color:${n.color}">${cap(n.name)}</b><i class="ln-nt-band"></i><small>${COLOUR[n.name]}</small></span>
+          <span class="ln-nt-stroke">${glyphSVG(n.name)}</span>
           <span class="ln-nt-staff">${staffSVG([n.name], { compact: true, cls: 'ln-nt-staffsvg' })}</span>
-          <span class="ln-nt-pitch"><b>${LETTER[n.name]}</b><small>${n.freq.toFixed(1)} Hz</small></span>
-          <span class="ln-nt-braille">${n.braille}</span>
+          <span class="ln-nt-pitch"><b class="nt" style="color:${n.color}">${LETTER[n.name]}</b><small>${n.freq.toFixed(1)} Hz</small></span>
+          <span class="ln-nt-braille nt" style="color:${n.color}">${n.braille}</span>
         </button>`).join('')}
       </div>
       <figcaption class="plate-caption">Hand signs: John Curwen's engraved tonic sol-fa plates · strokes after Sudre, <i>Langue musicale universelle</i> (1866)</figcaption>

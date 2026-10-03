@@ -1,8 +1,8 @@
-import { parse } from '../../dictionary/notes.js';
-import { markWord } from '../../dictionary/grammar.js';
-import { fanSVG, staffSVG, scriptSVG, colorStripSVG } from '../../graphics/graphics.js';
-import { wordLink, sayWord } from './common.js';
-import { wordHTML } from '../../graphics/graphics.js';
+import { parse } from '../../dictionary/notes.js?v=ea2512429f';
+import { markWord } from '../../dictionary/grammar.js?v=ea2512429f';
+import { fanSVG, staffSVG, scriptSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
+import { wordLink, sayWord } from './common.js?v=ea2512429f';
+import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
 
 // History — Sudre's story, as a short illustrated timeline. Only the
 // facts SOLRESOL_MASTER §1–3 marks [canon] or [documented]; the popular
@@ -54,7 +54,7 @@ const EVENTS = [
     text: `His widow, <b>Joséphine Sudre</b>, publishes his definitive treatise after his death: <i>Langue musicale
       universelle</i>, a double dictionary of the language, with the seven written strokes. In 1869 she founds a
       Central Committee for the study and advancement of Solresol.`,
-    art: () => `<div class="ln-art-script">${scriptSVG(parse('solresol'), { color: false })}</div>`,
+    art: () => `<div class="ln-art-script">${scriptSVG(parse('solresol'))}</div>`,
     cap: 'Solresol, in Sudre’s strokes',
     big: true,
   },

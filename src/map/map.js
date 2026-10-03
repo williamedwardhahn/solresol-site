@@ -1,7 +1,7 @@
-import { NOTES, note, parse, cap } from '../dictionary/notes.js';
-import { semanticKey } from '../dictionary/grammar.js';
-import { allWords, meaningOf } from '../dictionary/dictionary.js';
-import { emit } from '../live/bus.js';
+import { NOTES, note, parse, cap } from '../dictionary/notes.js?v=ea2512429f';
+import { semanticKey } from '../dictionary/grammar.js?v=ea2512429f';
+import { allWords, meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
+import { emit } from '../live/bus.js?v=ea2512429f';
 
 // The map — the whole language, seen. Two projections of one trie:
 // the Predictor (the branching narrowing of meaning as you add a note)
@@ -68,7 +68,7 @@ export function mountPredictor(host, word, { openWord = null, meanings = null } 
     samples.textContent = '';
     host.classList.toggle('predictor--dead', false);
     if (!notes.length) {
-      status.innerHTML = `Seven notes to begin — <b>${root.count.toLocaleString()}</b> words lie ahead`;
+      status.innerHTML = `Under each key: how many of the <b>${root.count.toLocaleString()}</b> words begin with that note`;
     }
     const node = descend(root, notes);
     if (notes.length && !node) { renderDead(notes); return; }

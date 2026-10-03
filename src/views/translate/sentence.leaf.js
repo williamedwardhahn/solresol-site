@@ -1,9 +1,10 @@
-import { cap } from '../../dictionary/notes.js';
-import { getIndex } from '../../dictionary/dictionary.js';
-import { staffSVG, colorStripSVG } from '../../graphics/graphics.js';
-import { translateEnglish, glossSolresol } from '../../translate/english.model.js';
-import { esc, swatches, written, encSentence } from './parts.js';
-import { wordHTML } from '../../graphics/graphics.js';
+import { cap, NOTES } from '../../dictionary/notes.js?v=ea2512429f';
+import { getIndex } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
+import { translateEnglish, glossSolresol } from '../../translate/english.model.js?v=ea2512429f';
+import { esc, swatches, written, encSentence } from './parts.js?v=ea2512429f';
+import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
+import { cursiveSVG } from '../../graphics/cursive.js?v=ea2512429f';
 
 // A sentence, both ways, laid out as an interlinear gloss: the English
 // word, the Solresol word under it, its colours, its sense. Particles are
@@ -14,7 +15,7 @@ const TRY_SOL = ['Dore do falafa', 'Falafa domi?', 'Doré mimi solremifa lami', 
 
 const ROLE = { tense: 'tense', neg: 'negation', pronoun: 'pronoun', particle: 'particle', unknown: 'no word' };
 
-export function mountSentenceLeaf(el) {
+export function mountSentenceLeaf(el, ctx) {
   let dir = 'en';
   const text = { en: "Don't you understand?", sol: 'Dore dodo do falafa' };
 
@@ -29,6 +30,12 @@ export function mountSentenceLeaf(el) {
       <span class="visually-hidden">A sentence</span>
       <input class="search tr-sent-input" data-input autocomplete="off" spellcheck="false">
     </label>
+    <div class="tr-keys" data-keys hidden aria-label="Write with the notes">
+      ${NOTES.map((n) => `<button type="button" class="tr-key" data-key="${n.name}" style="--c:${n.color}">${cap(n.name)}</button>`).join('')}
+      <button type="button" class="tr-key tr-key--gap" data-key=" " title="next word">space</button>
+      <button type="button" class="tr-key tr-key--gap" data-key=";" title="next word">;</button>
+      <button type="button" class="tr-key tr-key--gap" data-key="back" title="take back a note">⌫</button>
+    </div>
     <p class="tr-try" data-try></p>
     <div data-out aria-live="polite"></div>`;
 
@@ -40,6 +47,7 @@ export function mountSentenceLeaf(el) {
     input.value = text[d];
     input.placeholder = d === 'en' ? 'an English sentence…' : 'a Solresol sentence — dore do falafa';
     input.classList.toggle('is-sol', d === 'sol');
+    el.querySelector('[data-keys]').hidden = d !== 'sol';
     tryEl.innerHTML = 'Try ' + (d === 'en' ? TRY_EN : TRY_SOL).map((s) => `<button type="button" class="tr-try-btn" data-try="${esc(s)}">${wordHTML(esc(s))}</button>`).join('');
     render();
   }
@@ -88,9 +96,10 @@ export function mountSentenceLeaf(el) {
         <ol class="gloss" aria-label="Word by word">${cols}</ol>
         ${words.length ? `
         <figure class="plate tr-score">
-          <p class="tr-read"><span class="tr-read-sol">${wordHTML(esc(line))}</span>
+          <p class="tr-read"><span class="tr-read-sol">${wordHTML(esc(line), { color: true })}</span>
             <span class="tr-read-en">${dir === 'en' ? `“${esc(q)}”` : esc(english)}</span></p>
           <div class="tr-staff">${staffSVG(words, { labels: false })}</div>
+          <div class="tr-cursive" aria-label="in Sudre's connected script">${words.map((w) => cursiveSVG(w, { size: 22 })).join('')}</div>
           ${colorStripSVG(words, { height: 16 })}
           <div class="controls tr-score-acts">
             <button type="button" class="btn btn--ink" data-play="${encSentence(words)}">▶ Hear the sentence</button>
@@ -107,9 +116,28 @@ export function mountSentenceLeaf(el) {
   el.addEventListener('click', (e) => {
     const d = e.target.closest('[data-dir]');
     if (d) { setDir(d.dataset.dir); return; }
+    const k = e.target.closest('[data-key]');
+    if (k) { typeKey(k.dataset.key); return; }
     const t = e.target.closest('[data-try]');
     if (t && t.dataset.try) { input.value = t.dataset.try; render(); }
   });
+  // The note keys write Solresol without spelling it: a syllable, a space
+  // (or ;) between words, ⌫ takes back the last syllable.
+  function typeKey(k) {
+    let v = input.value;
+    if (k === 'back') v = /[;\s]$/.test(v) ? v.replace(/[;\s]+$/, '') : v.replace(/(do|re|mi|fa|sol|la|si)$/i, '');
+    else if (k === ' ' || k === ';') v = v.replace(/\s+$/, '') + (k === ';' ? '; ' : ' ');
+    else v += k;
+    input.value = v; render();
+  }
+
   setDir('en');
-  return { destroy() { input.removeEventListener('input', onInput); } };
+  return {
+    // arriving from the instrument's "Translate it →": #/translate/sentence?sol=…
+    shown() {
+      const sol = ctx?.route.get().params?.sol;
+      if (sol && sol !== text.sol) { text.sol = sol; setDir('sol'); }
+    },
+    destroy() { input.removeEventListener('input', onInput); },
+  };
 }

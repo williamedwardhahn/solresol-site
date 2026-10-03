@@ -1,9 +1,9 @@
-import { Word } from '../lang/word.js';
-import { playSentence } from '../voices/index.js';
-import { guessRoles } from './sentence.model.js';
-import { note, cap } from '../dictionary/notes.js';
-import { meaningOf } from '../dictionary/dictionary.js';
-import { colorStripSVG, staffSVG } from '../graphics/graphics.js';
+import { Word } from '../lang/word.js?v=ea2512429f';
+import { playSentence } from '../voices/index.js?v=ea2512429f';
+import { guessRoles } from './sentence.model.js?v=ea2512429f';
+import { note, cap } from '../dictionary/notes.js?v=ea2512429f';
+import { meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
+import { colorStripSVG, staffSVG } from '../graphics/graphics.js?v=ea2512429f';
 
 // Compose — saying things over time. A sentence is a tune: a live Phrase
 // shown as chips with a running gloss, and played back as a melody.

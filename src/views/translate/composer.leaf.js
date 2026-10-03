@@ -1,10 +1,11 @@
-import { cap } from '../../dictionary/notes.js';
-import { getIndex } from '../../dictionary/dictionary.js';
-import { staffSVG, colorStripSVG } from '../../graphics/graphics.js';
-import { compose, writeOut, rulesInPlay, SLOTS, TENSES, PRONOUN_CHOICES } from '../../translate/composer.model.js';
-import { lookup, shortGloss, readNotes } from '../../translate/lookup.js';
-import { esc, swatches, written, encSentence } from './parts.js';
-import { wordHTML } from '../../graphics/graphics.js';
+import { cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { getIndex } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
+import { compose, writeOut, rulesInPlay, SLOTS, TENSES, PRONOUN_CHOICES } from '../../translate/composer.model.js?v=ea2512429f';
+import { lookup, shortGloss, readNotes } from '../../translate/lookup.js?v=ea2512429f';
+import { esc, swatches, written, encSentence } from './parts.js?v=ea2512429f';
+import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
+import { cursiveSVG } from '../../graphics/cursive.js?v=ea2512429f';
 
 // The composer — five slots for the parts of speech, a tense, a negation,
 // a mood. The grammar (src/translate/composer.model.js) puts the words in
@@ -132,8 +133,9 @@ export function mountComposerLeaf(el) {
           </li>`).join('')}
           <li class="cm-stop" aria-hidden="true">${question && slots.verb ? '?' : '.'}</li>
         </ol>
-        <p class="tr-read cm-read"><span class="tr-read-sol">${wordHTML(esc(line))}</span><span class="tr-read-en">${esc(english)}</span></p>
+        <p class="tr-read cm-read"><span class="tr-read-sol">${wordHTML(esc(line), { color: true })}</span><span class="tr-read-en">${esc(english)}</span></p>
         <div class="tr-staff">${staffSVG(words)}</div>
+        <div class="tr-cursive" aria-label="in Sudre's connected script">${words.map((w) => cursiveSVG(w, { size: 22 })).join('')}</div>
         ${colorStripSVG(words, { height: 14 })}
         <div class="controls tr-score-acts">
           <button type="button" class="btn btn--ink" data-play="${encSentence(words)}">▶ Hear it</button>

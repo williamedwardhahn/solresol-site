@@ -206,7 +206,9 @@ body {
 //
 // This is the one place their facts live: name, number, colour, pitch,
 // braille dots, and staff step. Colours follow the canonical rainbow
-// (do = red … si = violet). See docs/SOLRESOL_MASTER.md.
+// (do = red … si = violet). See docs/SOLRESOL_MASTER.md. Text written in a
+// note's colour uses this exact colour — the same as its key — and gets its
+// legibility from an ink edge in CSS (.nt), never from a darker shade.
 
 const NOTES = [
   { name: 'do',  num: 1, color: '#e63946', freq: 261.63, braille: '⠁', step: 0 },

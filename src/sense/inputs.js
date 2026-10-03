@@ -1,6 +1,6 @@
-import { NOTES, noteByNumber, noteFromMidi } from '../dictionary/notes.js';
-import { playNote } from '../voices/index.js';
-import { detectNote, autocorrelate } from './pitch.model.js';
+import { NOTES, noteByNumber, noteFromMidi } from '../dictionary/notes.js?v=ea2512429f';
+import { playNote } from '../voices/index.js?v=ea2512429f';
+import { detectNote, autocorrelate } from './pitch.model.js?v=ea2512429f';
 
 // The ears — ways the language comes IN.
 //

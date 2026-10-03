@@ -1,4 +1,4 @@
-import { isNote } from '../dictionary/notes.js';
+import { isNote, note } from '../dictionary/notes.js?v=ea2512429f';
 
 // The Solfège voice — a note as its written syllable.
 export const solfege = {
@@ -11,6 +11,7 @@ export const solfege = {
   },
   update(el, n) {
     el.textContent = n[0].toUpperCase() + n.slice(1);
+    el.style.color = note(n).color; el.classList.add('nt');                       // the syllable in its note's colour
   },
   // the ear: a written syllable → a note
   read(value) {

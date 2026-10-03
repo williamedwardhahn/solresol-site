@@ -1,6 +1,6 @@
-import { NOTES, cap } from '../../dictionary/notes.js';
-import { filterEntries, queryNotes } from './lexicon.model.js';
-import { lexicon, entryRow, esc, fmt, swatches } from './common.js';
+import { NOTES, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { filterEntries, queryNotes } from './lexicon.model.js?v=ea2512429f';
+import { lexicon, entryRow, esc, fmt, swatches } from './common.js?v=ea2512429f';
 
 // All words — the dictionary leafed page by page, in the order of the scale,
 // with a thumb index of the seven notes down its edge.

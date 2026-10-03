@@ -1,7 +1,7 @@
-import { mountPlayView } from '../views/play/play.view.js';
-import { mountDictionaryView } from '../views/dictionary/dictionary.view.js';
-import { mountTranslateView } from '../views/translate/translate.view.js';
-import { mountLearnView } from '../views/learn/learn.view.js';
+import { mountPlayView } from '../views/play/play.view.js?v=ea2512429f';
+import { mountDictionaryView } from '../views/dictionary/dictionary.view.js?v=ea2512429f';
+import { mountTranslateView } from '../views/translate/translate.view.js?v=ea2512429f';
+import { mountLearnView } from '../views/learn/learn.view.js?v=ea2512429f';
 
 // The chapters of the site, in the order of the book.
 //
@@ -22,5 +22,4 @@ export const VIEWS = [
 export const ELSEWHERE = [
   { href: './maya.html', label: 'Maya', note: 'talk with colour' },
   { href: './toy.html', label: 'Toy', note: 'seven keys' },
-  { href: './solresol_capstone.html', label: 'Research', note: 'the field report' },
 ];

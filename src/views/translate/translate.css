@@ -293,3 +293,15 @@
   .cm-seg .seg-btn { padding: 7px 8px; font-size: .92rem; }
   .cm-w { padding: 0 6px; min-width: 3rem; }
 }
+
+/* the words in Sudre's connected script, one line per word, side by side */
+.tr-cursive { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 16px; margin: 10px 0 4px; }
+
+/* writing Solresol with the notes themselves */
+.tr-keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 10px 0 4px; }
+.tr-key { --c: #888; min-width: 52px; min-height: 44px; padding: 6px 10px; border: 0; border-radius: 3px 3px 7px 7px;
+  background: var(--c); color: #fffdf6; font-family: var(--display); font-size: 1.15rem;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,.18), 0 2px 0 rgba(34,27,20,.5); text-shadow: 0 1px 1px rgba(0,0,0,.25); }
+.tr-key[data-key="mi"] { color: var(--ink); text-shadow: none; }
+.tr-key:active { transform: translateY(2px); box-shadow: inset 0 -2px 0 rgba(0,0,0,.2); }
+.tr-key--gap { --c: var(--paper-raised); color: var(--ink); text-shadow: none; border: 1px solid var(--ink-2); font-family: var(--sc); font-size: .95rem; }

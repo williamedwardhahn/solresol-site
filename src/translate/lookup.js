@@ -1,5 +1,5 @@
-import { NOTES, noteByNumber } from '../dictionary/notes.js';
-import { fold } from '../dictionary/index.js';
+import { NOTES, noteByNumber } from '../dictionary/notes.js?v=ea2512429f';
+import { fold } from '../dictionary/index.js?v=ea2512429f';
 
 // Looking a word up, both ways. Pure: the index is passed in.
 //

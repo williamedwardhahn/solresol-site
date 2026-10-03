@@ -66,3 +66,9 @@ body.has-panel { overflow: hidden; }
   }
   @keyframes sheet-up { from { transform: translateY(60px); opacity: 0; } }
 }
+
+/* the word in the connected script: in its colours, then in plain ink */
+.panel-cursive { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 22px; color: var(--ink); }
+.panel-cursive svg { max-width: 100%; height: auto; }
+.panel-notes { margin: 10px 0 0; font-family: var(--display); font-size: 1.2rem; }
+.panel-notes-sep { color: var(--ink-3); margin: 0 .5em; }

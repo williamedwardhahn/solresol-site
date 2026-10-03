@@ -1,10 +1,10 @@
-import { note, cap } from '../dictionary/notes.js';
-import { meaningOf } from '../dictionary/dictionary.js';
-import { on } from '../live/bus.js';
-import { playNote } from '../voices/index.js';
-import { staffSVG } from '../graphics/graphics.js';
-import { persisted } from '../site/state.js';
-import { timeline, midiFile } from './midi.model.js';
+import { note, cap } from '../dictionary/notes.js?v=ea2512429f';
+import { meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
+import { on } from '../live/bus.js?v=ea2512429f';
+import { playNote } from '../voices/index.js?v=ea2512429f';
+import { staffSVG } from '../graphics/graphics.js?v=ea2512429f';
+import { persisted } from '../site/state.js?v=ea2512429f';
+import { timeline, midiFile } from './midi.model.js?v=ea2512429f';
 
 // The Sequencer — words laid out in time.
 //

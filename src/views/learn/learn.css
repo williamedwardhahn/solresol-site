@@ -75,7 +75,7 @@
 .ln-nt-row:hover { background: rgba(255, 250, 235, .9); }
 .ln-nt-row:hover .ln-nt-band { transform: scaleX(1); }
 .ln-nt-num { font-family: var(--display); font-style: italic; font-size: 1.9rem; color: var(--ink-3); text-align: center; }
-.ln-nt-hand img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; filter: brightness(1.07) contrast(1.12) saturate(.6); }
+.ln-nt-hand .hand-ink { width: 100%; }
 .ln-nt-stroke, .ln-nt-staff, .ln-nt-braille, .ln-nt-head span:nth-child(4), .ln-nt-head span:nth-child(5), .ln-nt-head span:nth-child(7) { justify-self: center; text-align: center; }
 .ln-nt-staff .ln-nt-staffsvg { margin: 0 auto; }
 .ln-nt-name { display: grid; gap: 1px; }
@@ -601,9 +601,8 @@
   display: grid; justify-items: center; align-content: start; gap: 4px; text-align: center;
   position: relative; padding: 8px 6px 4px;
 }
-.sg-hand { width: 124px; height: 124px; border-radius: 50%; overflow: hidden; background: #fbf5de;
+.sg-hand { width: 124px; height: 124px; border-radius: 50%; overflow: hidden; padding: 12px; background: color-mix(in srgb, var(--c) 10%, var(--paper-raised));
   box-shadow: 0 0 0 1px var(--rule), 0 0 0 6px var(--paper-raised), 0 0 0 7px color-mix(in srgb, var(--c) 55%, transparent); }
-.sg-hand img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
 .sg-sing { font-family: var(--sc); letter-spacing: .14em; color: var(--ink-3); margin: 10px 0 -8px; font-size: .9rem; }
 .sg-syllable { font-family: var(--display); font-size: clamp(3.4rem, 9vw, 4.6rem); line-height: 1.05; margin: 0;
   color: var(--ink); text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: .08em; text-underline-offset: .12em; }
@@ -636,3 +635,82 @@
   .sg-hand { width: 84px; height: 84px; }
   .sg-syllable { font-size: 2.8rem; }
 }
+
+/* ── hearing you: level meter and pitch trace ── */
+.sg-ear { display: grid; grid-template-columns: minmax(120px, 200px) 1fr; gap: 14px; align-items: center; margin: 14px 0 0; }
+.sg-meter { position: relative; height: 10px; border-radius: 5px; background: var(--rule-soft); overflow: hidden; }
+.sg-meter-level { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--ink-3); border-radius: 5px; transition: width .06s linear; }
+.sg-meter-level.is-open { background: #43aa8b; }
+.sg-meter-gate { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--rubric); left: 0; }
+.sg-trace { width: 100%; height: 54px; display: block; border: 1px solid var(--rule-soft); border-radius: 3px; background: var(--paper); }
+.sg-stage--alt { grid-template-columns: 1fr; }
+.sg-alt { min-width: 0; }
+
+/* ── Sing-along ── */
+.ln-lane-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ln-lane-top .seg-btn { white-space: nowrap; }
+.ln-lane-score { margin: 0; color: var(--ink-2); }
+.ln-lane-score b { color: var(--ink); font-weight: 500; }
+.ln-lane-canvas { width: 100%; height: 300px; display: block; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; }
+.ln-lane-say { text-align: center; min-height: 2.6em; margin: 12px 0 6px; color: var(--ink-2); }
+.ln-lane-say .chip-word { font-style: normal; }
+
+/* ── Hum to speak ── */
+.ln-speak-how { text-align: center; color: var(--ink-2); margin: 0 auto 14px; max-width: 38rem; }
+.ln-speak-hum { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; min-height: 66px; align-items: center;
+  border: 1px dashed var(--rule); border-radius: 4px; padding: 10px; background: var(--paper); }
+.ln-speak-empty { color: var(--ink-3); font-style: italic; }
+.ln-speak-note { --c: #888; font-family: var(--display); font-size: 1.5rem; color: var(--c);
+  text-shadow: 0 0 1px rgba(34, 27, 20, .9), 0 0 .5px rgba(34, 27, 20, .7);
+  padding: 4px 14px 6px; border-radius: 4px; background: color-mix(in srgb, var(--c) 16%, var(--paper-raised)); border-bottom: 4px solid var(--c); }
+.ln-speak-note.is-live { animation: speak-pulse .8s ease-in-out infinite; }
+@keyframes speak-pulse { 50% { transform: translateY(-3px); box-shadow: 0 6px 14px -8px var(--c); } }
+.ln-speak-guesses { display: grid; gap: 10px; margin: 16px auto 0; max-width: 34rem; }
+.ln-speak-q { margin: 0; text-align: center; font-family: var(--sc); letter-spacing: .1em; color: var(--rubric); }
+.ln-speak-guess { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "w n" "p p"; gap: 6px 12px; align-items: baseline;
+  text-align: left; background: var(--paper-raised); border: 1px solid var(--ink-2); border-radius: 4px; padding: 12px 16px; box-shadow: 0 2px 0 var(--ink-2); }
+.ln-speak-guess:hover { background: #fffaf0; }
+.ln-speak-guess b { grid-area: w; font-family: var(--display); font-weight: 400; font-size: 1.5rem; }
+.ln-speak-notes { grid-area: n; font-family: var(--display); font-size: 1.1rem; }
+.ln-speak-p { grid-area: p; height: 4px; background: var(--rule-soft); border-radius: 2px; overflow: hidden; }
+.ln-speak-p i { display: block; height: 100%; background: var(--ink-2); }
+.ln-speak-words { margin: 18px auto 0; max-width: 40rem; }
+.ln-speak-words summary { cursor: pointer; font-family: var(--sc); letter-spacing: .06em; color: var(--ink-2); }
+.ln-speak-words ul { columns: 2; padding-left: 1.1em; margin: 10px 0 0; font-size: .95rem; }
+.ln-speak-words li b { font-weight: 500; margin-right: 6px; }
+.ln-speak-said { margin: 16px auto 0; max-width: 34rem; color: var(--ink-2); }
+.ln-speak-said:empty { display: none; }
+
+@media (max-width: 700px) {
+  .sg-ear { order: 5; grid-template-columns: 90px 1fr; }
+  .ln-lane-canvas { height: 240px; }
+  .ln-speak-words ul { columns: 1; }
+}
+
+@media (max-width: 700px) {
+  /* six modes: let the selector wrap into a tidy block instead of running off the page */
+  .sg-books { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; }
+  .sg-books .seg-btn { border-left: 0; border-top: 1px solid var(--rule); padding: 8px 4px; white-space: normal; line-height: 1.15; }
+  .sg-books .seg-btn:nth-child(-n+3) { border-top: 0; }
+  .sg-books .seg-btn:not(:nth-child(3n+1)) { border-left: 1px solid var(--rule); }
+  .sg-alt { order: 2; }
+  .ln-lane-top .seg { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+}
+
+/* ── Write: learning sentences on the keys ── */
+.wr-lede { text-align: center; margin: 0 auto 16px; }
+.wr-plate { max-width: 860px; margin-left: auto; margin-right: auto; text-align: center; }
+.wr-section { font-family: var(--sc); letter-spacing: .12em; color: var(--rubric); margin: 0; font-size: .88rem; }
+.wr-en { font-family: var(--display); font-style: italic; font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 4px 0 10px; }
+.wr-hint { color: var(--ink-2); margin: 0 0 8px; }
+.wr-hint-note { --c: #888; display: inline-block; width: 22px; height: 16px; margin: 0 2px; border-radius: 2px; background: var(--c); vertical-align: middle; }
+.wr-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 6px 20px; min-height: 76px; padding: 10px 0;
+  border-top: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+.wr-word { display: grid; justify-items: center; }
+.wr-word b { font-family: var(--display); font-weight: 400; font-size: 1.9rem; line-height: 1.15; min-height: 1.15em; display: inline-flex; align-items: baseline; }
+.wr-word small { font-style: italic; color: var(--ink-3); font-size: .9rem; }
+.wr-word--right small::before { content: '✓ '; color: #2f7d63; font-style: normal; }
+.wr-word--wrong b { text-decoration: line-through; text-decoration-color: var(--rubric); opacity: .75; }
+.wr-word--wrong small { color: var(--rubric); }
+.wr-say { min-height: 1.6em; margin: 10px 0; color: var(--ink-2); }
+.wr-keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 6px 0 14px; }

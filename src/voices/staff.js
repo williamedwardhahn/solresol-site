@@ -1,4 +1,4 @@
-import { staffSVG } from '../graphics/graphics.js';
+import { staffSVG } from '../graphics/graphics.js?v=ea2512429f';
 
 // The Staff voice — a note as a coloured head on a real treble staff.
 export const staff = {

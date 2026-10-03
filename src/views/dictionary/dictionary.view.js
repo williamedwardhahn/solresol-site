@@ -1,12 +1,12 @@
-import { parse } from '../../dictionary/notes.js';
-import { Word } from '../../lang/word.js';
-import { emit } from '../../live/bus.js';
-import { playWord, playSentence } from '../../voices/index.js';
-import { mountWords } from './words.tab.js';
-import { mountFamilies } from './families.tab.js';
-import { mountMirrors } from './mirrors.tab.js';
-import { mountNumbers } from './numbers.tab.js';
-import { mountMap } from './map.tab.js';
+import { parse } from '../../dictionary/notes.js?v=ea2512429f';
+import { Word } from '../../lang/word.js?v=ea2512429f';
+import { emit } from '../../live/bus.js?v=ea2512429f';
+import { playWord, playSentence } from '../../voices/index.js?v=ea2512429f';
+import { mountWords } from './words.tab.js?v=ea2512429f';
+import { mountFamilies } from './families.tab.js?v=ea2512429f';
+import { mountMirrors } from './mirrors.tab.js?v=ea2512429f';
+import { mountNumbers } from './numbers.tab.js?v=ea2512429f';
+import { mountMap } from './map.tab.js?v=ea2512429f';
 
 // Chapter II · The Dictionary. mountDictionaryView(host, ctx, route) → { update(route), destroy() }.
 // Five leaves, each linkable: #/dictionary (all words), /families, /mirrors,

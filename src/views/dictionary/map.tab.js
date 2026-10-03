@@ -1,7 +1,7 @@
-import { note, cap } from '../../dictionary/notes.js';
-import { SEMANTIC_KEYS } from '../../dictionary/grammar.js';
-import { buildTree, find, bands, arcPath, angles, labelPlace, walk } from './sunburst.model.js';
-import { lexicon, esc, fmt, swatches } from './common.js';
+import { note, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { SEMANTIC_KEYS } from '../../dictionary/grammar.js?v=ea2512429f';
+import { buildTree, find, bands, arcPath, angles, labelPlace, walk } from './sunburst.model.js?v=ea2512429f';
+import { lexicon, esc, fmt, swatches } from './common.js?v=ea2512429f';
 
 // The map — the whole dictionary as one wheel. Ring by ring outward, the
 // first note, the second, the words. Click a ring to go in, the centre to

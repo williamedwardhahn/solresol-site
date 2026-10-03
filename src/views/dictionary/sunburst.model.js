@@ -1,4 +1,4 @@
-import { NOTE_NAMES } from '../../dictionary/notes.js';
+import { NOTE_NAMES } from '../../dictionary/notes.js?v=ea2512429f';
 
 // The map of the dictionary as a tree of prefixes, laid out as a sunburst.
 // Pure, no DOM. Ring d is the d-th note of the words under it, so every

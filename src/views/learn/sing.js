@@ -1,10 +1,13 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js';
-import { meaningOf } from '../../dictionary/dictionary.js';
-import { playNote } from '../../voices/index.js';
-import { emit } from '../../live/bus.js';
-import { HAND_ART } from '../../assets/assets.js';
-import { detectPitch, hear, ladderPosition, smoother, lesson, grade } from '../../learn/singing.model.js';
-import { esc } from './common.js';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { meaningOf } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { playNote } from '../../voices/index.js?v=ea2512429f';
+import { emit } from '../../live/bus.js?v=ea2512429f';
+import { handMark } from '../../voices/hand.js?v=ea2512429f';
+import { ladderPosition, lesson, grade } from '../../learn/singing.model.js?v=ea2512429f';
+import { createMic } from '../../learn/mic.js?v=ea2512429f';
+import { mountLane } from './sing-lane.js?v=ea2512429f';
+import { mountSpeak } from './sing-speak.js?v=ea2512429f';
+import { esc } from './common.js?v=ea2512429f';
 
 // The singing lesson (#/learn/sing) — a tuner that teaches.
 //
@@ -13,10 +16,14 @@ import { esc } from './common.js';
 // a fine gauge in the middle shows how many cents flat or sharp; hold it
 // in tune and the wedge glows and rings, as a guitar tuner locks on.
 //
-// Four ways to use it: a free tuner, one note at a time, the scale, and
-// whole words — each word sung ends by telling you what you said. It is
-// read in your own octave: the first note you sing sets where the
-// lesson's reference notes are played.
+// Six ways to use it: a free tuner; one note at a time; the scale; whole
+// words — each word sung ends by telling you what you said; Sing-along, a
+// game where notes slide toward a line (sing-lane.js); and Hum to speak,
+// where a hummed word is decoded and, once chosen, said aloud
+// (sing-speak.js). It is read in your own octave: the first note you sing
+// (or "Find my range") sets where reference notes are played. Under it
+// all: a level meter, so you can see it hears you, and a trace of the
+// pitch you sang over the last seconds.
 
 const STORE = 'solresol:sing';
 const BOOKS = [
@@ -24,7 +31,11 @@ const BOOKS = [
   { id: 'note',  numeral: 'I',   label: 'One note' },
   { id: 'scale', numeral: 'II',  label: 'The scale' },
   { id: 'words', numeral: 'III', label: 'Words' },
+  { id: 'lane',  numeral: 'IV',  label: 'Sing-along' },
+  { id: 'speak', numeral: 'V',   label: 'Hum to speak' },
 ];
+const ALT = { lane: mountLane, speak: mountSpeak };   // modes that bring their own stage
+const TRACE_SECONDS = 6;
 // Short words worth singing first — each checked against the dictionary on use.
 const WORDS = ['simi', 'misol', 'solsi', 'dore', 'domi', 'fala', 'lafa', 'milasi', 'solsire', 'domisol', 'dosido', 'mifala'];
 const SCALE = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si', 'la', 'sol', 'fa', 'mi', 're', 'do'];
@@ -52,7 +63,8 @@ export function mountSing(host, ctx) {
     <div class="sg-intro">
       <h2 class="section-title">The singing lesson</h2>
       <p class="lede">Solresol was meant to be sung. Sing into the fan: the needle finds your note,
-        the gauge shows how true it is, and when you hold it in tune the colour rings.</p>
+        the gauge shows how true it is, and when you hold it in tune the colour rings. Then sing along
+        to words as they arrive — or hum a word, and have it said aloud.</p>
     </div>
 
     <div class="plate sg-plate">
@@ -68,10 +80,11 @@ export function mountSing(host, ctx) {
       </div>
 
       <div class="sg-stage">
+        <div class="sg-alt" hidden></div>
         <canvas class="sg-dial" aria-hidden="true"></canvas>
 
         <div class="sg-card">
-          <div class="sg-hand"><img alt=""></div>
+          <div class="sg-hand"></div>
           <p class="sg-sing">Sing</p>
           <p class="sg-syllable" aria-live="polite"></p>
           <div class="sg-word" hidden></div>
@@ -80,9 +93,15 @@ export function mountSing(host, ctx) {
         </div>
       </div>
 
+      <div class="sg-ear">
+        <span class="sg-meter" title="how loud the microphone hears you"><i class="sg-meter-level"></i><i class="sg-meter-gate"></i></span>
+        <canvas class="sg-trace" aria-hidden="true"></canvas>
+      </div>
       <div class="controls sg-controls">
         <button class="btn btn--ink" data-act="listen">🎤 Start singing</button>
         <button class="btn" data-act="hear">▶ Hear it</button>
+        <button class="btn" data-act="mine" disabled>▶ My note</button>
+        <button class="btn btn--ghost" data-act="range">Find my range</button>
         <button class="btn btn--ghost" data-act="skip">Skip</button>
       </div>
       <p class="sg-tally"></p>
@@ -91,15 +110,20 @@ export function mountSing(host, ctx) {
 
   const $ = (s) => host.querySelector(s);
   const canvas = $('.sg-dial'), g = canvas.getContext('2d');
-  const card = $('.sg-card'), handImg = $('.sg-hand img'), singLbl = $('.sg-sing');
+  const card = $('.sg-card'), handBox = $('.sg-hand'), singLbl = $('.sg-sing');
   const syllable = $('.sg-syllable'), wordBox = $('.sg-word'), holdBar = $('.sg-hold i');
   const status = $('.sg-status'), tally = $('.sg-tally'), listenBtn = $('[data-act=listen]');
+  const altHost = $('.sg-alt'), meterLevel = $('.sg-meter-level'), meterGate = $('.sg-meter-gate');
+  const trace = $('.sg-trace'), tg = trace.getContext('2d'), mineBtn = $('[data-act=mine]');
 
   let book = 'tuner', rangePref = 'auto', refOctave = 0, octaveKnown = false;
   let current = null;              // { lesson, notes, word? } — null in the free tuner
-  let mic = null;                  // { ac, analyser, stream, buf }
-  let raf = 0, lastT = 0, lastHear = 0, deafUntil = 0;
-  const smooth = smoother(5);
+  const ear = createMic();         // the microphone, shared by every mode
+  let raf = 0, lastT = 0, lastHear = 0;
+  let alt = null;                  // the mounted Sing-along / Hum-to-speak mode, if any
+  let traced = [];                 // { t, pos, note } — the pitch over the last seconds
+  let lastVoiced = null;           // { note, octave } — for "My note"
+  let ranging = null;              // { phase: 'low' | 'high', got: [], low }
 
   // what the dial shows, and how it moves
   const needle = spring(70, 13);   // position across the fan (0 = do … 6 = si)
@@ -138,12 +162,12 @@ export function mountSing(host, ctx) {
     singLbl.textContent = current ? 'Sing' : heard ? 'You are singing' : 'Sing any note';
     if (!n) {
       syllable.textContent = current ? '' : '—';
-      handImg.removeAttribute('src');
+      handBox.innerHTML = ''; handBox.dataset.n = '';
       card.style.setProperty('--c', 'var(--rule)');
       wordBox.hidden = true;
       return;
     }
-    if (handImg.dataset.n !== n) { handImg.src = HAND_ART[n]; handImg.dataset.n = n; handImg.alt = `hand sign for ${n}`; }
+    if (handBox.dataset.n !== n) { handBox.innerHTML = handMark(n); handBox.dataset.n = n; }       // the hand, in its note's colour
     syllable.textContent = cap(n);
     card.style.setProperty('--c', note(n).color);
     if (current && (current.word || book === 'scale')) {
@@ -161,7 +185,7 @@ export function mountSing(host, ctx) {
     const n = current?.lesson.target;
     if (!n) return;
     playNote(n, 0, 0.9, { octave: refOctave });
-    deafUntil = performance.now() + 1100;          // don't hear the lesson's own voice
+    ear.deafen(1100);                              // don't hear the lesson's own voice
   }
 
   function celebrate() {
@@ -172,7 +196,7 @@ export function mountSing(host, ctx) {
       if (!stats.words.includes(current.word)) stats.words.push(current.word);
       emit('word:used', { key: current.word, channel: 'sing' });
       current.notes.forEach((n, i) => playNote(n, 0.15 + i * 0.3, 0.45, { octave: refOctave }));
-      deafUntil = performance.now() + 700 + current.notes.length * 300;
+      ear.deafen(700 + current.notes.length * 300);
       status.innerHTML = `${stars} You sang <button class="chip-word" data-open="${current.word}">${cap(current.word)}</button> — <i>${esc(meaningOf(current.word))}</i>. ${g2.word}.`;
     } else if (book === 'scale') {
       status.textContent = `${stars} The whole scale, up and down — ${g2.word}.`;
@@ -181,7 +205,7 @@ export function mountSing(host, ctx) {
     }
     saveStats(stats); renderTally(); drawCard();
     bloom = 1;
-    setTimeout(() => { if (current?.lesson.done) { newLesson(); if (mic) sayTarget(); } }, current.word ? 3200 : 1400);
+    setTimeout(() => { if (current?.lesson.done) { newLesson(); if (ear.active) sayTarget(); } }, current.word ? 3200 : 1400);
   }
 
   function renderTally() {
@@ -190,28 +214,17 @@ export function mountSing(host, ctx) {
 
   // ── the microphone ─────────────────────────────────────────────────
   async function startMic() {
-    if (!navigator.mediaDevices?.getUserMedia) { status.textContent = 'This browser has no microphone.'; return; }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: false },
-      });
-      const ac = new (window.AudioContext || window.webkitAudioContext)();
-      if (ac.state !== 'running') await ac.resume().catch(() => {});
-      const analyser = ac.createAnalyser();
-      analyser.fftSize = 2048;
-      ac.createMediaStreamSource(stream).connect(analyser);
-      mic = { ac, analyser, stream, buf: new Float32Array(2048) };
+      await ear.start();
       listenBtn.textContent = '■ Stop'; listenBtn.setAttribute('aria-pressed', 'true');
-      status.textContent = current ? `Listen, then sing ${cap(current.lesson.target)}.` : 'Sing any note — the needle will find it.';
+      status.textContent = alt ? '' : current ? `Listen, then sing ${cap(current.lesson.target)}.` : 'Sing any note — the needle will find it. The bar below shows how loud I hear you.';
       sayTarget();
-    } catch {
-      status.textContent = 'The microphone was declined — allow it in the browser to sing.';
+    } catch (e) {
+      status.textContent = /no microphone/i.test(e.message) ? e.message : 'The microphone was declined — allow it in the browser to sing.';
     }
   }
   function stopMic() {
-    mic?.stream.getTracks().forEach((t) => t.stop());
-    mic?.ac.close().catch(() => {});
-    mic = null; smooth(null); live = null;
+    ear.stop(); live = null;
     listenBtn.textContent = '🎤 Start singing'; listenBtn.setAttribute('aria-pressed', 'false');
   }
 
@@ -224,21 +237,25 @@ export function mountSing(host, ctx) {
     if (now - lastHear >= 32) {
       const hdt = lastHear ? Math.min(0.1, (now - lastHear) / 1000) : 0.03;
       lastHear = now;
-      let reading = null;
-      if (mic && now > deafUntil) {
-        mic.analyser.getFloatTimeDomainData(mic.buf);
-        const f = smooth(detectPitch(mic.buf, mic.ac.sampleRate));
-        if (f) {
-          reading = hear(f);
-          if (!octaveKnown && rangePref === 'auto') { refOctave = Math.max(-2, Math.min(1, reading.octave)); octaveKnown = true; }
-          const p = ladderPosition(f, refOctave);
-          const pos = ((p + 0.5) % 7 + 7) % 7 - 0.5;               // its place in the octave, do … si
-          live = { note: reading.note, cents: reading.cents, pos };
-          liveAt = now;
-        }
-      } else if (!mic) smooth(null);
-      judge(reading, hdt, now);
+      const r = ear.read();
+      showLevel(r);
+      let reading = r.reading;
+      if (reading) {
+        lastVoiced = { note: reading.note, octave: reading.octave }; mineBtn.disabled = false;
+        if (!octaveKnown && rangePref === 'auto') { refOctave = Math.max(-2, Math.min(1, reading.octave)); octaveKnown = true; }
+        const p = ladderPosition(r.freq, refOctave);
+        const pos = ((p + 0.5) % 7 + 7) % 7 - 0.5;               // its place in the octave, do … si
+        live = { note: reading.note, cents: reading.cents, pos };
+        liveAt = now;
+        traced.push({ t: now, pos, note: reading.note });
+        if (ranging) rangeHear(reading, r.freq);
+      }
+      traced = traced.filter((x) => now - x.t < TRACE_SECONDS * 1000);
+      if (alt) alt.hear(r, now, hdt);
+      else judge(reading, hdt, now);
     }
+    drawTrace(now);
+    if (alt) { alt.draw(now, dt); return; }
     draw(now, dt);
   }
 
@@ -250,18 +267,18 @@ export function mountSing(host, ctx) {
         status.textContent = off <= IN_TUNE ? `${cap(reading.note)} — in tune.`
           : `${cap(reading.note)}, ${off} cents ${c < 0 ? 'flat — lift it' : 'sharp — ease down'}.`;
         holdBar.style.width = `${Math.max(0, 100 - off * 2)}%`;
-      } else if (mic && now - liveAt > 600) {
+      } else if (ear.active && now - liveAt > 600) {
         holdBar.style.width = '0%';
       }
       return;
     }
-    if (!mic || current.lesson.done || now <= deafUntil) return;
+    if (!ear.active || current.lesson.done || ear.deaf) return;
     const verdict = current.lesson.feed(reading, dt);
     holdBar.style.width = `${current.lesson.progress * 100}%`;
     const t = cap(current.lesson.target);
     if (verdict === 'sung') {
       playNote(current.notes[current.lesson.index - 1], 0, 0.3, { octave: refOctave });
-      deafUntil = now + 380; drawCard(); bloom = 0.6;
+      ear.deafen(380); drawCard(); bloom = 0.6;
       status.textContent = `Yes — now ${cap(current.lesson.target)}.`;
     } else if (verdict === 'done') celebrate();
     else if (verdict === 'holding') status.textContent = `That's ${t} — hold it…`;
@@ -389,7 +406,7 @@ export function mountSing(host, ctx) {
     g.globalAlpha = 1;
     g.fillStyle = locked ? '#2f7d63' : '#76685a';
     g.font = `italic ${Math.max(11, Math.round(hub * 0.17))}px "Newsreader", Georgia, serif`;
-    g.fillText(!fresh ? (mic ? 'listening…' : 'sing to begin') : locked ? 'in tune' :
+    g.fillText(!fresh ? (ear.active ? 'listening…' : 'sing to begin') : locked ? 'in tune' :
       `${Math.abs(live.cents)} cents ${live.cents < 0 ? 'flat' : 'sharp'}`, cx, cy - hub * 0.12 - 4);
 
     // a bloom of light when a note is sung
@@ -399,18 +416,88 @@ export function mountSing(host, ctx) {
     }
   }
 
+  // ── hearing you: the level meter and the trace ─────────────────────
+  function showLevel(r) {
+    // a log scale, so a whisper and a shout both show: 0.001 → 0%, 0.3 → 100%
+    const pct = (v) => Math.max(0, Math.min(100, (Math.log10(Math.max(v, 1e-4)) + 3) / 2.5 * 100));
+    meterLevel.style.width = `${pct(r.level)}%`;
+    meterLevel.classList.toggle('is-open', r.open);
+    meterGate.style.left = `${pct(r.threshold)}%`;
+  }
+  // The last few seconds of your pitch, as a line of colour on seven rungs.
+  function drawTrace(now) {
+    const dpr = window.devicePixelRatio || 1, w = trace.clientWidth, h = trace.clientHeight;
+    if (!w || !h) return;
+    if (trace.width !== Math.round(w * dpr)) { trace.width = Math.round(w * dpr); trace.height = Math.round(h * dpr); }
+    tg.setTransform(dpr, 0, 0, dpr, 0, 0); tg.clearRect(0, 0, w, h);
+    const yOf = (pos) => h - 4 - ((pos + 0.5) / 7) * (h - 8);
+    NOTES.forEach((n, i) => { tg.fillStyle = n.color; tg.globalAlpha = 0.08; tg.fillRect(0, yOf(i + 0.5), w, (h - 8) / 7); });
+    tg.globalAlpha = 1; tg.lineWidth = 3; tg.lineCap = 'round';
+    const xOf = (t) => w - ((now - t) / (TRACE_SECONDS * 1000)) * w;
+    for (let i = 1; i < traced.length; i++) {
+      const a = traced[i - 1], b = traced[i];
+      if (b.t - a.t > 150 || Math.abs(b.pos - a.pos) > 3) continue;   // a gap, or the wrap from si to do
+      tg.strokeStyle = note(b.note).color;
+      tg.beginPath(); tg.moveTo(xOf(a.t), yOf(a.pos)); tg.lineTo(xOf(b.t), yOf(b.pos)); tg.stroke();
+    }
+  }
+
+  // ── your note, and your range ──────────────────────────────────────
+  function playMine() {
+    if (!lastVoiced) return;
+    playNote(lastVoiced.note, 0, 0.9, { octave: lastVoiced.octave });
+    ear.deafen(1100);
+    status.textContent = `That was ${cap(lastVoiced.note)} — this is it, played true.`;
+  }
+  // Sing your lowest comfortable note, then your highest: reference notes
+  // are then played in the octave that sits in the middle of your voice.
+  function startRange() {
+    if (!ear.active) { status.textContent = 'Start singing first, then find your range.'; return; }
+    ranging = { phase: 'low', got: [] };
+    status.textContent = 'Sing your LOWEST comfortable note, and hold it…';
+  }
+  function rangeHear(reading) {
+    ranging.got.push(reading.midi);
+    if (ranging.got.length < 40) return;                               // about a second and a half of voice
+    const mid = ranging.got.slice().sort((a, b) => a - b)[ranging.got.length >> 1];
+    if (ranging.phase === 'low') {
+      ranging = { phase: 'high', got: [], low: mid };
+      status.textContent = 'Good. Now your HIGHEST comfortable note…';
+      return;
+    }
+    const low = Math.min(ranging.low, mid), high = Math.max(ranging.low, mid);
+    refOctave = Math.max(-2, Math.min(1, Math.floor(((low + high) / 2 - 60) / 12)));
+    rangePref = 'set'; octaveKnown = true;
+    host.querySelectorAll('[data-range]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.range) === refOctave)));
+    const name = (m) => `${['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'][Math.round(m) % 12]}${Math.floor(Math.round(m) / 12) - 1}`;
+    status.textContent = `Your range: ${name(low)} to ${name(high)}. Notes will now be played around the middle of it.`;
+    ranging = null;
+  }
+
   // ── controls ───────────────────────────────────────────────────────
   function setBook(id) {
     book = id;
     host.querySelectorAll('[data-book]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.book === id)));
-    host.querySelector('[data-act=hear]').hidden = id === 'tuner';
-    host.querySelector('[data-act=skip]').hidden = id === 'tuner';
+    // Sing-along and Hum to speak bring their own stage; the dial steps aside
+    alt?.destroy(); alt = null;
+    const own = ALT[id];
+    altHost.hidden = !own;
+    canvas.hidden = !!own; card.hidden = !!own;
+    host.querySelector('.sg-stage').classList.toggle('sg-stage--alt', !!own);
+    host.querySelector('[data-act=hear]').hidden = id === 'tuner' || !!own;
+    host.querySelector('[data-act=skip]').hidden = id === 'tuner' || !!own;
+    if (own) {
+      current = null;
+      alt = own(altHost, { ear, ctx, refOctave: () => refOctave });
+      status.textContent = '';
+      return;
+    }
     newLesson();
     holdBar.style.width = '0%';
     status.textContent = current
-      ? (mic ? `Sing ${cap(current.lesson.target)}.` : 'Start singing when you are ready.')
-      : (mic ? 'Sing any note — the needle will find it.' : 'Start singing, and the needle will find your note.');
-    if (mic) sayTarget();
+      ? (ear.active ? `Sing ${cap(current.lesson.target)}.` : 'Start singing when you are ready.')
+      : (ear.active ? 'Sing any note — the needle will find it.' : 'Start singing, and the needle will find your note.');
+    if (ear.active) sayTarget();
   }
   function setRange(v) {
     rangePref = v;
@@ -425,9 +512,11 @@ export function mountSing(host, ctx) {
     if (b.dataset.book) return setBook(b.dataset.book);
     if (b.dataset.range) return setRange(b.dataset.range);
     if (b.dataset.open) return ctx.openWord(b.dataset.open);
-    if (b.dataset.act === 'listen') return mic ? stopMic() : startMic();
+    if (b.dataset.act === 'listen') return ear.active ? stopMic() : startMic();
+    if (b.dataset.act === 'mine') return playMine();
+    if (b.dataset.act === 'range') return startRange();
     if (b.dataset.act === 'hear') return sayTarget();
-    if (b.dataset.act === 'skip') { stats.streak = 0; saveStats(stats); renderTally(); newLesson(); if (mic) sayTarget(); }
+    if (b.dataset.act === 'skip') { stats.streak = 0; saveStats(stats); renderTally(); newLesson(); if (ear.active) sayTarget(); }
   });
 
   needle.set(3);
@@ -437,6 +526,6 @@ export function mountSing(host, ctx) {
   raf = requestAnimationFrame(frame);
 
   return {
-    destroy() { cancelAnimationFrame(raf); stopMic(); host.textContent = ''; },
+    destroy() { cancelAnimationFrame(raf); alt?.destroy(); stopMic(); host.textContent = ''; },
   };
 }

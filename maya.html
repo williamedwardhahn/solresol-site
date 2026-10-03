@@ -182,6 +182,41 @@ footer a{color:var(--rubric); font-family:var(--display); font-weight:400; font-
   .keys{gap:6px}.key{height:70px;font-size:12px;padding:0 2px 7px}.key span{padding:2px 5px}
 }
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+
+/* ── Maya 2: Sudre's words, in categories, with the family's own ── */
+.top-tools{display:flex; gap:8px; align-items:center}
+.sound{font-family:inherit; font-size:15px; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:9px 12px; border-radius:999px; box-shadow:var(--shadow)}
+.say .word{flex-wrap:wrap}
+.say .sol{display:block; font-family:var(--display); font-weight:400; font-size:clamp(20px,3.4vw,28px); color:var(--ink-soft); margin-top:4px}
+.say .stack{display:flex; flex-direction:column}
+.nt{text-shadow:0 0 1px rgba(34,27,20,.9),0 0 .5px rgba(34,27,20,.7)}
+.tabs{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 10px; margin:4px 0 6px; scrollbar-width:thin}
+.tab{flex:none; display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:999px; background:var(--card);
+  border:1px solid var(--line); box-shadow:var(--shadow); font-weight:800; font-size:17px; min-height:48px; white-space:nowrap}
+.tab .te{font-size:22px}
+.tab[aria-pressed="true"]{background:var(--ink); color:var(--card); border-color:var(--ink)}
+.tile .sw{font-family:var(--display); font-size:15px; color:var(--ink-soft); line-height:1.1; text-align:center}
+.tile .sw small{font-family:var(--font); font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--ink-soft)}
+.tile.gap{border:2px dashed var(--line); background:transparent; box-shadow:none}
+.tile.gap .em{opacity:.55}
+.tile.gap .sw{color:var(--rubric); font-family:var(--font); font-weight:800; font-size:13px}
+.tile.ours .pin{position:absolute; top:8px; right:10px; font-size:14px; color:var(--rubric)}
+.make .for{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px}
+.make select{font-family:inherit; font-size:16px; font-weight:700; padding:10px 12px; border-radius:14px; border:1px solid var(--ink-soft); background:var(--bg); color:var(--ink); max-width:100%}
+.make .lab{font-weight:800; color:var(--ink-soft)}
+.make .suggest{color:var(--ink-soft); font-size:15px; margin:-4px 0 12px; line-height:1.4}
+.make .suggest b{font-family:var(--display); font-weight:400; font-size:19px}
+.share{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line)}
+.share small{color:var(--ink-soft); font-weight:600; flex-basis:100%}
+@media (max-width:560px){
+  .tab{padding:8px 12px; font-size:15px} .tile .sw{font-size:13px}
+  /* the header's controls drop to their own line, so nothing runs off a phone */
+  header{flex-wrap:wrap; row-gap:10px}
+  header .spacer{display:none}
+  .top-tools{flex-basis:100%; justify-content:space-between}
+  .sound,.toggle{font-size:14px; padding:8px 12px}
+}
 </style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
   <meta name="description" content="A free communication board: tap a word to say it aloud in speech, colour and tone. Works offline; your words stay on your device." />
@@ -193,7 +228,6 @@ footer a{color:var(--rubric); font-family:var(--display); font-weight:400; font-
   <meta name="twitter:card" content="summary" />
 </head>
 <body>
-
 <header>
   <div class="brand">
     <h1>Maya</h1>
@@ -203,13 +237,16 @@ footer a{color:var(--rubric); font-family:var(--display); font-weight:400; font-
     </span>
   </div>
   <div class="spacer"></div>
-  <button class="toggle" id="voiceBtn" aria-pressed="true">🔊 Voice <b id="voiceState">on</b></button>
+  <div class="top-tools">
+    <select class="sound" id="sound" aria-label="Sound"></select>
+    <button class="toggle" id="voiceBtn" aria-pressed="false">🔈 Voice <b id="voiceState">off</b></button>
+  </div>
 </header>
 
 <!-- the speaker's voice, made visible and read aloud -->
 <section class="say" id="say" aria-live="polite">
   <div class="rest" id="sayRest">🌈 <span>Tap to talk</span></div>
-  <div class="word" id="sayWord" hidden><span class="emoji" id="sayEmoji"></span><span id="sayText"></span></div>
+  <div class="word" id="sayWord" hidden><span class="emoji" id="sayEmoji"></span><span class="stack"><span id="sayText"></span><span class="sol" id="saySol"></span></span></div>
   <div class="spacer"></div>
   <div class="beads" id="sayBeads" aria-hidden="true"></div>
   <button class="replay" id="replay" title="Say it again" aria-label="Say it again" hidden>🔁</button>
@@ -231,16 +268,22 @@ footer a{color:var(--rubric); font-family:var(--display); font-weight:400; font-
   </button>
 </section>
 
-<div class="h">Words</div>
+<nav class="tabs" id="tabs" aria-label="Kinds of words"></nav>
 <section class="grid" id="grid"></section>
 
-<!-- Author: the speaker writes, not only is read (Kay); live and theirs (Ingalls) -->
+<!-- Author: the family writes, not only reads (Kay); live and theirs (Ingalls) -->
 <section class="make" id="make">
   <div class="top" id="makeTop">
     <h2>➕ Make a word</h2>
     <span class="chev">›</span>
   </div>
   <div class="body">
+    <div class="for">
+      <span class="lab">A word for</span>
+      <select id="cfor" aria-label="which word"></select>
+      <button class="mbtn" id="csuggest">✨ Suggest one</button>
+    </div>
+    <p class="suggest" id="cnote">Sudre left some words out. Choose one above — or a word of his you would rather say your own way — and build its notes below, or let it suggest a Solresol-shaped word.</p>
     <div class="keys" id="keys"></div>
     <div class="compose">
       <div class="beads" id="cbeads"></div>
@@ -252,51 +295,133 @@ footer a{color:var(--rubric); font-family:var(--display); font-weight:400; font-
       <button class="mbtn" id="cplay">▶ Hear it</button>
       <button class="mbtn" id="cundo">⌫ Back</button>
       <span class="palette" id="palette" aria-label="pick a picture"></span>
-      <input class="namein" id="cname" placeholder="name it" maxlength="14" aria-label="word name">
+      <input class="namein" id="cname" placeholder="name it" maxlength="18" aria-label="word name">
       <button class="mbtn go" id="ckeep" disabled>✓ Keep it</button>
+    </div>
+    <div class="share">
+      <small>Your family's words live on this device. Save them to a file to move them to another device, or to share them with a teacher or therapist.</small>
+      <button class="mbtn" id="cexport">⬇ Save our words</button>
+      <button class="mbtn" id="cimport">⬆ Load words</button>
+      <input type="file" id="cfile" accept="application/json,.json" hidden>
     </div>
   </div>
 </section>
 
-<footer id="foot">Works with no internet · the words you make stay on this device · <a href="./index.html">Solresol</a></footer>
+<footer id="foot">Sudre's Solresol (1827), with your family's own words · works with no internet · the words you make stay on this device · <a href="./index.html">Solresol</a></footer>
 
 <script>
 "use strict";
+/* ------------------------------------------------------------------
+ * Built by tools/build/build-maya.py from src/maya/maya.html: the three
+ * blocks below are injected — the vocabulary (src/dictionary/maya-vocab.js),
+ * every word of Sudre's dictionary (to keep coined words clear of his), and
+ * the site's instruments (src/voices/instruments.model.js), so Maya speaks
+ * real Solresol and sounds like the rest of the book.
+ * ------------------------------------------------------------------ */
+const MAYA_CATEGORIES = [{"id": "talk", "label": "Talk", "emoji": "💬", "family": "do"}, {"id": "needs", "label": "Needs", "emoji": "🍽️", "family": "do"}, {"id": "feel", "label": "Feelings", "emoji": "🙂", "family": "mi"}, {"id": "people", "label": "People", "emoji": "👪", "family": "re"}, {"id": "food", "label": "Food", "emoji": "🍞", "family": "do"}, {"id": "body", "label": "Body", "emoji": "🖐️", "family": "do"}, {"id": "places", "label": "Places", "emoji": "🏠", "family": "fa"}, {"id": "do", "label": "Do", "emoji": "🎵", "family": "sol"}, {"id": "little", "label": "Little words", "emoji": "❓", "family": "si"}];
+const MAYA_VOCAB = [{"id": "yes", "cat": "talk", "say": "yes", "emoji": "👍", "sol": "si", "critical": true}, {"id": "no", "cat": "talk", "say": "no", "emoji": "✋", "sol": "do", "critical": true}, {"id": "more", "cat": "talk", "say": "more", "emoji": "➕", "sol": "miredodo"}, {"id": "stop", "cat": "talk", "say": "stop", "emoji": "🛑", "sol": "fasisolla", "critical": true}, {"id": "finished", "cat": "talk", "say": "all done", "emoji": "✅", "sol": "fadosi"}, {"id": "wait", "cat": "talk", "say": "wait", "emoji": "⏳", "sol": "sifasol"}, {"id": "help", "cat": "talk", "say": "help", "emoji": "🆘", "sol": "dosido", "critical": true}, {"id": "want", "cat": "talk", "say": "I want", "emoji": "👉", "sol": "mifala"}, {"id": "again", "cat": "talk", "say": "again", "emoji": "🔁", "sol": "sifasi"}, {"id": "please", "cat": "talk", "say": "please", "emoji": "🙏", "sol": "mifare"}, {"id": "thanks", "cat": "talk", "say": "thank you", "emoji": "💐", "sol": "solsi"}, {"id": "hello", "cat": "talk", "say": "hello", "emoji": "👋", "sol": "simi"}, {"id": "goodbye", "cat": "talk", "say": "goodbye", "emoji": "👋🏽", "sol": null}, {"id": "i", "cat": "talk", "say": "I", "emoji": "🙋", "sol": "dore"}, {"id": "you", "cat": "talk", "say": "you", "emoji": "🫵", "sol": "domi"}, {"id": "go", "cat": "talk", "say": "go", "emoji": "🚶", "sol": "farefa"}, {"id": "come", "cat": "talk", "say": "come here", "emoji": "🫴", "sol": "dosolfala"}, {"id": "like", "cat": "talk", "say": "I like it", "emoji": "😍", "sol": "milasol"}, {"id": "dontknow", "cat": "talk", "say": "I don't know", "emoji": "🤷", "sol": null}, {"id": "eat", "cat": "needs", "say": "eat", "emoji": "🍽️", "sol": "dolamisi", "critical": true}, {"id": "drink", "cat": "needs", "say": "drink", "emoji": "🥤", "sol": "dolamisol", "critical": true}, {"id": "toilet", "cat": "needs", "say": "toilet", "emoji": "🚽", "sol": "solsisido", "critical": true}, {"id": "hurt", "cat": "needs", "say": "it hurts", "emoji": "🤕", "sol": "miresifa", "critical": true}, {"id": "sick", "cat": "needs", "say": "I feel sick", "emoji": "🤢", "sol": "fafadore", "critical": true}, {"id": "tired", "cat": "needs", "say": "tired", "emoji": "😴", "sol": "resollado"}, {"id": "sleep", "cat": "needs", "say": "sleep", "emoji": "🛌", "sol": "remisoldo"}, {"id": "hot", "cat": "needs", "say": "hot", "emoji": "🥵", "sol": "sisila"}, {"id": "cold", "cat": "needs", "say": "cold", "emoji": "🥶", "sol": "lasisi"}, {"id": "wash", "cat": "needs", "say": "wash", "emoji": "🧼", "sol": "redomido"}, {"id": "bath", "cat": "needs", "say": "bath", "emoji": "🛁", "sol": "resolfare"}, {"id": "medicine", "cat": "needs", "say": "medicine", "emoji": "💊", "sol": "fafamire"}, {"id": "quiet", "cat": "needs", "say": "quiet please", "emoji": "🤫", "sol": "misoldomi"}, {"id": "loud", "cat": "needs", "say": "too loud", "emoji": "🔊", "sol": null}, {"id": "kiss", "cat": "needs", "say": "kiss", "emoji": "😘", "sol": "resirela"}, {"id": "happy", "cat": "feel", "say": "happy", "emoji": "😊", "sol": "solsire"}, {"id": "sad", "cat": "feel", "say": "sad", "emoji": "😢", "sol": "resisol"}, {"id": "angry", "cat": "feel", "say": "angry", "emoji": "😠", "sol": "miresisol"}, {"id": "scared", "cat": "feel", "say": "scared", "emoji": "😨", "sol": "fasifasi"}, {"id": "bored", "cat": "feel", "say": "bored", "emoji": "🥱", "sol": "resila"}, {"id": "calm", "cat": "feel", "say": "calm", "emoji": "😌", "sol": "misoldomi"}, {"id": "excited", "cat": "feel", "say": "excited", "emoji": "🤩", "sol": "solrelasol"}, {"id": "love", "cat": "feel", "say": "love", "emoji": "❤️", "sol": "milasi"}, {"id": "surprised", "cat": "feel", "say": "surprised", "emoji": "😲", "sol": "solrelare"}, {"id": "good", "cat": "feel", "say": "good", "emoji": "👌", "sol": "fala"}, {"id": "bad", "cat": "feel", "say": "bad", "emoji": "👎", "sol": "lafa"}, {"id": "mum", "cat": "people", "say": "mum", "emoji": "👩", "sol": "residosi", "feminine": true}, {"id": "dad", "cat": "people", "say": "dad", "emoji": "👨", "sol": "residosi"}, {"id": "sister", "cat": "people", "say": "sister", "emoji": "👧", "sol": "resimire", "feminine": true}, {"id": "brother", "cat": "people", "say": "brother", "emoji": "👦", "sol": "resimire"}, {"id": "grandma", "cat": "people", "say": "grandma", "emoji": "👵", "sol": "residola", "feminine": true}, {"id": "grandpa", "cat": "people", "say": "grandpa", "emoji": "👴", "sol": "residola"}, {"id": "child", "cat": "people", "say": "child", "emoji": "🧒", "sol": "domifasol"}, {"id": "friend", "cat": "people", "say": "friend", "emoji": "🤝", "sol": "midosi"}, {"id": "teacher", "cat": "people", "say": "teacher", "emoji": "🧑‍🏫", "sol": "solmisire"}, {"id": "doctor", "cat": "people", "say": "doctor", "emoji": "🧑‍⚕️", "sol": "fafadofa"}, {"id": "dog", "cat": "people", "say": "dog", "emoji": "🐶", "sol": "faresire"}, {"id": "cat", "cat": "people", "say": "cat", "emoji": "🐱", "sol": "faresimi"}, {"id": "water", "cat": "food", "say": "water", "emoji": "💧", "sol": "dolamire"}, {"id": "milk", "cat": "food", "say": "milk", "emoji": "🥛", "sol": "dosiredo"}, {"id": "juice", "cat": "food", "say": "juice", "emoji": "🧃", "sol": "dosidola"}, {"id": "bread", "cat": "food", "say": "bread", "emoji": "🍞", "sol": "dolafala"}, {"id": "fruit", "cat": "food", "say": "fruit", "emoji": "🍎", "sol": "dosiresi"}, {"id": "meat", "cat": "food", "say": "meat", "emoji": "🍖", "sol": "dolasoldo"}, {"id": "cheese", "cat": "food", "say": "cheese", "emoji": "🧀", "sol": "dosirefa"}, {"id": "egg", "cat": "food", "say": "egg", "emoji": "🥚", "sol": "dosidosi"}, {"id": "soup", "cat": "food", "say": "soup", "emoji": "🍲", "sol": "dolafami"}, {"id": "cake", "cat": "food", "say": "cake", "emoji": "🍰", "sol": "dolasolla"}, {"id": "sweet", "cat": "food", "say": "something sweet", "emoji": "🍯", "sol": "lasolmimi"}, {"id": "meal", "cat": "food", "say": "dinner", "emoji": "🍝", "sol": "dosisolmi"}, {"id": "head", "cat": "body", "say": "head", "emoji": "🗣️", "sol": "doredofa"}, {"id": "belly", "cat": "body", "say": "tummy", "emoji": "🫃", "sol": "doresolfa"}, {"id": "teeth", "cat": "body", "say": "teeth", "emoji": "🦷", "sol": "doremila"}, {"id": "eye", "cat": "body", "say": "eye", "emoji": "👁️", "sol": "doremire"}, {"id": "mouth", "cat": "body", "say": "mouth", "emoji": "👄", "sol": "doremisol"}, {"id": "nose", "cat": "body", "say": "nose", "emoji": "👃", "sol": "doremifa"}, {"id": "ear", "cat": "body", "say": "ear", "emoji": "👂", "sol": null}, {"id": "hand", "cat": "body", "say": "hand", "emoji": "✋", "sol": "dorefasi"}, {"id": "arm", "cat": "body", "say": "arm", "emoji": "💪", "sol": "dorefala"}, {"id": "leg", "cat": "body", "say": "leg", "emoji": "🦵", "sol": "domidofa"}, {"id": "foot", "cat": "body", "say": "foot", "emoji": "🦶", "sol": "domidosol"}, {"id": "back", "cat": "body", "say": "back", "emoji": "🔙", "sol": "dorelado"}, {"id": "home", "cat": "places", "say": "home", "emoji": "🏠", "sol": "remifala"}, {"id": "bed", "cat": "places", "say": "bed", "emoji": "🛏️", "sol": "refaresol"}, {"id": "bedroom", "cat": "places", "say": "my room", "emoji": "🚪", "sol": "remilado"}, {"id": "kitchen", "cat": "places", "say": "kitchen", "emoji": "🍳", "sol": "dosisolfa"}, {"id": "school", "cat": "places", "say": "school", "emoji": "🏫", "sol": "ladomi"}, {"id": "car", "cat": "places", "say": "car", "emoji": "🚗", "sol": "remirefa"}, {"id": "outside", "cat": "places", "say": "outside", "emoji": "🌳", "sol": "ladosoldo"}, {"id": "garden", "cat": "places", "say": "garden", "emoji": "🌻", "sol": "fadosire"}, {"id": "park", "cat": "places", "say": "park", "emoji": "🛝", "sol": "fadofami"}, {"id": "shop", "cat": "places", "say": "shop", "emoji": "🛒", "sol": "ladomire"}, {"id": "play", "cat": "do", "say": "play", "emoji": "🧸", "sol": "sifasire"}, {"id": "music", "cat": "do", "say": "music", "emoji": "🎵", "sol": "solmisolre"}, {"id": "sing", "cat": "do", "say": "sing", "emoji": "🎤", "sol": "solremifa"}, {"id": "dance", "cat": "do", "say": "dance", "emoji": "💃", "sol": "misolsila"}, {"id": "draw", "cat": "do", "say": "draw", "emoji": "🖍️", "sol": "lasolsi"}, {"id": "read", "cat": "do", "say": "read", "emoji": "📖", "sol": "ladofa"}, {"id": "book", "cat": "do", "say": "book", "emoji": "📚", "sol": "ladosol"}, {"id": "walk", "cat": "do", "say": "walk", "emoji": "🚶", "sol": "fasido"}, {"id": "run", "cat": "do", "say": "run", "emoji": "🏃", "sol": "solsido"}, {"id": "swim", "cat": "do", "say": "swim", "emoji": "🏊", "sol": "falafado"}, {"id": "toy", "cat": "do", "say": "toy", "emoji": "🪀", "sol": "lasifami"}, {"id": "listen", "cat": "do", "say": "listen", "emoji": "🎧", "sol": "dosollado"}, {"id": "phone", "cat": "do", "say": "phone", "emoji": "📱", "sol": "solsilami"}, {"id": "tv", "cat": "do", "say": "TV", "emoji": "📺", "sol": null}, {"id": "tablet", "cat": "do", "say": "tablet", "emoji": "📲", "sol": null}, {"id": "what", "cat": "little", "say": "what?", "emoji": "❓", "sol": "fado"}, {"id": "where", "cat": "little", "say": "where?", "emoji": "📍", "sol": "mimisoldo"}, {"id": "when", "cat": "little", "say": "when?", "emoji": "🕐", "sol": "milalami"}, {"id": "why", "cat": "little", "say": "why?", "emoji": "🤔", "sol": "solre"}, {"id": "how", "cat": "little", "say": "how?", "emoji": "🛠️", "sol": "sido"}, {"id": "this", "cat": "little", "say": "this", "emoji": "👇", "sol": "fami"}, {"id": "that", "cat": "little", "say": "that", "emoji": "👉", "sol": "fare"}, {"id": "here", "cat": "little", "say": "here", "emoji": "📌", "sol": "fasol"}, {"id": "now", "cat": "little", "say": "now", "emoji": "⏰", "sol": "mimisimi"}, {"id": "later", "cat": "little", "say": "later", "emoji": "⏭️", "sol": "dosimimi"}, {"id": "today", "cat": "little", "say": "today", "emoji": "📅", "sol": "lare"}, {"id": "tomorrow", "cat": "little", "say": "tomorrow", "emoji": "🌅", "sol": "lami"}, {"id": "yesterday", "cat": "little", "say": "yesterday", "emoji": "🌙", "sol": "lado"}, {"id": "big", "cat": "little", "say": "big", "emoji": "🐘", "sol": "lasolremi"}, {"id": "little", "cat": "little", "say": "little", "emoji": "🐭", "sol": "sifa"}];
+const MAYA_FIRST_WORDS = [{"say": "want", "emoji": "👉", "c": [1, 2, 2]}, {"say": "more", "emoji": "🔁", "c": [5, 2, 5, 1]}, {"say": "stop", "emoji": "✋", "c": [3, 0], "critical": true}, {"say": "all done", "emoji": "✅", "c": [0, 0, 1]}, {"say": "wait", "emoji": "⏳", "c": [0, 1, 2]}, {"say": "help", "emoji": "🆘", "c": [0, 6, 0], "critical": true}, {"say": "hurt", "emoji": "🤕", "c": [2, 1, 6, 3], "critical": true}, {"say": "eat", "emoji": "🍽️", "c": [0, 5, 2, 6], "critical": true}, {"say": "drink", "emoji": "🥤", "c": [3, 4, 5], "critical": true}, {"say": "toilet", "emoji": "🚽", "c": [1, 0, 5, 0], "critical": true}, {"say": "tired", "emoji": "😴", "c": [4, 3, 1]}, {"say": "love", "emoji": "❤️", "c": [2, 1, 0]}, {"say": "play", "emoji": "🧸", "c": [4, 5, 4, 5]}, {"say": "happy", "emoji": "😊", "c": [4, 6, 4]}, {"say": "sad", "emoji": "😢", "c": [3, 1, 0]}, {"say": "music", "emoji": "🎵", "c": [4, 3, 2, 1]}, {"say": "outside", "emoji": "🌳", "c": [2, 4, 6]}, {"say": "hello", "emoji": "👋", "c": [0, 2, 3]}, {"say": "mom", "emoji": "👩", "c": [5, 3, 5]}, {"say": "dad", "emoji": "👨", "c": [0, 3, 0]}];
+const SUDRE = new Set("do dodo dodofa dodofado dodofala dodofami dodofare dodofasi dodofasol dodola dodolado dodolafa dodolami dodolare dodolasi dodolasol dodomi dodomido dodomifa dodomila dodomire dodomisi dodomisol dodore dodoredo dodorefa dodorela dodoremi dodoresi dodoresol dodosi dodosido dodosifa dodosila dodosimi dodosire dodosisol dodosol dodosoldo dodosolfa dodosolla dodosolmi dodosolre dodosolsi dofa dofado dofadodo dofadofa dofadofado dofadofala dofadofami dofadofare dofadofasi dofadofasol dofadola dofadolado dofadolafa dofadolami dofadolare dofadolasi dofadolasol dofadomi dofadomido dofadomifa dofadomila dofadomire dofadomisi dofadomisol dofadore dofadoredo dofadorefa dofadorela dofadoremi dofadoresi dofadoresol dofadosi dofadosido dofadosifa dofadosila dofadosimi dofadosire dofadosisol dofadosol dofadosoldo dofadosolfa dofadosolla dofadosolmi dofadosolre dofadosolsi dofafa dofafado dofafala dofafami dofafare dofafasi dofafasol dofala dofalado dofalafa dofalala dofalami dofalare dofalasi dofalasol dofami dofamido dofamifa dofamila dofamimi dofamire dofamisi dofamisol dofare dofaredo dofaredofa dofaredola dofaredomi dofaredore dofaredosi dofaredosol dofarefa dofarefado dofarefala dofarefami dofarefare dofarefasi dofarefasol dofarela dofaremi dofaremido dofaremifa dofaremila dofaremire dofaremisi dofaremisol dofarere dofaresi dofaresol dofaresoldo dofaresolfa dofaresolla dofaresolmi dofaresolre dofaresolsi dofasi dofasido dofasifa dofasila dofasimi dofasire dofasisi dofasisol dofasol dofasoldo dofasolfa dofasolla dofasolmi dofasolre dofasolsi dofasolsol dola dolado doladodo doladofa doladola doladomi doladore doladosi doladosol dolafa dolafado dolafafa dolafala dolafami dolafare dolafasi dolafasol dolala dolalado dolalafa dolalami dolalare dolalasi dolalasol dolami dolamido dolamifa dolamila dolamimi dolamire dolamisi dolamisol dolare dolaredo dolarefa dolarela dolaremi dolarere dolaresi dolaresol dolasi dolasido dolasifa dolasila dolasimi dolasire dolasisi dolasisol dolasol dolasoldo dolasolfa dolasolla dolasolmi dolasolre dolasolsi dolasolsol domi domido domidodo domidofa domidofado domidofala domidofami domidofare domidofasi domidofasol domidola domidolado domidolafa domidolami domidolare domidolasi domidolasol domidomi domidomido domidomifa domidomila domidomire domidomisi domidomisol domidore domidoredo domidorefa domidorela domidoremi domidoresi domidoresol domidosi domidosido domidosifa domidosila domidosimi domidosire domidosisol domidosol domidosoldo domidosolfa domidosolla domidosolmi domidosolre domidosolsi domifa domifado domifadofa domifadola domifadomi domifadore domifadosi domifadosol domifafa domifala domifalado domifalafa domifalami domifalare domifalasi domifalasol domifami domifamido domifamifa domifamila domifamire domifamisi domifamisol domifare domifaredo domifarefa domifarela domifaremi domifaresi domifaresol domifasi domifasido domifasifa domifasila domifasimi domifasire domifasisol domifasol domifasoldo domifasolfa domifasolla domifasolmi domifasolre domifasolsi domila domilado domiladofa domiladola domiladomi domiladore domiladosi domiladosol domilafa domilafado domilafala domilafami domilafare domilafasi domilafasol domilala domilami domilamido domilamifa domilamila domilamire domilamisi domilamisol domilare domilaredo domilarefa domilarela domilaremi domilaresi domilaresol domilasi domilasido domilasifa domilasila domilasimi domilasire domilasisol domilasol domilasoldo domilasolfa domilasolla domilasolmi domilasolre domilasolsi domimi domimido domimifa domimila domimire domimisi domimisol domire domiredo domiredofa domiredola domiredomi domiredore domiredosi domiredosol domirefa domirefado domirefala domirefami domirefare domirefasi domirefasol domirela domirelado domirelafa domirelami domirelare domirelasi domirelasol domiremi domiremido domiremifa domiremila domiremire domiremisi domiremisol domirere domiresi domiresido domiresifa domiresila domiresimi domiresire domiresisol domiresol domiresoldo domiresolfa domiresolla domiresolmi domiresolre domiresolsi domisi domisido domisidofa domisidola domisidomi domisidore domisidosi domisidosol domisifa domisifado domisifala domisifami domisifare domisifasi domisifasol domisila domisilado domisilafa domisilami domisilare domisilasi domisilasol domisimi domisimido domisimifa domisimila domisimire domisimisi domisimisol domisire domisiredo domisirefa domisirela domisiremi domisiresi domisiresol domisisi domisisol domisisoldo domisisolfa domisisolla domisisolmi domisisolre domisisolsi domisol domisoldo domisoldofa domisoldola domisoldomi domisoldore domisoldosi domisoldosol domisolfa domisolfado domisolfala domisolfami domisolfare domisolfasi domisolfasol domisolla domisollado domisollafa domisollami domisollare domisollasi domisollasol domisolmi domisolmido domisolmifa domisolmila domisolmire domisolmisi domisolmisol domisolre domisolredo domisolrefa domisolrela domisolremi domisolresi domisolresol domisolsi domisolsido domisolsifa domisolsila domisolsimi domisolsire domisolsisol domisolsol dore doredo doredodo doredofa doredofado doredofala doredofami doredofare doredofasi doredofasol doredola doredolado doredolafa doredolami doredolare doredolasi doredolasol doredomi doredomido doredomifa doredomila doredomire doredomisi doredomisol doredore doredoredo doredorefa doredorela doredoremi doredoresi doredoresol doredosi doredosido doredosifa doredosila doredosimi doredosire doredosisol doredosol doredosoldo doredosolfa doredosolla doredosolmi doredosolre doredosolsi dorefa dorefado dorefadofa dorefadola dorefadomi dorefadore dorefadosi dorefadosol dorefafa dorefala dorefalado dorefalafa dorefalami dorefalare dorefalasi dorefalasol dorefami dorefamido dorefamifa dorefamila dorefamire dorefamisi dorefamisol dorefare dorefaredo dorefarefa dorefarela dorefaremi dorefaresi dorefaresol dorefasi dorefasido dorefasifa dorefasila dorefasimi dorefasire dorefasisol dorefasol dorefasoldo dorefasolfa dorefasolla dorefasolmi dorefasolre dorefasolsi dorela dorelado doreladofa doreladola doreladomi doreladore doreladosi doreladosol dorelafa dorelafado dorelafala dorelafami dorelafare dorelafasi dorelafasol dorelala dorelami dorelamido dorelamifa dorelamila dorelamire dorelamisi dorelamisol dorelare dorelaredo dorelarefa dorelarela dorelaremi dorelaresi dorelaresol dorelasi dorelasido dorelasifa dorelasila dorelasimi dorelasire dorelasisol dorelasol dorelasoldo dorelasolfa dorelasolla dorelasolmi dorelasolre dorelasolsi doremi doremido doremidofa doremidola doremidomi doremidore doremidosi doremidosol doremifa doremifado doremifala doremifami doremifare doremifasi doremifasol doremila doremilado doremilafa doremilami doremilare doremilasi doremilasol doremimi doremire doremiredo doremirefa doremirela doremiremi doremiresi doremiresol doremisi doremisido doremisifa doremisila doremisimi doremisire doremisisol doremisol doremisoldo doremisolfa doremisolla doremisolmi doremisolre doremisolsi dorere doreredo dorerefa dorerela doreremi doreresi doreresol doresi doresido doresidofa doresidola doresidomi doresidore doresidosi doresidosol doresifa doresifado doresifala doresifami doresifare doresifasi doresifasol doresila doresilado doresilafa doresilami doresilare doresilasi doresilasol doresimi doresimido doresimifa doresimila doresimire doresimisi doresimisol doresire doresiredo doresirefa doresirela doresiremi doresiresi doresiresol doresisi doresisol doresisoldo doresisolfa doresisolla doresisolmi doresisolre doresisolsi doresol doresoldo doresoldofa doresoldola doresoldomi doresoldore doresoldosi doresoldosol doresolfa doresolfado doresolfala doresolfami doresolfare doresolfasi doresolfasol doresolla doresollado doresollafa doresollami doresollare doresollasi doresollasol doresolmi doresolmido doresolmifa doresolmila doresolmire doresolmisi doresolmisol doresolre doresolredo doresolrefa doresolrela doresolremi doresolresi doresolresol doresolsi doresolsido doresolsifa doresolsila doresolsimi doresolsire doresolsisol doresolsol dosi dosido dosidodo dosidofa dosidola dosidomi dosidore dosidosi dosidosol dosifa dosifado dosifafa dosifala dosifami dosifare dosifasi dosifasol dosila dosilado dosilafa dosilala dosilami dosilare dosilasi dosilasol dosimi dosimido dosimifa dosimila dosimimi dosimire dosimisi dosimisol dosire dosiredo dosirefa dosirela dosiremi dosirere dosiresi dosiresol dosisi dosisido dosisifa dosisila dosisimi dosisire dosisisol dosisol dosisoldo dosisolfa dosisolla dosisolmi dosisolre dosisolsi dosisolsol dosol dosoldo dosoldodo dosoldofa dosoldola dosoldomi dosoldore dosoldosi dosoldosol dosolfa dosolfado dosolfafa dosolfala dosolfami dosolfare dosolfasi dosolfasol dosolla dosollado dosollafa dosollala dosollami dosollare dosollasi dosollasol dosolmi dosolmido dosolmifa dosolmila dosolmimi dosolmire dosolmisi dosolmisol dosolre dosolredo dosolrefa dosolrela dosolremi dosolrere dosolresi dosolresol dosolsi dosolsido dosolsifa dosolsila dosolsimi dosolsire dosolsisi dosolsisol dosolsol dosolsoldo dosolsolfa dosolsolla dosolsolmi dosolsolre dosolsolsi fa fado fadodo fadodofa fadodola fadodomi fadodore fadodosi fadodosol fadofa fadofado fadofafa fadofala fadofami fadofare fadofasi fadofasol fadola fadolado fadolafa fadolala fadolami fadolare fadolasi fadolasol fadomi fadomido fadomifa fadomila fadomimi fadomire fadomisi fadomisol fadore fadoredo fadorefa fadorela fadoremi fadorere fadoresi fadoresol fadosi fadosido fadosifa fadosila fadosimi fadosire fadosisi fadosisol fadosol fadosoldo fadosolfa fadosolla fadosolmi fadosolre fadosolsi fadosolsol fafa fafado fafadofa fafadola fafadomi fafadore fafadosi fafadosol fafala fafalado fafalafa fafalami fafalare fafalasi fafalasol fafami fafamido fafamifa fafamila fafamire fafamisi fafamisol fafare fafaredo fafarefa fafarela fafaremi fafaresi fafaresol fafasi fafasido fafasifa fafasila fafasimi fafasire fafasisol fafasol fafasoldo fafasolfa fafasolla fafasolmi fafasolre fafasolsi fala falado faladodo faladofa faladola faladomi faladore faladosi faladosol falafa falafado falafafa falafala falafami falafare falafasi falafasol falala falalado falalafa falalami falalare falalasi falalasol falami falamido falamifa falamila falamimi falamire falamisi falamisol falare falaredo falarefa falarela falaremi falarere falaresi falaresol falasi falasido falasifa falasila falasimi falasire falasisi falasisol falasol falasoldo falasolfa falasolla falasolmi falasolre falasolsi falasolsol fami famido famidodo famidofa famidola famidomi famidore famidosi famidosol famifa famifado famifafa famifala famifami famifare famifasi famifasol famila familado familafa familala familami familare familasi familasol famimi famimido famimifa famimila famimire famimisi famimisol famire famiredo famirefa famirela famiremi famirere famiresi famiresol famisi famisido famisifa famisila famisimi famisire famisisi famisisol famisol famisoldo famisolfa famisolla famisolmi famisolre famisolsi famisolsol fare faredo faredodo faredofa faredola faredomi faredore faredosi faredosol farefa farefado farefafa farefala farefami farefare farefasi farefasol farela farelado farelafa farelala farelami farelare farelasi farelasol faremi faremido faremifa faremila faremimi faremire faremisi faremisol farere fareredo farerefa farerela fareremi fareresi fareresol faresi faresido faresifa faresila faresimi faresire faresisi faresisol faresol faresoldo faresolfa faresolla faresolmi faresolre faresolsi faresolsol fasi fasido fasidodo fasidofa fasidola fasidomi fasidore fasidosi fasidosol fasifa fasifado fasifafa fasifala fasifami fasifare fasifasi fasifasol fasila fasilado fasilafa fasilala fasilami fasilare fasilasi fasilasol fasimi fasimido fasimifa fasimila fasimimi fasimire fasimisi fasimisol fasire fasiredo fasirefa fasirela fasiremi fasirere fasiresi fasiresol fasisi fasisido fasisifa fasisila fasisimi fasisire fasisisol fasisol fasisoldo fasisolfa fasisolla fasisolmi fasisolre fasisolsi fasisolsol fasol fasoldo fasoldodo fasoldofa fasoldola fasoldomi fasoldore fasoldosi fasoldosol fasolfa fasolfado fasolfafa fasolfala fasolfami fasolfare fasolfasi fasolfasol fasolla fasollado fasollafa fasollala fasollami fasollare fasollasi fasollasol fasolmi fasolmido fasolmifa fasolmila fasolmimi fasolmire fasolmisi fasolmisol fasolre fasolredo fasolrefa fasolrela fasolremi fasolrere fasolresi fasolresol fasolsi fasolsido fasolsifa fasolsila fasolsimi fasolsire fasolsisi fasolsisol fasolsol fasolsoldo fasolsolfa fasolsolla fasolsolmi fasolsolre fasolsolsi la lado ladodo ladodofa ladodola ladodomi ladodore ladodosi ladodosol ladofa ladofado ladofafa ladofala ladofami ladofare ladofasi ladofasol ladola ladolado ladolafa ladolala ladolami ladolare ladolasi ladolasol ladomi ladomido ladomifa ladomila ladomimi ladomire ladomisi ladomisol ladore ladoredo ladorefa ladorela ladoremi ladorere ladoresi ladoresol ladosi ladosido ladosifa ladosila ladosimi ladosire ladosisi ladosisol ladosol ladosoldo ladosolfa ladosolla ladosolmi ladosolre ladosolsi ladosolsol lafa lafado lafadodo lafadofa lafadola lafadomi lafadore lafadosi lafadosol lafafa lafafado lafafala lafafami lafafare lafafasi lafafasol lafala lafalado lafalafa lafalala lafalami lafalare lafalasi lafalasol lafami lafamido lafamifa lafamila lafamimi lafamire lafamisi lafamisol lafare lafaredo lafarefa lafarela lafaremi lafarere lafaresi lafaresol lafasi lafasido lafasifa lafasila lafasimi lafasire lafasisi lafasisol lafasol lafasoldo lafasolfa lafasolla lafasolmi lafasolre lafasolsi lafasolsol lala lalado laladofa laladola laladomi laladore laladosi laladosol lalafa lalafado lalafala lalafami lalafare lalafasi lalafasol lalami lalamido lalamifa lalamila lalamire lalamisi lalamisol lalare lalaredo lalarefa lalarela lalaremi lalaresi lalaresol lalasi lalasido lalasifa lalasila lalasimi lalasire lalasisol lalasol lalasoldo lalasolfa lalasolla lalasolmi lalasolre lalasolsi lami lamido lamidodo lamidofa lamidola lamidomi lamidore lamidosi lamidosol lamifa lamifado lamifafa lamifala lamifami lamifare lamifasi lamifasol lamila lamilado lamilafa lamilala lamilami lamilare lamilasi lamilasol lamimi lamimido lamimifa lamimila lamimire lamimisi lamimisol lamire lamiredo lamirefa lamirela lamiremi lamirere lamiresi lamiresol lamisi lamisido lamisifa lamisila lamisimi lamisire lamisisi lamisisol lamisol lamisoldo lamisolfa lamisolla lamisolmi lamisolre lamisolsi lamisolsol lare laredo laredodo laredofa laredola laredomi laredore laredosi laredosol larefa larefado larefafa larefala larefami larefare larefasi larefasol larela larelado larelafa larelala larelami larelare larelasi larelasol laremi laremido laremifa laremila laremimi laremire laremisi laremisol larere lareredo larerefa larerela lareremi lareresi lareresol laresi laresido laresifa laresila laresimi laresire laresisi laresisol laresol laresoldo laresolfa laresolla laresolmi laresolre laresolsi laresolsol lasi lasido lasidodo lasidofa lasidola lasidomi lasidore lasidosi lasidosol lasifa lasifado lasifafa lasifala lasifami lasifare lasifasi lasifasol lasila lasilado lasilafa lasilala lasilami lasilare lasilasi lasilasol lasimi lasimido lasimifa lasimila lasimimi lasimire lasimisi lasimisol lasire lasiredo lasirefa lasirela lasiremi lasirere lasiresi lasiresol lasisi lasisido lasisifa lasisila lasisimi lasisire lasisisol lasisol lasisoldo lasisolfa lasisolla lasisolmi lasisolre lasisolsi lasisolsol lasol lasoldo lasoldodo lasoldofa lasoldola lasoldomi lasoldore lasoldosi lasoldosol lasolfa lasolfado lasolfafa lasolfala lasolfami lasolfare lasolfasi lasolfasol lasolla lasollado lasollafa lasollala lasollami lasollare lasollasi lasollasol lasolmi lasolmido lasolmifa lasolmila lasolmimi lasolmire lasolmisi lasolmisol lasolre lasolredo lasolrefa lasolrela lasolremi lasolrere lasolresi lasolresol lasolsi lasolsido lasolsifa lasolsila lasolsimi lasolsire lasolsisi lasolsisol lasolsol lasolsoldo lasolsolfa lasolsolla lasolsolmi lasolsolre lasolsolsi mi mido midodo midodofa midodola midodomi midodore midodosi midodosol midofa midofado midofafa midofala midofami midofare midofasi midofasol midola midolado midolafa midolala midolami midolare midolasi midolasol midomi midomido midomifa midomila midomimi midomire midomisi midomisol midore midoredo midorefa midorela midoremi midorere midoresi midoresol midosi midosido midosifa midosila midosimi midosire midosisi midosisol midosol midosoldo midosolfa midosolla midosolmi midosolre midosolsi midosolsol mifa mifado mifadodo mifadofa mifadola mifadomi mifadore mifadosi mifadosol mifafa mifafado mifafala mifafami mifafare mifafasi mifafasol mifala mifalado mifalafa mifalala mifalami mifalare mifalasi mifalasol mifami mifamido mifamifa mifamila mifamimi mifamire mifamisi mifamisol mifare mifaredo mifarefa mifarela mifaremi mifarere mifaresi mifaresol mifasi mifasido mifasifa mifasila mifasimi mifasire mifasisi mifasisol mifasol mifasoldo mifasolfa mifasolla mifasolmi mifasolre mifasolsi mifasolsol mila milado miladodo miladofa miladola miladomi miladore miladosi miladosol milafa milafado milafafa milafala milafami milafare milafasi milafasol milala milalado milalafa milalami milalare milalasi milalasol milami milamido milamifa milamila milamimi milamire milamisi milamisol milare milaredo milarefa milarela milaremi milarere milaresi milaresol milasi milasido milasifa milasila milasimi milasire milasisi milasisol milasol milasoldo milasolfa milasolla milasolmi milasolre milasolsi milasolsol mimi mimido mimidofa mimidola mimidomi mimidore mimidosi mimidosol mimifa mimifado mimifala mimifami mimifare mimifasi mimifasol mimila mimilado mimilafa mimilami mimilare mimilasi mimilasol mimire mimiredo mimirefa mimirela mimiremi mimiresi mimiresol mimisi mimisido mimisifa mimisila mimisimi mimisire mimisisol mimisol mimisoldo mimisolfa mimisolla mimisolmi mimisolre mimisolsi mire miredo miredodo miredofa miredola miredomi miredore miredosi miredosol mirefa mirefado mirefafa mirefala mirefami mirefare mirefasi mirefasol mirela mirelado mirelafa mirelala mirelami mirelare mirelasi mirelasol miremi miremido miremifa miremila miremimi miremire miremisi miremisol mirere mireredo mirerefa mirerela mireremi mireresi mireresol miresi miresido miresifa miresila miresimi miresire miresisi miresisol miresol miresoldo miresolfa miresolla miresolmi miresolre miresolsi miresolsol misi misido misidodo misidofa misidola misidomi misidore misidosi misidosol misifa misifado misifafa misifala misifami misifare misifasi misifasol misila misilado misilafa misilala misilami misilare misilasi misilasol misimi misimido misimifa misimila misimimi misimire misimisi misimisol misire misiredo misirefa misirela misiremi misirere misiresi misiresol misisi misisido misisifa misisila misisimi misisire misisisol misisol misisoldo misisolfa misisolla misisolmi misisolre misisolsi misisolsol misol misoldo misoldodo misoldofa misoldola misoldomi misoldore misoldosi misoldosol misolfa misolfado misolfafa misolfala misolfami misolfare misolfasi misolfasol misolla misollado misollafa misollala misollami misollare misollasi misollasol misolmi misolmido misolmifa misolmila misolmimi misolmire misolmisi misolmisol misolre misolredo misolrefa misolrela misolremi misolrere misolresi misolresol misolsi misolsido misolsifa misolsila misolsimi misolsire misolsisi misolsisol misolsol misolsoldo misolsolfa misolsolla misolsolmi misolsolre misolsolsi re redo redodo redodofa redodola redodomi redodore redodosi redodosol redofa redofado redofafa redofala redofami redofare redofasi redofasol redola redolado redolafa redolala redolami redolare redolasi redolasol redomi redomido redomifa redomila redomimi redomire redomisi redomisol redore redoredo redorefa redorela redoremi redorere redoresi redoresol redosi redosido redosifa redosila redosimi redosire redosisi redosisol redosol redosoldo redosolfa redosolla redosolmi redosolre redosolsi redosolsol refa refado refadodo refadofa refadola refadomi refadore refadosi refadosol refafa refafado refafala refafami refafare refafasi refafasol refala refalado refalafa refalala refalami refalare refalasi refalasol refami refamido refamifa refamila refamimi refamire refamisi refamisol refare refaredo refarefa refarela refaremi refarere refaresi refaresol refasi refasido refasifa refasila refasimi refasire refasisi refasisol refasol refasoldo refasolfa refasolla refasolmi refasolre refasolsi refasolsol rela relado reladodo reladofa reladola reladomi reladore reladosi reladosol relafa relafado relafafa relafala relafami relafare relafasi relafasol relala relalado relalafa relalami relalare relalasi relalasol relami relamido relamifa relamila relamimi relamire relamisi relamisol relare relaredo relarefa relarela relaremi relarere relaresi relaresol relasi relasido relasifa relasila relasimi relasire relasisi relasisol relasol relasoldo relasolfa relasolla relasolmi relasolre relasolsi relasolsol remi remido remidodo remidofa remidola remidomi remidore remidosi remidosol remifa remifado remifafa remifala remifami remifare remifasi remifasol remila remilado remilafa remilala remilami remilare remilasi remilasol remimi remimido remimifa remimila remimire remimisi remimisol remire remiredo remirefa remirela remiremi remirere remiresi remiresol remisi remisido remisifa remisila remisimi remisire remisisi remisisol remisol remisoldo remisolfa remisolla remisolmi remisolre remisolsi remisolsol rere reredo reredofa reredola reredomi reredore reredosi reredosol rerefa rerefado rerefala rerefami rerefare rerefasi rerefasol rerela rerelado rerelafa rerelami rerelare rerelasi rerelasol reremi reremido reremifa reremila reremire reremisi reremisol reresi reresido reresifa reresila reresimi reresire reresisol reresol reresoldo reresolfa reresolla reresolmi reresolre reresolsi resi resido residodo residofa residola residomi residore residosi residosol resifa resifado resifafa resifala resifami resifare resifasi resifasol resila resilado resilafa resilala resilami resilare resilasi resilasol resimi resimido resimifa resimila resimimi resimire resimisi resimisol resire resiredo resirefa resirela resiremi resirere resiresi resiresol resisi resisido resisifa resisila resisimi resisire resisisol resisol resisoldo resisolfa resisolla resisolmi resisolre resisolsi resisolsol resol resoldo resoldodo resoldofa resoldola resoldomi resoldore resoldosi resoldosol resolfa resolfado resolfafa resolfala resolfami resolfare resolfasi resolfasol resolla resollado resollafa resollala resollami resollare resollasi resollasol resolmi resolmido resolmifa resolmila resolmimi resolmire resolmisi resolmisol resolre resolredo resolrefa resolrela resolremi resolrere resolresi resolresol resolsi resolsido resolsifa resolsila resolsimi resolsire resolsisi resolsisol resolsol resolsoldo resolsolfa resolsolla resolsolmi resolsolre resolsolsi si sido sidodo sidodofa sidodola sidodomi sidodore sidodosi sidodosol sidofa sidofado sidofafa sidofala sidofami sidofare sidofasi sidofasol sidola sidolado sidolafa sidolala sidolami sidolare sidolasi sidolasol sidomi sidomido sidomifa sidomila sidomimi sidomire sidomisi sidomisol sidore sidoredo sidorefa sidorela sidoremi sidorere sidoresi sidoresol sidosi sidosido sidosifa sidosila sidosimi sidosire sidosisi sidosisol sidosol sidosoldo sidosolfa sidosolla sidosolmi sidosolre sidosolsi sidosolsol sifa sifado sifadodo sifadofa sifadola sifadomi sifadore sifadosi sifadosol sifafa sifafado sifafala sifafami sifafare sifafasi sifafasol sifala sifalado sifalafa sifalala sifalami sifalare sifalasi sifalasol sifami sifamido sifamifa sifamila sifamimi sifamire sifamisi sifamisol sifare sifaredo sifarefa sifarela sifaremi sifarere sifaresi sifaresol sifasi sifasido sifasifa sifasila sifasimi sifasire sifasisi sifasisol sifasol sifasoldo sifasolfa sifasolla sifasolmi sifasolre sifasolsi sifasolsol sila silado siladodo siladofa siladola siladomi siladore siladosi siladosol silafa silafado silafafa silafala silafami silafare silafasi silafasol silala silalado silalafa silalami silalare silalasi silalasol silami silamido silamifa silamila silamimi silamire silamisi silamisol silare silaredo silarefa silarela silaremi silarere silaresi silaresol silasi silasido silasifa silasila silasimi silasire silasisi silasisol silasol silasoldo silasolfa silasolla silasolmi silasolre silasolsi silasolsol simi simido simidodo simidofa simidola simidomi simidore simidosi simidosol simifa simifado simifafa simifala simifami simifare simifasi simifasol simila similado similafa similala similami similare similasi similasol simimi simimido simimifa simimila simimire simimisi simimisol simire simiredo simirefa simirela simiremi simirere simiresi simiresol simisi simisido simisifa simisila simisimi simisire simisisi simisisol simisol simisoldo simisolfa simisolla simisolmi simisolre simisolsi simisolsol sire siredo siredodo siredofa siredola siredomi siredore siredosi siredosol sirefa sirefado sirefafa sirefala sirefami sirefare sirefasi sirefasol sirela sirelado sirelafa sirelala sirelami sirelare sirelasi sirelasol siremi siremido siremifa siremila siremimi siremire siremisi siremisol sirere sireredo sirerefa sirerela sireremi sireresi sireresol siresi siresido siresifa siresila siresimi siresire siresisi siresisol siresol siresoldo siresolfa siresolla siresolmi siresolre siresolsi siresolsol sisi sisido sisidofa sisidola sisidomi sisidore sisidosi sisidosol sisifa sisifado sisifala sisifami sisifare sisifasi sisifasol sisila sisilado sisilafa sisilami sisilare sisilasi sisilasol sisimi sisimido sisimifa sisimila sisimire sisimisi sisimisol sisire sisiredo sisirefa sisirela sisiremi sisiresi sisiresol sisisol sisisoldo sisisolfa sisisolla sisisolmi sisisolre sisisolsi sisol sisoldo sisoldodo sisoldofa sisoldola sisoldomi sisoldore sisoldosi sisoldosol sisolfa sisolfado sisolfafa sisolfala sisolfami sisolfare sisolfasi sisolfasol sisolla sisollado sisollafa sisollala sisollami sisollare sisollasi sisollasol sisolmi sisolmido sisolmifa sisolmila sisolmimi sisolmire sisolmisi sisolmisol sisolre sisolredo sisolrefa sisolrela sisolremi sisolrere sisolresi sisolresol sisolsi sisolsido sisolsifa sisolsila sisolsimi sisolsire sisolsisi sisolsisol sisolsol sisolsoldo sisolsolfa sisolsolla sisolsolmi sisolsolre sisolsolsi sol soldo soldodo soldodofa soldodola soldodomi soldodore soldodosi soldodosol soldofa soldofado soldofafa soldofala soldofami soldofare soldofasi soldofasol soldola soldolado soldolafa soldolala soldolami soldolare soldolasi soldolasol soldomi soldomido soldomifa soldomila soldomimi soldomire soldomisi soldomisol soldore soldoredo soldorefa soldorela soldoremi soldorere soldoresi soldoresol soldosi soldosido soldosifa soldosila soldosimi soldosire soldosisi soldosisol soldosol soldosoldo soldosolfa soldosolla soldosolmi soldosolre soldosolsi soldosolsol solfa solfado solfadodo solfadofa solfadola solfadomi solfadore solfadosi solfadosol solfafa solfafado solfafala solfafami solfafare solfafasi solfafasol solfala solfalado solfalafa solfalala solfalami solfalare solfalasi solfalasol solfami solfamido solfamifa solfamila solfamimi solfamire solfamisi solfamisol solfare solfaredo solfarefa solfarela solfaremi solfarere solfaresi solfaresol solfasi solfasido solfasifa solfasila solfasimi solfasire solfasisi solfasisol solfasol solfasoldo solfasolfa solfasolla solfasolmi solfasolre solfasolsi solfasolsol solla sollado solladodo solladofa solladola solladomi solladore solladosi solladosol sollafa sollafado sollafafa sollafala sollafami sollafare sollafasi sollafasol sollala sollalado sollalafa sollalami sollalare sollalasi sollalasol sollami sollamido sollamifa sollamila sollamimi sollamire sollamisi sollamisol sollare sollaredo sollarefa sollarela sollaremi sollarere sollaresi sollaresol sollasi sollasido sollasifa sollasila sollasimi sollasire sollasisi sollasisol sollasol sollasoldo sollasolfa sollasolla sollasolmi sollasolre sollasolsi sollasolsol solmi solmido solmidodo solmidofa solmidola solmidomi solmidore solmidosi solmidosol solmifa solmifado solmifafa solmifala solmifami solmifare solmifasi solmifasol solmila solmilado solmilafa solmilala solmilami solmilare solmilasi solmilasol solmimi solmimido solmimifa solmimila solmimire solmimisi solmimisol solmire solmiredo solmirefa solmirela solmiremi solmirere solmiresi solmiresol solmisi solmisido solmisifa solmisila solmisimi solmisire solmisisi solmisisol solmisol solmisoldo solmisolfa solmisolla solmisolmi solmisolre solmisolsi solmisolsol solre solredo solredodo solredofa solredola solredomi solredore solredosi solredosol solrefa solrefado solrefafa solrefala solrefami solrefare solrefasi solrefasol solrela solrelado solrelafa solrelala solrelami solrelare solrelasi solrelasol solremi solremido solremifa solremila solremimi solremire solremisi solremisol solrere solreredo solrerefa solrerela solreremi solreresi solreresol solresi solresido solresifa solresila solresimi solresire solresisi solresisol solresol solresoldo solresolfa solresolla solresolmi solresolre solresolsi solresolsol solsi solsido solsidodo solsidofa solsidola solsidomi solsidore solsidosi solsidosol solsifa solsifado solsifafa solsifala solsifami solsifare solsifasi solsifasol solsila solsilado solsilafa solsilala solsilami solsilare solsilasi solsilasol solsimi solsimido solsimifa solsimila solsimimi solsimire solsimisi solsimisol solsire solsiredo solsirefa solsirela solsiremi solsirere solsiresi solsiresol solsisi solsisido solsisifa solsisila solsisimi solsisire solsisisol solsisol solsisoldo solsisolfa solsisolla solsisolmi solsisolre solsisolsi solsisolsol solsol solsoldo solsoldofa solsoldola solsoldomi solsoldore solsoldosi solsoldosol solsolfa solsolfado solsolfala solsolfami solsolfare solsolfasi solsolfasol solsolla solsollado solsollafa solsollami solsollare solsollasi solsollasol solsolmi solsolmido solsolmifa solsolmila solsolmire solsolmisi solsolmisol solsolre solsolredo solsolrefa solsolrela solsolremi solsolresi solsolresol solsolsi solsolsido solsolsifa solsolsila solsolsimi solsolsire solsolsisol".split(" "));
+const INST = (() => {
+// The instruments — how each voice of the instrument is built, as data.
+//
+// A note is a few partials (oscillators at multiples of its pitch), a
+// filter, an envelope, perhaps a vibrato and a breath of noise. Keeping
+// the recipes here, apart from Web Audio, means their shape is tested,
+// and tone.js only has to wire them up.
+//
+// Ids stay the old timbre names so saved preferences keep working.
+
+const INSTRUMENTS = {
+  bell: {        // a celesta: struck, bright, and dying away on its own
+    label: 'Celesta',
+    partials: [
+      { ratio: 1,    type: 'sine', gain: 1,    decay: 1.6 },
+      { ratio: 2,    type: 'sine', gain: 0.28, decay: 0.7 },
+      { ratio: 3,    type: 'sine', gain: 0.12, decay: 0.35 },
+      { ratio: 4.07, type: 'sine', gain: 0.06, decay: 0.18 },   // a touch inharmonic: the metal
+    ],
+    attack: 0.004, sustain: 0, release: 0.2, struck: true,
+    filter: 6000, level: 0.44,
+  },
+  sine: {        // a flute: round, breathy, with a late vibrato
+    label: 'Flute',
+    partials: [
+      { ratio: 1, type: 'sine', gain: 1 },
+      { ratio: 2, type: 'sine', gain: 0.1 },
+      { ratio: 3, type: 'sine', gain: 0.035 },
+    ],
+    attack: 0.05, sustain: 0.82, release: 0.28,
+    vibrato: { rate: 5.2, cents: 7, delay: 0.16 },
+    breath: 0.045, filter: 3200, level: 0.22,
+  },
+  triangle: {    // a reed: the hollow odd harmonics of a clarinet
+    label: 'Reed',
+    partials: [
+      { ratio: 1, type: 'square',   gain: 0.55 },
+      { ratio: 1, type: 'triangle', gain: 0.6, detune: 4 },
+    ],
+    attack: 0.035, sustain: 0.85, release: 0.2,
+    vibrato: { rate: 4.8, cents: 4, delay: 0.2 },
+    breath: 0.025, filter: 1500, filterTrack: 1.2, q: 0.9, level: 0.2,
+  },
+  sawtooth: {    // bowed strings: two bows a hair apart, slow to speak
+    label: 'Bowed',
+    partials: [
+      { ratio: 1, type: 'sawtooth', gain: 0.5, detune: -6 },
+      { ratio: 1, type: 'sawtooth', gain: 0.5, detune: 6 },
+    ],
+    attack: 0.09, sustain: 0.9, release: 0.38,
+    vibrato: { rate: 5.6, cents: 11, delay: 0.12 },
+    filter: 1900, filterTrack: 1.5, q: 0.6, level: 0.3,
+  },
+  square: {      // a pipe organ: drawbars of pure tone, steady, no vibrato
+    label: 'Organ',
+    partials: [
+      { ratio: 1, type: 'sine', gain: 1 },
+      { ratio: 2, type: 'sine', gain: 0.55 },
+      { ratio: 3, type: 'sine', gain: 0.3 },
+      { ratio: 4, type: 'sine', gain: 0.18 },
+      { ratio: 6, type: 'sine', gain: 0.07 },
+    ],
+    attack: 0.014, sustain: 1, release: 0.1,
+    filter: 5000, level: 0.145,
+  },
+};
+
+const INSTRUMENT_IDS = ['bell', 'sine', 'triangle', 'sawtooth', 'square'];
+const DEFAULT_INSTRUMENT = 'bell';
+
+const instrumentFor = (id) => INSTRUMENTS[id] || INSTRUMENTS[DEFAULT_INSTRUMENT];
+
+// How loud and how long one note is. `step` is 0 (do) … 6 (si); `dur` is
+// how long the note is held. Low notes sit a little louder (the ear hears
+// them as quieter), and a struck instrument rings out whatever the hold.
+function noteShape(inst, step, dur) {
+  const s = Math.max(0, Math.min(6, Number(step) || 0));
+  const gain = inst.level * (1 + (6 - s) * 0.035);
+  if (inst.struck) {
+    const ring = Math.max(...inst.partials.map((p) => p.decay || 0)) * (1 + (6 - s) * 0.05);
+    return { gain, attack: inst.attack, hold: 0, end: inst.attack + ring };
+  }
+  const hold = Math.max(dur, inst.attack + 0.05);
+  return { gain, attack: inst.attack, hold, end: hold + inst.release };
+}
+
+return { INSTRUMENTS, INSTRUMENT_IDS, DEFAULT_INSTRUMENT, instrumentFor, noteShape };
+})();
+
 /* ---- notes: colour + pitch (C major, one octave) ---- */
 const NOTE_NAMES = ["do","re","mi","fa","sol","la","si"];
 const COLORS = ["--n0","--n1","--n2","--n3","--n4","--n5","--n6"].map(v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim());
 const FREQ  = [261.63,293.66,329.63,349.23,392.00,440.00,493.88];  // do..si
-const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const parse = (s) => (String(s||"").toLowerCase().match(/do|re|mi|fa|sol|la|si/g) || []).map((n) => NOTE_NAMES.indexOf(n));
+const named = (code) => code.map((i) => NOTE_NAMES[i]).join("");
+const capit = (s) => s ? s[0].toUpperCase() + s.slice(1) : s;
+const escapeHTML = t => String(t).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const solHTML = (code) => code.map((n, i) => `<span class="nt" style="color:${COLORS[n]}">${i ? NOTE_NAMES[n] : capit(NOTE_NAMES[n])}</span>`).join("");
 
-/* ---- vocabulary: whole tiles, safe by place + picture + colour + speech.
-        (note-distance safety is enforced in Make-a-word, where slips happen.) ---- */
-const CORE = [
-  {w:"want",   e:"👉", c:[1,2,2]},
-  {w:"more",   e:"🔁", c:[5,2,5,1]},
-  {w:"stop",   e:"✋", c:[3,0]},
-  {w:"all done",e:"✅", c:[0,0,1]},
-  {w:"wait",   e:"⏳", c:[0,1,2]},
-  {w:"help",   e:"🆘", c:[0,6,0]},
-  {w:"hurt",   e:"🤕", c:[2,1,6,3]},
-  {w:"eat",    e:"🍽️", c:[0,5,2,6]},
-  {w:"drink",  e:"🥤", c:[3,4,5]},      // re-separated from eat: rising, watery
-  {w:"toilet", e:"🚽", c:[1,0,5,0]},
-  {w:"tired",  e:"😴", c:[4,3,1]},
-  {w:"love",   e:"❤️", c:[2,1,0]},
-  {w:"play",   e:"🧸", c:[4,5,4,5]},
-  {w:"happy",  e:"😊", c:[4,6,4]},
-  {w:"sad",    e:"😢", c:[3,1,0]},
-  {w:"music",  e:"🎵", c:[4,3,2,1]},
-  {w:"outside",e:"🌳", c:[2,4,6]},
-  {w:"hello",  e:"👋", c:[0,2,3]},
-  {w:"mom",    e:"👩", c:[5,3,5]},
-  {w:"dad",    e:"👨", c:[0,3,0]},
-];
-const YES={w:"yes",e:"💜",c:[6]}, NO={w:"no",e:"❤️",c:[0]};
-/* the words a slip must never land on */
-const CRITICAL = [YES,NO,...CORE.filter(x=>["stop","help","hurt","eat","drink","toilet"].includes(x.w))];
-
-/* ---- audio ---- */
+/* ---- audio: the site's own instruments, in a small room ---- */
 let AC=null;
 function audio(){ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state!=="running")AC.resume().catch(()=>{}); return AC; }
 /* phones: sound only starts from a touch, and iPhones mute web audio on the
@@ -319,47 +444,60 @@ document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden" && silentTag) silentTag.pause();
 });
 
-/* a small room and a soft limiter: notes sound like an instrument, never clip */
 let HALL=null;
 function hall(ac){
   if(HALL) return HALL;
   const input=ac.createGain(), lim=ac.createDynamicsCompressor();
   lim.threshold.value=-16; lim.knee.value=12; lim.ratio.value=4; lim.attack.value=.004; lim.release.value=.22;
-  const len=Math.floor(ac.sampleRate*1.6), ir=ac.createBuffer(2,len,ac.sampleRate);
+  const len=Math.floor(ac.sampleRate*1.9), ir=ac.createBuffer(2,len,ac.sampleRate);
   for(let ch=0;ch<2;ch++){ const d=ir.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)*Math.min(1,i/(ac.sampleRate*.012)); }
-  const room=ac.createConvolver(); room.buffer=ir; const wet=ac.createGain(); wet.gain.value=.2;
-  input.connect(lim); input.connect(room); room.connect(wet).connect(lim); lim.connect(ac.destination);
-  return HALL=input;
+  const room=ac.createConvolver(); room.buffer=ir; const wet=ac.createGain(); wet.gain.value=.22;
+  const out=ac.createGain(); out.gain.value=.9;
+  input.connect(lim); input.connect(room); room.connect(wet).connect(lim); lim.connect(out).connect(ac.destination);
+  const nb=ac.createBuffer(1,Math.floor(ac.sampleRate*.3),ac.sampleRate), nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+  return HALL={ input, noise:nb };
 }
-function tone(freq, t0, dur, bend){
-  const ac=audio(), out=hall(ac);
-  const g=ac.createGain(), lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=2600+freq*2; lp.Q.value=.5;
-  const f2=bend ? freq*Math.pow(2,bend/12) : freq;
-  // a rounded voice: the fundamental, a soft octave and a whisper of the fifth above it
-  [[1,1,"sine",0],[2,.22,"sine",4],[3,.07,"triangle",-3]].forEach(([r,amp,type,det])=>{
-    const o=ac.createOscillator(), og=ac.createGain(); o.type=type; o.detune.value=det; og.gain.value=amp;
-    o.frequency.setValueAtTime(freq*r,t0); if(bend) o.frequency.linearRampToValueAtTime(f2*r,t0+dur*.9);
-    o.connect(og).connect(lp); o.start(t0); o.stop(t0+dur+.45);
-  });
-  g.gain.setValueAtTime(0.0001,t0);
-  g.gain.exponentialRampToValueAtTime(0.3,t0+0.018);
-  g.gain.setTargetAtTime(0.22,t0+0.03,0.12);
-  g.gain.setValueAtTime(0.22,t0+dur*.8);
-  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur+.4);
-  lp.connect(g).connect(out);
+let SOUND = (()=>{ try{ return localStorage.getItem("maya-sound") || INST.DEFAULT_INSTRUMENT; }catch(e){ return INST.DEFAULT_INSTRUMENT; } })();
+// One note, built from the chosen instrument's recipe (as the main site does).
+// `bend` (semitones) can slide the pitch; nothing on the board uses it now.
+function tone(n, t, dur, bend){
+  const ac=audio(), { input, noise }=hall(ac), inst=INST.instrumentFor(SOUND), f=FREQ[n];
+  const shape=INST.noteShape(inst, n, dur), f2=bend ? f*Math.pow(2,bend/12) : f;
+  const amp=ac.createGain();
+  amp.gain.setValueAtTime(0.0001,t); amp.gain.exponentialRampToValueAtTime(shape.gain*1.15,t+shape.attack);
+  if(inst.struck){ amp.gain.exponentialRampToValueAtTime(0.0001,t+shape.end); }
+  else { amp.gain.setTargetAtTime(shape.gain*inst.sustain,t+shape.attack,0.08); amp.gain.setValueAtTime(shape.gain*inst.sustain,t+shape.hold); amp.gain.exponentialRampToValueAtTime(0.0001,t+shape.end); }
+  const lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=inst.q||.5; lp.frequency.value=Math.min(16000,inst.filter+f*(inst.filterTrack||0));
+  lp.connect(amp).connect(input);
+  let depth=null;
+  if(inst.vibrato){ const lfo=ac.createOscillator(); lfo.frequency.value=inst.vibrato.rate; depth=ac.createGain();
+    depth.gain.setValueAtTime(0,t); depth.gain.linearRampToValueAtTime(inst.vibrato.cents,t+inst.vibrato.delay+.25); lfo.connect(depth); lfo.start(t); lfo.stop(t+shape.end+.05); }
+  for(const p of inst.partials){
+    const o=ac.createOscillator(); o.type=p.type; o.frequency.setValueAtTime(f*p.ratio,t);
+    if(bend) o.frequency.linearRampToValueAtTime(f2*p.ratio,t+Math.max(.2,dur*.9));
+    if(p.detune) o.detune.value=p.detune; if(depth) depth.connect(o.detune);
+    const g=ac.createGain(); g.gain.setValueAtTime(p.gain,t);
+    if(p.decay) g.gain.exponentialRampToValueAtTime(Math.max(.0001,p.gain*.001),t+p.decay);
+    o.connect(g).connect(lp); o.start(t); o.stop(t+shape.end+.05);
+  }
+  if(inst.breath){ const s=ac.createBufferSource(); s.buffer=noise; const bp=ac.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=f*2.5; bp.Q.value=1.4;
+    const bg=ac.createGain(); bg.gain.setValueAtTime(.0001,t); bg.gain.exponentialRampToValueAtTime(inst.breath,t+.02); bg.gain.exponentialRampToValueAtTime(.0001,t+.16);
+    s.connect(bp).connect(bg).connect(input); s.start(t); s.stop(t+.2); }
 }
-function playCode(code, bend){
-  const ac=audio(); let t=ac.currentTime+0.02; const step=code.length>1?0.19:0.42;
-  code.forEach((n,i)=>{ const b = bend!==undefined ? bend : 0; tone(FREQ[n], t, step*0.95, code.length===1?b:0); t+=step; });
+// A word: its notes in turn; the feminine lengthens the last (as Gajewski says it is spoken).
+function playCode(code, { bend = 0, feminine = false } = {}){
+  const ac=audio(); let t=ac.currentTime+0.02; const step=code.length>1?0.3:0.6;
+  code.forEach((n,i)=>{ const last=i===code.length-1; const d=step*(last&&feminine?1.8:0.95); tone(n, t, d, code.length===1?bend:0); t+=step; });
 }
-function playNote(n){ tone(FREQ[n], audio().currentTime+0.01, 0.5); }
+function playNote(n){ tone(n, audio().currentTime+0.01, 0.5); }
 
 /* ---- speech: the family across the room understands, no manual ---- */
-let VOICE_ON=true, VOICES=[];
+// Spoken English is off until someone turns it on; the choice is remembered.
+let VOICE_ON=(()=>{ try{ return localStorage.getItem("maya-voice")==="on"; }catch(e){ return false; } })(), VOICES=[];
 function loadVoices(){ VOICES=window.speechSynthesis? speechSynthesis.getVoices():[]; }
 if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
 function speak(text){
-  if(!VOICE_ON||!window.speechSynthesis) return;
+  if(!VOICE_ON||!window.speechSynthesis||!text) return;
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.rate=0.92; u.pitch=1.06;
@@ -368,123 +506,234 @@ function speak(text){
   speechSynthesis.speak(u);
 }
 
+/* ---- the words: Sudre's, then the family's ---- */
+const KEY="maya-words-v1";                 // the family's own words: [{ w, e, c, for?, cat? }]
+function mine(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ return []; } }
+function saveMine(list){ try{ localStorage.setItem(KEY, JSON.stringify(list)); }catch(e){} }
+const VOCAB = MAYA_VOCAB.map((v) => ({ ...v, sudre: parse(v.sol) }));
+const byId = new Map(VOCAB.map((v) => [v.id, v]));
+// the code a tile says: the family's word if they made one for it, else Sudre's
+function codeOf(v){ const own = mine().find((m) => m.for === v.id); return own ? own.c : v.sudre; }
+const isOurs = (v) => mine().some((m) => m.for === v.id);
+const YES = byId.get("yes"), NO = byId.get("no");
+
 /* ---- saying a word: sound + colour + voice + made visible ---- */
 const say=document.getElementById("say"), sayRest=document.getElementById("sayRest"),
       sayWord=document.getElementById("sayWord"), sayEmoji=document.getElementById("sayEmoji"),
-      sayText=document.getElementById("sayText"), sayBeads=document.getElementById("sayBeads"),
-      replay=document.getElementById("replay");
+      sayText=document.getElementById("sayText"), saySol=document.getElementById("saySol"),
+      sayBeads=document.getElementById("sayBeads"), replay=document.getElementById("replay");
 let LAST=null;
-function beadsInto(el,code,aria){ el.innerHTML=""; code.forEach(n=>{ const i=document.createElement("i"); i.style.background=COLORS[n]; el.appendChild(i); }); }
-function render(item, bend){
-  LAST={item,bend};
+function beadsInto(el,code){ el.innerHTML=""; code.forEach(n=>{ const i=document.createElement("i"); i.style.background=COLORS[n]; el.appendChild(i); }); }
+// item: { say, emoji, code, feminine }
+function render(item, opts={}){
+  LAST={item,opts};
   sayRest.hidden=true; sayWord.hidden=false; replay.hidden=false;
-  sayEmoji.textContent=item.e; sayText.textContent=item.w;
-  beadsInto(sayBeads,item.c);
+  sayEmoji.textContent=item.emoji; sayText.textContent=item.say;
+  saySol.innerHTML=item.code.length ? solHTML(item.code) + (item.feminine ? ' <small>(fem.)</small>' : '') : '';
+  beadsInto(sayBeads,item.code);
   say.classList.remove("pop"); void say.offsetWidth; say.classList.add("pop");
-  playCode(item.c, bend); speak(item.w);
+  playCode(item.code, { bend: opts.bend||0, feminine: item.feminine });
+  speak(item.say);
 }
-replay.addEventListener("click", ()=>{ if(LAST) render(LAST.item, LAST.bend); });
+replay.addEventListener("click", ()=>{ if(LAST) render(LAST.item, LAST.opts); });
 
 /* ---- YES / NO ---- */
 document.querySelectorAll(".big").forEach(b=>{
   b.addEventListener("pointerdown", ()=>{
     const yes=b.dataset.word==="yes"; b.classList.remove("lit"); void b.offsetWidth; b.classList.add("lit");
-    render(yes?YES:NO, yes?+2:-2);   // yes rises, no falls — contour as a fourth channel
+    const v = yes ? YES : NO;
+    render({ say: v.say, emoji: yes ? "💜" : "❤️", code: codeOf(v) });   // si and do, played like every other word
   });
 });
 
-/* ---- word grid ---- */
-const grid=document.getElementById("grid");
-function tileEl(item, isMine){
-  const t=document.createElement("button"); t.className="tile"+(isMine?" mine":""); t.setAttribute("aria-label",item.w||"word");
-  const hl = COLORS[item.c[0]];
-  t.innerHTML = `<span class="em">${item.e}</span><span class="w"></span><span class="beads"></span>`+(isMine?`<span class="pin">★</span><span class="del" role="button" aria-label="remove this word">×</span>`:``);
-  t.querySelector(".w").textContent = item.w||"";   // names are typed by people: never parse them as HTML
-  beadsInto(t.querySelector(".beads"), item.c);
-  if(isMine) t.querySelector(".del").addEventListener("pointerdown", e=>{
+/* ---- the tabs and the grid ---- */
+const tabs=document.getElementById("tabs"), grid=document.getElementById("grid");
+// The first tab is Maya's first words — the board as it was — then Sudre's words by kind.
+const FIRST = { id: "first", label: "First words", emoji: "⭐" };
+let CAT = (()=>{ try{ return localStorage.getItem("maya-tab") || FIRST.id; }catch(e){ return FIRST.id; } })();
+function renderTabs(){
+  const all = [FIRST].concat(MAYA_CATEGORIES, mine().some((m) => !m.for) ? [{ id: "ours", label: "Ours", emoji: "★" }] : []);
+  if (!all.some((c) => c.id === CAT)) CAT = all[0].id;
+  tabs.innerHTML = all.map((c) => `<button class="tab" data-cat="${c.id}" aria-pressed="${c.id===CAT}"><span class="te">${c.emoji}</span>${escapeHTML(c.label)}</button>`).join("");
+}
+tabs.addEventListener("click", (e) => { const b=e.target.closest("[data-cat]"); if(!b) return; CAT=b.dataset.cat; try{ localStorage.setItem("maya-tab",CAT); }catch(err){} renderTabs(); renderGrid(); });
+
+function tileEl(v){
+  const code = (v.familyOnly || v.first) ? v.c : codeOf(v);
+  const gap = !code.length;
+  const t=document.createElement("button");
+  t.className="tile"+(gap?" gap":"")+((v.familyOnly||isOurs(v))?" mine ours":"");
+  t.setAttribute("aria-label", gap ? `${v.say} — make our word` : v.say);
+  const word = gap ? "＋ make our word" : v.first ? `${solHTML(code)}<br><small>Maya's own</small>` : solHTML(code);
+  t.innerHTML = `<span class="em">${v.emoji}</span><span class="w"></span><span class="sw">${word}</span><span class="beads"></span>`
+    + ((v.familyOnly||isOurs(v)) ? `<span class="pin">★</span><span class="del" role="button" aria-label="remove our word">×</span>` : "");
+  t.querySelector(".w").textContent = v.say;
+  beadsInto(t.querySelector(".beads"), code);
+  if (v.familyOnly || isOurs(v)) t.querySelector(".del").addEventListener("pointerdown", (e) => {
     e.stopPropagation();
-    if(!confirm(`Remove ${item.e} ${item.w||"this word"}?`)) return;
-    saveMine(mine().filter(x=>x.c.join()!==item.c.join()));
-    renderGrid();
+    if(!confirm(`Remove your word for ${v.say}?${v.sudre && v.sudre.length ? " Sudre's word comes back." : ""}`)) return;
+    saveMine(mine().filter((m) => v.familyOnly ? m.c.join() !== v.c.join() : m.for !== v.id));
+    renderTabs(); renderGrid(); fillFor();
   });
-  t.addEventListener("pointerdown", e=>{ if(e.target.classList.contains("del")) return; t.style.setProperty("--hl",hl); t.classList.add("lit"); setTimeout(()=>t.classList.remove("lit"),260); render(item); });
+  t.addEventListener("pointerdown", (e) => {
+    if(e.target.classList.contains("del")) return;
+    if (gap) { openMake(v.id); return; }
+    t.style.setProperty("--hl", COLORS[code[0]]); t.classList.add("lit"); setTimeout(()=>t.classList.remove("lit"),260);
+    render({ say: v.say, emoji: v.emoji, code, feminine: !isOurs(v) && v.feminine });
+  });
   return t;
 }
 function renderGrid(){
   grid.innerHTML="";
-  CORE.forEach(x=>grid.appendChild(tileEl(x,false)));
-  mine().forEach(x=>grid.appendChild(tileEl(x,true)));
+  if (CAT === "first") MAYA_FIRST_WORDS.forEach((w) => grid.appendChild(tileEl({ id:"", say:w.say, emoji:w.emoji, c:w.c, first:true })));
+  else if (CAT === "ours") mine().filter((m) => !m.for).forEach((m) => grid.appendChild(tileEl({ id:"", say:m.w||"our word", emoji:m.e, c:m.c, familyOnly:true })));
+  else VOCAB.filter((v) => v.cat === CAT && v.id !== "yes" && v.id !== "no").forEach((v) => grid.appendChild(tileEl(v)));
 }
 
-/* ---- your saved words (local, offline) ---- */
-const KEY="maya-words-v1";
-function mine(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ return []; } }
-function saveMine(list){ localStorage.setItem(KEY, JSON.stringify(list)); }
-
-/* ---- Make a word (author + live safety floor) ---- */
+/* ---- Make a word: the vocabulary evolves ---- */
 const make=document.getElementById("make"), keys=document.getElementById("keys"),
       cbeads=document.getElementById("cbeads"), chint=document.getElementById("chint"),
       cwarn=document.getElementById("cwarn"), cplay=document.getElementById("cplay"),
       cundo=document.getElementById("cundo"), ckeep=document.getElementById("ckeep"),
-      cname=document.getElementById("cname"), palette=document.getElementById("palette");
+      cname=document.getElementById("cname"), palette=document.getElementById("palette"),
+      cfor=document.getElementById("cfor"), cnote=document.getElementById("cnote");
 let build=[], chosenEmoji="⭐";
-const EMOJI=["⭐","❤️","🍪","🎈","🐶","🎵","🚗","🌈","🧸","🍎","☀️","🎨"];
+const EMOJI=["⭐","❤️","🍪","🎈","🐶","🎵","🚗","🌈","🧸","🍎","☀️","🎨","📺","📲","👂","🤷","👋🏽","🔊"];
 
+function fillFor(){
+  const gaps = VOCAB.filter((v) => !v.sudre.length && !isOurs(v));
+  const opt = (v) => `<option value="${v.id}">${escapeHTML(v.say)}${v.sudre.length ? ` — Sudre: ${named(v.sudre)}` : ""}</option>`;
+  cfor.innerHTML = `<option value="">a new word of our own</option>`
+    + (gaps.length ? `<optgroup label="Words Sudre left out">${gaps.map(opt).join("")}</optgroup>` : "")
+    + `<optgroup label="Say one of Sudre's words our own way">${VOCAB.filter((v) => v.sudre.length && v.id!=="yes" && v.id!=="no").map(opt).join("")}</optgroup>`;
+}
+function openMake(id){
+  make.classList.add("open"); document.body.classList.add("editing"); audio();
+  fillFor(); if (id) { cfor.value = id; onFor(); }
+  make.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function onFor(){
+  const v = byId.get(cfor.value);
+  if (v) { cname.value = v.say; chosenEmoji = v.emoji; markPalette(); cnote.innerHTML = v.sudre.length
+      ? `Sudre's word for <b>${escapeHTML(v.say)}</b> is ${solHTML(v.sudre)}. Make your own and the tile will say yours instead (you can always go back).`
+      : `Sudre had no word for <b>${escapeHTML(v.say)}</b>. Build one below — or press ✨ for a Solresol-shaped suggestion.`; }
+  else { cnote.textContent = "A new word of your own: build its notes, pick a picture and a name. It goes in the ★ Ours tab."; }
+  refreshBuild();
+}
+cfor.addEventListener("change", onFor);
 document.getElementById("makeTop").addEventListener("click",()=>{
-  make.classList.toggle("open");
-  const open=make.classList.contains("open");
-  document.body.classList.toggle("editing", open);   // your words show × while this is open
-  if(open)audio();
+  if (make.classList.contains("open")) { make.classList.remove("open"); document.body.classList.remove("editing"); }
+  else openMake("");
 });
 NOTE_NAMES.forEach((nm,n)=>{
-  const k=document.createElement("button"); k.className="key"; k.style.background=COLORS[n]; const lab=document.createElement("span"); lab.textContent=nm; k.appendChild(lab);
+  const k=document.createElement("button"); k.className="key"; k.style.background=COLORS[n];
+  const lab=document.createElement("span"); lab.textContent=nm; k.appendChild(lab);
   k.setAttribute("aria-label",nm);
-  k.addEventListener("pointerdown",()=>{ if(build.length>=7)return; build.push(n); playNote(n); refreshBuild(); });
+  k.addEventListener("pointerdown",()=>{ if(build.length>=6)return; build.push(n); playNote(n); refreshBuild(); });
   keys.appendChild(k);
 });
-EMOJI.forEach((e,i)=>{ const b=document.createElement("button"); b.textContent=e; if(i===0)b.classList.add("sel");
-  b.addEventListener("click",()=>{ chosenEmoji=e; palette.querySelectorAll("button").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); }); palette.appendChild(b); });
+function markPalette(){ palette.querySelectorAll("button").forEach((x)=>x.classList.toggle("sel", x.textContent===chosenEmoji)); }
+EMOJI.forEach((e)=>{ const b=document.createElement("button"); b.textContent=e;
+  b.addEventListener("click",()=>{ chosenEmoji=e; markPalette(); }); palette.appendChild(b); });
+markPalette();
 
-const escapeHTML = t => t.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function edit(a,b){ const n=a.length,m=b.length; const d=Array.from({length:n+1},(_,i)=>[i,...Array(m).fill(0)]);
   for(let j=0;j<=m;j++)d[0][j]=j;
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
   return d[n][m]; }
-function nearestCritical(code){ let best=null; for(const x of CRITICAL){ const e=edit(code,x.c); if(!best||e<best.e)best={x,e}; } return best; }
-function nearestAny(code){ const all=[YES,NO,...CORE,...mine()]; let best=null; for(const x of all){ const e=edit(code,x.c); if(!best||e<best.e)best={x,e}; } return best; }
-
+// the words a slip must never land on — as they are said now (the family's or Sudre's)
+const critical = () => VOCAB.filter((v) => v.critical).map((v) => ({ v, c: codeOf(v) })).filter((x) => x.c.length)
+  .concat(MAYA_FIRST_WORDS.filter((w) => w.critical).map((w) => ({ v: { id: "", say: w.say + " (first words)" }, c: w.c })));
+function nearestCritical(code){ let best=null; for(const x of critical()){ if (x.v.id === cfor.value) continue; const e=edit(code,x.c); if(!best||e<best.e)best={x,e}; } return best; }
+function takenBy(code){
+  const k = named(code);
+  const v = VOCAB.find((x) => x.id !== cfor.value && named(codeOf(x)) === k);
+  if (v) return v.say;
+  if (mine().some((m) => named(m.c) === k && m.for !== cfor.value)) return "one of your words";
+  const fw = MAYA_FIRST_WORDS.find((w) => named(w.c) === k);
+  if (fw) return `${fw.say} (in the first words)`;
+  return null;
+}
 function refreshBuild(){
   cbeads.innerHTML=""; build.forEach(n=>{ const i=document.createElement("i"); i.style.background=COLORS[n]; cbeads.appendChild(i); });
   chint.style.display = build.length? "none":"";
   ckeep.disabled = build.length===0;
-  // live safety floor: warn if this is one slip from a word that must stay distinct
   cwarn.hidden=true;
-  if(build.length){
-    const nc=nearestCritical(build);
-    if(nc.e===0){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ that’s already ${nc.x.e} <b>${nc.x.w}</b>`; ckeep.disabled=true; }
-    else if(nc.e<=1){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ close to ${nc.x.e} <b>${nc.x.w}</b> — add a note to keep them apart`; }
-  }
+  if(!build.length) return;
+  const taken = takenBy(build);
+  if (taken) { cwarn.hidden=false; cwarn.innerHTML=`⚠️ that already says <b>${escapeHTML(taken)}</b>`; ckeep.disabled=true; return; }
+  if (SUDRE.has(named(build))) { cwarn.hidden=false; cwarn.innerHTML=`ⓘ in Sudre's dictionary that is <b>${escapeHTML(named(build))}</b> — fine for your family, but another Solresol speaker would read it his way`; }
+  const nc=nearestCritical(build);
+  if(nc && nc.e<=1){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ one slip from <b>${escapeHTML(nc.x.v.say)}</b> — add or change a note to keep them apart`; }
 }
+// A Solresol-shaped word: it begins on the note of its kind (Sudre's keys:
+// do the body and food, re home and family, …), is not one of Sudre's
+// words, and stays two slips away from every word that must not be mistaken.
+document.getElementById("csuggest").addEventListener("click", () => {
+  const v = byId.get(cfor.value);
+  const fam = (MAYA_CATEGORIES.find((c) => c.id === (v ? v.cat : CAT)) || MAYA_CATEGORIES[0]).family;
+  const first = NOTE_NAMES.indexOf(fam);
+  for (let tries = 0; tries < 4000; tries++) {
+    const len = tries < 2500 ? 4 : 5;
+    const code = [first, ...Array.from({ length: len - 1 }, () => Math.floor(Math.random() * 7))];
+    if (code.slice(1).some((n, i) => n === code[i])) continue;                     // no doubled notes: Sudre keeps those for tense
+    if (SUDRE.has(named(code)) || takenBy(code)) continue;
+    if (critical().some((x) => edit(code, x.c) < 2)) continue;
+    build = code; refreshBuild(); playCode(code); return;
+  }
+});
 cplay.addEventListener("click",()=>{ if(build.length)playCode(build); });
 cundo.addEventListener("click",()=>{ build.pop(); refreshBuild(); });
 ckeep.addEventListener("click",()=>{
-  if(!build.length)return;
-  const na=nearestAny(build);
-  if(na.e===0){ cwarn.hidden=false; cwarn.innerHTML=`⚠️ that’s already ${na.x.e} <b>${escapeHTML(na.x.w||"a word")}</b>`; return; }
-  const list=mine();
-  list.push({w:(cname.value.trim()||""), e:chosenEmoji, c:build.slice()});
+  if(!build.length || takenBy(build))return;
+  const list=mine().filter((m) => !cfor.value || m.for !== cfor.value);
+  const v = byId.get(cfor.value);
+  list.push({ w:(cname.value.trim()|| (v ? v.say : "")), e:chosenEmoji, c:build.slice(), ...(v ? { for: v.id, cat: v.cat } : {}) });
   saveMine(list);
-  build=[]; cname.value=""; refreshBuild(); renderGrid();
-  render(list[list.length-1]);   // celebrate: say the new word
+  const said = v ? { say: v.say, emoji: v.emoji, code: build.slice() } : { say: cname.value.trim() || "our word", emoji: chosenEmoji, code: build.slice() };
+  build=[]; cname.value=""; if (!v) CAT = "ours"; else CAT = v.cat;
+  refreshBuild(); renderTabs(); renderGrid(); fillFor(); onFor();
+  render(said);                                    // celebrate: say the new word
 });
 
-/* ---- voice toggle ---- */
+/* ---- the family's words, to a file and back ---- */
+document.getElementById("cexport").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify({ maya: "family words", version: 1, at: new Date().toISOString(), words: mine() }, null, 1)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "maya-our-words.json"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+const cfile=document.getElementById("cfile");
+document.getElementById("cimport").addEventListener("click", () => cfile.click());
+cfile.addEventListener("change", async () => {
+  const f = cfile.files[0]; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    const incoming = (Array.isArray(data) ? data : data.words || []).filter((m) => m && Array.isArray(m.c) && m.c.every((n) => n >= 0 && n < 7));
+    const list = mine();
+    for (const m of incoming) {
+      const i = list.findIndex((x) => (m.for && x.for === m.for) || named(x.c) === named(m.c));
+      if (i >= 0) list[i] = m; else list.push(m);
+    }
+    saveMine(list); renderTabs(); renderGrid(); fillFor();
+    alert(`${incoming.length} word${incoming.length === 1 ? "" : "s"} loaded.`);
+  } catch (e) { alert("That file is not a list of Maya words."); }
+  cfile.value = "";
+});
+
+/* ---- sound and voice ---- */
+const soundSel=document.getElementById("sound");
+soundSel.innerHTML = INST.INSTRUMENT_IDS.map((id) => `<option value="${id}">🎵 ${INST.INSTRUMENTS[id].label}</option>`).join("");
+soundSel.value = SOUND;
+soundSel.addEventListener("change", () => { SOUND = soundSel.value; try{ localStorage.setItem("maya-sound", SOUND); }catch(e){} playCode([0,2,4]); });
 const voiceBtn=document.getElementById("voiceBtn"), voiceState=document.getElementById("voiceState");
-voiceBtn.addEventListener("click",()=>{ VOICE_ON=!VOICE_ON; voiceState.textContent=VOICE_ON?"on":"off"; voiceBtn.setAttribute("aria-pressed",VOICE_ON);
-  voiceBtn.firstChild.textContent=VOICE_ON?"🔊 Voice ":"🔈 Voice "; if(VOICE_ON)speak("yes"); });
+function showVoice(){ voiceState.textContent=VOICE_ON?"on":"off"; voiceBtn.setAttribute("aria-pressed",VOICE_ON);
+  voiceBtn.firstChild.textContent=VOICE_ON?"🔊 Voice ":"🔈 Voice "; }
+voiceBtn.addEventListener("click",()=>{ VOICE_ON=!VOICE_ON; try{ localStorage.setItem("maya-voice", VOICE_ON?"on":"off"); }catch(e){}
+  showVoice(); if(VOICE_ON)speak("yes"); });
+showVoice();
 
 /* ---- go ---- */
-renderGrid(); refreshBuild();
+renderTabs(); renderGrid(); fillFor(); refreshBuild();
 </script>
 </body>
 </html>

@@ -1,9 +1,10 @@
-import { note, cap } from '../../dictionary/notes.js';
-import { getIndex } from '../../dictionary/dictionary.js';
-import { semanticKey } from '../../dictionary/grammar.js';
-import { scriptSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js';
-import { candidates, readNotes } from '../../translate/lookup.js';
-import { esc, swatches, playBtn, addBtn, markMatch, numbersOf } from './parts.js';
+import { note, cap } from '../../dictionary/notes.js?v=ea2512429f';
+import { getIndex } from '../../dictionary/dictionary.js?v=ea2512429f';
+import { semanticKey } from '../../dictionary/grammar.js?v=ea2512429f';
+import { scriptSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
+import { candidates, readNotes } from '../../translate/lookup.js?v=ea2512429f';
+import { esc, swatches, playBtn, addBtn, markMatch, numbersOf } from './parts.js?v=ea2512429f';
+import { cursiveSVG } from '../../graphics/cursive.js?v=ea2512429f';
 
 // Words, both ways: English → the Solresol words that answer it (several,
 // best first); Solresol — typed as syllables or as numbers — → its meaning,
@@ -77,6 +78,7 @@ export function mountWordsLeaf(el) {
         <p class="tr-card-notes">${notes.map((n) => `<span><b style="--c:${note(n).color}">${note(n).num}</b>${n}</span>`).join('')}</p>
         <p class="tr-card-meaning">${meaning ? esc(meaning) : '<em>Not in the dictionary.</em> A word waiting for a meaning.'}</p>
         <div class="tr-card-staff">${staffSVG([notes], { labels: true })}</div>
+        <div class="tr-cursive">${cursiveSVG(notes, { size: 30 })}</div>
         <div class="controls">
           <button type="button" class="btn btn--ink" data-play="${notes.join('-')}">▶ Hear it</button>
           <button type="button" class="btn" data-add="${notes.join('-')}">＋ To sentence</button>

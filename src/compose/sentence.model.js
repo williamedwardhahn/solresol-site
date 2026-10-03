@@ -1,4 +1,4 @@
-import { TENSE_MARKERS } from '../dictionary/grammar.js';
+import { TENSE_MARKERS } from '../dictionary/grammar.js?v=ea2512429f';
 
 // The pure core of Compose — no DOM.
 //

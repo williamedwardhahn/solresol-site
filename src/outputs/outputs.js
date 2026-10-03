@@ -1,7 +1,7 @@
-import { NOTES, note, cap } from '../dictionary/notes.js';
-import { meaningOf } from '../dictionary/dictionary.js';
-import { playNote } from '../voices/index.js';
-import { emit } from '../live/bus.js';
+import { NOTES, note, cap } from '../dictionary/notes.js?v=ea2512429f';
+import { meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
+import { playNote } from '../voices/index.js?v=ea2512429f';
+import { emit } from '../live/bus.js?v=ea2512429f';
 
 // Outputs — the test of the whole architecture: a book and a game built
 // from the SAME kernel with NO new primitives. If these are cheap, the

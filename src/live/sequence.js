@@ -1,4 +1,4 @@
-import { live } from './live.js';
+import { live } from './live.js?v=ea2512429f';
 
 // A live, ordered list.
 //

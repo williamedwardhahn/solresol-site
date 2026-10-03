@@ -1,5 +1,5 @@
-import { VOICES } from '../voices/index.js';
-import { playNote } from '../voices/index.js';
+import { VOICES } from '../voices/index.js?v=ea2512429f';
+import { playNote } from '../voices/index.js?v=ea2512429f';
 
 // The Choir — a live Word shown by every Voice at once.
 //

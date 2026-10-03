@@ -1,4 +1,4 @@
-import { note, noteByNumber } from '../dictionary/notes.js';
+import { note, noteByNumber } from '../dictionary/notes.js?v=ea2512429f';
 
 // The Number voice — a note as 1–7.
 export const number = {
@@ -11,6 +11,7 @@ export const number = {
   },
   update(el, n) {
     el.textContent = note(n).num;
+    el.style.color = note(n).color; el.classList.add('nt');                       // the figure in its note's colour
   },
   // the ear: a digit 1–7 → a note
   read(value) {

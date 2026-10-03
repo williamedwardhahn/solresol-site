@@ -340,3 +340,24 @@
   .readout-actions .btn { padding: 6px 8px 7px; font-size: .84rem; }
   .readout-actions .btn kbd { display: none; }
 }
+
+/* the living word in Sudre's connected script, under its name */
+.readout-script { min-height: 40px; display: flex; justify-content: center; align-items: center; margin: 2px 0 6px; }
+
+/* ── the page: a sentence typed on the instrument ── */
+.writing { margin: 18px 0 4px; padding: 14px 4px 6px; border-top: 1px solid var(--rule); }
+.writing-label { margin: 0 0 8px; text-align: center; font-family: var(--sc); letter-spacing: .1em; color: var(--rubric); font-size: .9rem; }
+.writing-label span { font-family: var(--text); letter-spacing: 0; color: var(--ink-3); font-style: italic; font-size: .88rem; }
+.writing-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 6px 18px; min-height: 64px; }
+.writing-word { display: grid; justify-items: center; gap: 0; background: none; border: 0; padding: 2px 4px; border-radius: 3px; }
+button.writing-word:hover { background: rgba(156, 42, 28, .06); }
+.writing-word b { font-family: var(--display); font-weight: 400; font-size: 1.7rem; line-height: 1.15; min-height: 1.15em; display: inline-flex; align-items: baseline; }
+.writing-word small { color: var(--ink-3); font-style: italic; font-size: .85rem; max-width: 9rem; text-align: center; }
+.writing-word--now b { min-width: 1.4rem; }
+.writing-caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; background: var(--rubric); align-self: center; animation: caret 1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+.writing-reading { text-align: center; margin: 8px auto 10px; max-width: 46rem; min-height: 1.6em; }
+.writing-en { font-family: var(--display); font-style: italic; font-size: 1.25rem; color: var(--ink); }
+.writing-note { display: block; color: var(--ink-3); font-size: .85rem; font-style: italic; }
+.writing-empty { color: var(--ink-3); font-style: italic; }
+.writing-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }

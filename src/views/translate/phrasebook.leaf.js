@@ -1,7 +1,7 @@
-import { PHRASEBOOK, phraseWords } from '../../translate/phrases.js';
-import { readNotes } from '../../translate/lookup.js';
-import { esc, swatches, playBtn, addBtn } from './parts.js';
-import { wordHTML } from '../../graphics/graphics.js';
+import { PHRASEBOOK, phraseWords } from '../../translate/phrases.js?v=ea2512429f';
+import { readNotes } from '../../translate/lookup.js?v=ea2512429f';
+import { esc, swatches, playBtn, addBtn } from './parts.js?v=ea2512429f';
+import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
 
 // The phrasebook — a traveller's pages, each phrase checked against the
 // dictionary and the canonical grammar (see src/translate/phrases.js).
@@ -14,7 +14,7 @@ export function mountPhrasebookLeaf(el) {
     let i = 0;
     const solHtml = esc(p.sol).replace(/[^\s,.!?]+/g, (w) => {
       const n = notes[i], lit = p.lit[i]; i++;
-      return `<button type="button" class="pb-w" data-open="${n.join('-')}" title="${esc(lit)}">${wordHTML(w)}</button>`;
+      return `<button type="button" class="pb-w" data-open="${n.join('-')}" title="${esc(lit)}">${wordHTML(w, { color: true })}</button>`;
     });
     return `<li class="pb-row" data-score style="--i:${k}">
       <p class="pb-en">${esc(p.en)}</p>

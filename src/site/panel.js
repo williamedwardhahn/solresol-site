@@ -1,11 +1,12 @@
-import { parse, cap, note } from '../dictionary/notes.js';
-import { meaningOf } from '../dictionary/dictionary.js';
-import { semanticKey, reverse, accentForms, markWord, partOfSpeech } from '../dictionary/grammar.js';
-import { Word } from '../lang/word.js';
-import { emit } from '../live/bus.js';
-import { playWord } from '../voices/index.js';
-import { mountChoir } from '../ui/choir.js';
-import { staffSVG, GLYPH_PATHS, wordHTML } from '../graphics/graphics.js';
+import { parse, cap, note } from '../dictionary/notes.js?v=ea2512429f';
+import { meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
+import { semanticKey, reverse, accentForms, markWord, partOfSpeech } from '../dictionary/grammar.js?v=ea2512429f';
+import { Word } from '../lang/word.js?v=ea2512429f';
+import { emit } from '../live/bus.js?v=ea2512429f';
+import { playWord } from '../voices/index.js?v=ea2512429f';
+import { mountChoir } from '../ui/choir.js?v=ea2512429f';
+import { staffSVG, GLYPH_PATHS, wordHTML, syllablesHTML, numbersHTML } from '../graphics/graphics.js?v=ea2512429f';
+import { cursiveSVG } from '../graphics/cursive.js?v=ea2512429f';
 
 // The word panel — every word's own page. Opened from anywhere (a search
 // hit, a chip, a star on the map) through ctx.openWord, and addressable
@@ -40,7 +41,7 @@ export function mountPanel(host, ctx) {
 
     body.innerHTML = `
       <p class="panel-family">${family ? `${cap(notes[0])} · ${family}` : 'A particle'}</p>
-      <h2 class="panel-word">${wordHTML(cap(markWord(notes, form)))}</h2>
+      <h2 class="panel-word">${wordHTML(cap(markWord(notes, form)), { color: true })}</h2>
       <p class="panel-meaning">${meaning ? esc(meaning) : '<em>Not in the dictionary.</em>'}${own ? ' <span class="tag">your meaning</span>' : ''}</p>
       ${notes.length > 1 ? `<p class="panel-role">${form.accent < 0 ? 'Written plain, it is a <b>verb</b>' : `Accented so, it is a <b>${partOfSpeech(notes, form.accent)}</b>`}${form.feminine ? ', feminine' : ''}${form.plural ? ', plural' : ''}.</p>` : ''}
 
@@ -55,6 +56,12 @@ export function mountPanel(host, ctx) {
       <section class="panel-section">
         <h3 class="rubric">Every voice</h3>
         <div data-choir></div>
+      </section>
+
+      <section class="panel-section">
+        <h3 class="rubric">In Sudre's hand <span class="rubric-note">the whole word as one line, after Gajewski</span></h3>
+        <div class="panel-cursive">${cursiveSVG(notes, { size: 34 })}</div>
+        <p class="panel-notes">${syllablesHTML(notes, { sep: ' · ' })} <span class="panel-notes-sep" aria-hidden="true">·</span> ${numbersHTML(notes, ' ')}</p>
       </section>
 
       <section class="panel-section">

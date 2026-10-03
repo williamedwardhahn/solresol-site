@@ -1,4 +1,4 @@
-import { note } from '../dictionary/notes.js';
+import { note } from '../dictionary/notes.js?v=ea2512429f';
 
 // The Binary voice — a note as three bits (do = 001 … si = 111).
 export const binary = {
@@ -11,5 +11,6 @@ export const binary = {
   },
   update(el, n) {
     el.textContent = note(n).num.toString(2).padStart(3, '0');
+    el.style.color = note(n).color; el.classList.add('nt');
   },
 };

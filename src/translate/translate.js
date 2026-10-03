@@ -1,6 +1,6 @@
-import { parse, cap } from '../dictionary/notes.js';
-import { getIndex } from '../dictionary/dictionary.js';
-import { emit } from '../live/bus.js';
+import { parse, cap } from '../dictionary/notes.js?v=ea2512429f';
+import { getIndex } from '../dictionary/dictionary.js?v=ea2512429f';
+import { emit } from '../live/bus.js?v=ea2512429f';
 
 // Translation — the reclaimed point of a language: saying things.
 // Both directions, whole sentences. Pure: the index is passed in, so the

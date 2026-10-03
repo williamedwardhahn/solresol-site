@@ -1,4 +1,4 @@
-import { NOTES, note } from '../dictionary/notes.js';
+import { NOTES, note } from '../dictionary/notes.js?v=ea2512429f';
 
 // The original graphics, redrawn as SVG in the canonical colours:
 // the half-fan of the seven notes (the project's mark), the staff with
@@ -38,7 +38,7 @@ export function staffSVG(words, { labels = false, height = 84, cls = 'staff-svg'
       const y = yOf(n);
       if (n === 'do') heads.push(`<line x1="${x - 10}" x2="${x + 10}" y1="${y}" y2="${y}" class="staff-ledger"/>`);
       heads.push(`<ellipse cx="${x}" cy="${y}" rx="6.6" ry="4.9" transform="rotate(-18 ${x} ${y})" fill="${nt.color}" class="staff-head"/>`);
-      if (labels) heads.push(`<text x="${x}" y="${bottom + 26}" class="staff-label" text-anchor="middle">${nt.name}</text>`);
+      if (labels) heads.push(`<text x="${x}" y="${bottom + 26}" class="staff-label" text-anchor="middle" fill="${nt.color}">${nt.name}</text>`);
       x += stepX;
     }
   });
@@ -68,7 +68,10 @@ export const GLYPH_PATHS = {
 
 export function glyphSVG(n, { color = true, cls = 'glyph' } = {}) {
   const nt = note(n); if (!nt) return '';
-  return `<svg class="${cls}" viewBox="0 0 20 20" role="img" aria-label="${nt.name} in Sudre's script"><path d="${GLYPH_PATHS[nt.name]}" fill="none" stroke="${color ? nt.color : 'currentColor'}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+  const d = GLYPH_PATHS[nt.name];
+  // in colour: the key's colour over a faint ink line, so pale mi still reads
+  const under = color ? `<path d="${d}" fill="none" stroke="rgba(34,27,20,.32)" stroke-width="3.4" stroke-linecap="round"/>` : '';
+  return `<svg class="${cls}" viewBox="0 0 20 20" role="img" aria-label="${nt.name} in Sudre's script">${under}<path d="${d}" fill="none" stroke="${color ? nt.color : 'currentColor'}" stroke-width="2.4" stroke-linecap="round"/></svg>`;
 }
 
 // A word written in the script: its strokes side by side.
@@ -95,18 +98,33 @@ export function colorStripSVG(words, { height = 28 } = {}) {
 // underlined, and feminine / plural get a small label. The text itself
 // keeps its canonical marks; this only changes how it is drawn.
 const SYLLABLE = /[sS][oO][\u0300-\u036f]*l|[dDrRmMfFsSlL][oeiaOEIA][\u0300-\u036f]*/g;
-export function wordHTML(text) {
+//
+// With { color: true } each syllable is also written in its note's ink —
+// the word as a run of colours (the multimodal headline form).
+export function wordHTML(text, { color = false } = {}) {
   return String(text).normalize('NFD').split(/(\s+)/).map((token) => {
-    if (!/[\u0302\u0304\u0301]/.test(token)) return token.normalize('NFC');
+    if (!color && !/[\u0302\u0304\u0301]/.test(token)) return token.normalize('NFC');
     let feminine = false, plural = false;
     const body = token.replace(SYLLABLE, (syl) => {
       const plain = syl.replace(/[\u0300-\u036f]/g, '');
       if (syl.includes('\u0304')) feminine = true;
       if (syl.includes('\u0301')) plural = true;
-      return syl.includes('\u0302') ? `<span class="w-stress">${plain}</span>` : plain;
+      const tinted = color ? noteText(plain.toLowerCase(), plain) : plain;
+      return syl.includes('\u0302') ? `<span class="w-stress">${tinted}</span>` : tinted;
     }).replace(/[\u0300-\u036f]/g, '');
     const [, word, tail] = body.match(/^(.*?)([?!.,;:]*)$/s);
     const marks = (feminine ? '<span class="w-mark">fem.</span>' : '') + (plural ? '<span class="w-mark">pl.</span>' : '');
     return word + marks + tail;
   }).join('');
 }
+
+// ── a note's name or number, written in its own colour ───────────────
+// The colour is the key's own; the .nt class gives it a fine ink edge so
+// even yellow mi reads on paper.
+export const inkOf = (n) => note(n)?.color || 'inherit';     // a note's colour — the very colour of its key
+export const noteText = (n, text = n) => (note(n) ? `<span class="nt" style="color:${inkOf(n)}">${text}</span>` : text);
+// [do, mi, sol] → "1 3 5" with each figure in its note's ink
+export const numbersHTML = (notes, sep = '') => notes.map((n) => noteText(n, note(n)?.num ?? '')).join(sep);
+// [do, mi, sol] → "do mi sol" (or capitalised), each syllable in its ink
+export const syllablesHTML = (notes, { sep = ' ', capital = false } = {}) =>
+  notes.map((n) => noteText(n, capital ? n[0].toUpperCase() + n.slice(1) : n)).join(sep);
