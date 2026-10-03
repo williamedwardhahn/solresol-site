@@ -1,13 +1,13 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { meaningOf } from '../../dictionary/dictionary.js?v=ea2512429f';
-import { playNote } from '../../voices/index.js?v=ea2512429f';
-import { emit } from '../../live/bus.js?v=ea2512429f';
-import { handMark } from '../../voices/hand.js?v=ea2512429f';
-import { ladderPosition, lesson, grade } from '../../learn/singing.model.js?v=ea2512429f';
-import { createMic } from '../../learn/mic.js?v=ea2512429f';
-import { mountLane } from './sing-lane.js?v=ea2512429f';
-import { mountSpeak } from './sing-speak.js?v=ea2512429f';
-import { esc } from './common.js?v=ea2512429f';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { meaningOf } from '../../dictionary/dictionary.js?v=d5188c5e91';
+import { playNote } from '../../voices/index.js?v=d5188c5e91';
+import { emit } from '../../live/bus.js?v=d5188c5e91';
+import { handMark } from '../../voices/hand.js?v=d5188c5e91';
+import { ladderPosition, lesson, grade } from '../../learn/singing.model.js?v=d5188c5e91';
+import { createMic } from '../../learn/mic.js?v=d5188c5e91';
+import { mountLane } from './sing-lane.js?v=d5188c5e91';
+import { mountSpeak } from './sing-speak.js?v=d5188c5e91';
+import { esc } from './common.js?v=d5188c5e91';
 
 // The singing lesson (#/learn/sing) — a tuner that teaches.
 //
@@ -195,7 +195,7 @@ export function mountSing(host, ctx) {
     if (current.word) {
       if (!stats.words.includes(current.word)) stats.words.push(current.word);
       emit('word:used', { key: current.word, channel: 'sing' });
-      current.notes.forEach((n, i) => playNote(n, 0.15 + i * 0.3, 0.45, { octave: refOctave }));
+      current.notes.forEach((n, i, a) => playNote(n, 0.15 + i * 0.3, 0.3, { octave: refOctave, damp: i < a.length - 1 }));
       ear.deafen(700 + current.notes.length * 300);
       status.innerHTML = `${stars} You sang <button class="chip-word" data-open="${current.word}">${cap(current.word)}</button> — <i>${esc(meaningOf(current.word))}</i>. ${g2.word}.`;
     } else if (book === 'scale') {

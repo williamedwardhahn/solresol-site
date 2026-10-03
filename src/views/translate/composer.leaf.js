@@ -1,11 +1,11 @@
-import { cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { getIndex } from '../../dictionary/dictionary.js?v=ea2512429f';
-import { staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
-import { compose, writeOut, rulesInPlay, SLOTS, TENSES, PRONOUN_CHOICES } from '../../translate/composer.model.js?v=ea2512429f';
-import { lookup, shortGloss, readNotes } from '../../translate/lookup.js?v=ea2512429f';
-import { esc, swatches, written, encSentence } from './parts.js?v=ea2512429f';
-import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
-import { cursiveSVG } from '../../graphics/cursive.js?v=ea2512429f';
+import { cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { getIndex } from '../../dictionary/dictionary.js?v=d5188c5e91';
+import { staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=d5188c5e91';
+import { compose, writeOut, rulesInPlay, SLOTS, TENSES, PRONOUN_CHOICES } from '../../translate/composer.model.js?v=d5188c5e91';
+import { lookup, shortGloss, readNotes } from '../../translate/lookup.js?v=d5188c5e91';
+import { esc, swatches, written, encSentence } from './parts.js?v=d5188c5e91';
+import { wordHTML } from '../../graphics/graphics.js?v=d5188c5e91';
+import { cursiveSVG } from '../../graphics/cursive.js?v=d5188c5e91';
 
 // The composer — five slots for the parts of speech, a tense, a negation,
 // a mood. The grammar (src/translate/composer.model.js) puts the words in

@@ -1,12 +1,12 @@
-import { loadDictionary, wordCount } from './dictionary/dictionary.js?v=ea2512429f';
-import { Word } from './lang/word.js?v=ea2512429f';
-import { Phrase } from './lang/phrase.js?v=ea2512429f';
-import { createMemory } from './memory/memory.js?v=ea2512429f';
-import { emit, on } from './live/bus.js?v=ea2512429f';
-import { setTimbre } from './voices/index.js?v=ea2512429f';
-import { createState } from './site/state.js?v=ea2512429f';
-import { createRouter } from './site/router.js?v=ea2512429f';
-import { renderSite } from './site/site.js?v=ea2512429f';
+import { loadDictionary, wordCount } from './dictionary/dictionary.js?v=d5188c5e91';
+import { Word } from './lang/word.js?v=d5188c5e91';
+import { Phrase } from './lang/phrase.js?v=d5188c5e91';
+import { createMemory } from './memory/memory.js?v=d5188c5e91';
+import { emit, on } from './live/bus.js?v=d5188c5e91';
+import { setTimbre } from './voices/index.js?v=d5188c5e91';
+import { createState } from './site/state.js?v=d5188c5e91';
+import { createRouter } from './site/router.js?v=d5188c5e91';
+import { renderSite } from './site/site.js?v=d5188c5e91';
 
 // Load the one book of truth, build the shared kernel, bind the book.
 await loadDictionary();

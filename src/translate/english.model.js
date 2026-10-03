@@ -1,6 +1,6 @@
-import { fold } from '../dictionary/index.js?v=ea2512429f';
-import { TENSE_MARKERS } from '../dictionary/grammar.js?v=ea2512429f';
-import { candidates, readNotes, shortGloss } from './lookup.js?v=ea2512429f';
+import { fold } from '../dictionary/index.js?v=d5188c5e91';
+import { TENSE_MARKERS } from '../dictionary/grammar.js?v=d5188c5e91';
+import { candidates, readNotes, shortGloss } from './lookup.js?v=d5188c5e91';
 
 // An English sentence, carried into Solresol by the canonical grammar
 // (Gajewski, docs/SOLRESOL_MASTER.md §6) — word by word, but not blindly:

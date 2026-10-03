@@ -71,13 +71,26 @@ export const instrumentFor = (id) => INSTRUMENTS[id] || INSTRUMENTS[DEFAULT_INST
 
 // How loud and how long one note is. `step` is 0 (do) … 6 (si); `dur` is
 // how long the note is held. Low notes sit a little louder (the ear hears
-// them as quieter), and a struck instrument rings out whatever the hold.
-export function noteShape(inst, step, dur) {
+// them as quieter), and a struck instrument rings out whatever the hold —
+// unless `damp`: then the note is stopped at the end of its time, as a
+// pianist lifts a finger, so the notes of a word follow one another
+// instead of piling up. (The last note of a word is left to ring.)
+const DAMP = 0.06;          // seconds a damped note takes to fall silent
+export function noteShape(inst, step, dur, { damp = false } = {}) {
   const s = Math.max(0, Math.min(6, Number(step) || 0));
   const gain = inst.level * (1 + (6 - s) * 0.035);
   if (inst.struck) {
     const ring = Math.max(...inst.partials.map((p) => p.decay || 0)) * (1 + (6 - s) * 0.05);
-    return { gain, attack: inst.attack, hold: 0, end: inst.attack + ring };
+    const natural = inst.attack + ring;                       // when it would die away by itself
+    if (!damp) return { gain, attack: inst.attack, hold: 0, natural, cut: null, end: natural };
+    const cut = Math.max(dur, inst.attack + 0.05);            // when the finger lifts
+    return cut >= natural
+      ? { gain, attack: inst.attack, hold: 0, natural, cut: null, end: natural }
+      : { gain, attack: inst.attack, hold: 0, natural, cut, end: cut + DAMP };
+  }
+  if (damp) {
+    const hold = Math.max(dur - DAMP, inst.attack + 0.03);
+    return { gain, attack: inst.attack, hold, end: hold + DAMP };
   }
   const hold = Math.max(dur, inst.attack + 0.05);
   return { gain, attack: inst.attack, hold, end: hold + inst.release };

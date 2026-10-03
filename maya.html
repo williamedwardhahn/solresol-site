@@ -396,13 +396,26 @@ const instrumentFor = (id) => INSTRUMENTS[id] || INSTRUMENTS[DEFAULT_INSTRUMENT]
 
 // How loud and how long one note is. `step` is 0 (do) … 6 (si); `dur` is
 // how long the note is held. Low notes sit a little louder (the ear hears
-// them as quieter), and a struck instrument rings out whatever the hold.
-function noteShape(inst, step, dur) {
+// them as quieter), and a struck instrument rings out whatever the hold —
+// unless `damp`: then the note is stopped at the end of its time, as a
+// pianist lifts a finger, so the notes of a word follow one another
+// instead of piling up. (The last note of a word is left to ring.)
+const DAMP = 0.06;          // seconds a damped note takes to fall silent
+function noteShape(inst, step, dur, { damp = false } = {}) {
   const s = Math.max(0, Math.min(6, Number(step) || 0));
   const gain = inst.level * (1 + (6 - s) * 0.035);
   if (inst.struck) {
     const ring = Math.max(...inst.partials.map((p) => p.decay || 0)) * (1 + (6 - s) * 0.05);
-    return { gain, attack: inst.attack, hold: 0, end: inst.attack + ring };
+    const natural = inst.attack + ring;                       // when it would die away by itself
+    if (!damp) return { gain, attack: inst.attack, hold: 0, natural, cut: null, end: natural };
+    const cut = Math.max(dur, inst.attack + 0.05);            // when the finger lifts
+    return cut >= natural
+      ? { gain, attack: inst.attack, hold: 0, natural, cut: null, end: natural }
+      : { gain, attack: inst.attack, hold: 0, natural, cut, end: cut + DAMP };
+  }
+  if (damp) {
+    const hold = Math.max(dur - DAMP, inst.attack + 0.03);
+    return { gain, attack: inst.attack, hold, end: hold + DAMP };
   }
   const hold = Math.max(dur, inst.attack + 0.05);
   return { gain, attack: inst.attack, hold, end: hold + inst.release };
@@ -460,12 +473,14 @@ function hall(ac){
 let SOUND = (()=>{ try{ return localStorage.getItem("maya-sound") || INST.DEFAULT_INSTRUMENT; }catch(e){ return INST.DEFAULT_INSTRUMENT; } })();
 // One note, built from the chosen instrument's recipe (as the main site does).
 // `bend` (semitones) can slide the pitch; nothing on the board uses it now.
-function tone(n, t, dur, bend){
+function tone(n, t, dur, bend, damp){
   const ac=audio(), { input, noise }=hall(ac), inst=INST.instrumentFor(SOUND), f=FREQ[n];
-  const shape=INST.noteShape(inst, n, dur), f2=bend ? f*Math.pow(2,bend/12) : f;
+  const shape=INST.noteShape(inst, n, dur, { damp: !!damp }), f2=bend ? f*Math.pow(2,bend/12) : f;
   const amp=ac.createGain();
   amp.gain.setValueAtTime(0.0001,t); amp.gain.exponentialRampToValueAtTime(shape.gain*1.15,t+shape.attack);
-  if(inst.struck){ amp.gain.exponentialRampToValueAtTime(0.0001,t+shape.end); }
+  if(inst.struck){
+    if(shape.cut!=null){ const k=(shape.cut-shape.attack)/(shape.natural-shape.attack); amp.gain.exponentialRampToValueAtTime(shape.gain*1.15*Math.pow(0.0001/(shape.gain*1.15),k),t+shape.cut); }
+    amp.gain.exponentialRampToValueAtTime(0.0001,t+shape.end); }
   else { amp.gain.setTargetAtTime(shape.gain*inst.sustain,t+shape.attack,0.08); amp.gain.setValueAtTime(shape.gain*inst.sustain,t+shape.hold); amp.gain.exponentialRampToValueAtTime(0.0001,t+shape.end); }
   const lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=inst.q||.5; lp.frequency.value=Math.min(16000,inst.filter+f*(inst.filterTrack||0));
   lp.connect(amp).connect(input);
@@ -487,7 +502,8 @@ function tone(n, t, dur, bend){
 // A word: its notes in turn; the feminine lengthens the last (as Gajewski says it is spoken).
 function playCode(code, { bend = 0, feminine = false } = {}){
   const ac=audio(); let t=ac.currentTime+0.02; const step=code.length>1?0.3:0.6;
-  code.forEach((n,i)=>{ const last=i===code.length-1; const d=step*(last&&feminine?1.8:0.95); tone(n, t, d, code.length===1?bend:0); t+=step; });
+  // each note is stopped as the next begins (a pianist's finger lifting); the last rings
+  code.forEach((n,i)=>{ const last=i===code.length-1; const d=last ? step*(feminine?1.8:0.95) : step; tone(n, t, d, code.length===1?bend:0, !last); t+=step; });
 }
 function playNote(n){ tone(n, audio().currentTime+0.01, 0.5); }
 

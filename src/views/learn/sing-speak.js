@@ -1,9 +1,9 @@
-import { note, cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { CORE } from '../../dictionary/core.js?v=ea2512429f';
-import { playNote } from '../../voices/index.js?v=ea2512429f';
-import { emit } from '../../live/bus.js?v=ea2512429f';
-import { noteTracker, decodeHum } from '../../learn/singing.model.js?v=ea2512429f';
-import { esc } from './common.js?v=ea2512429f';
+import { note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { CORE } from '../../dictionary/core.js?v=d5188c5e91';
+import { playNote } from '../../voices/index.js?v=d5188c5e91';
+import { emit } from '../../live/bus.js?v=d5188c5e91';
+import { noteTracker, decodeHum } from '../../learn/singing.model.js?v=d5188c5e91';
+import { esc } from './common.js?v=d5188c5e91';
 
 // Hum to speak — for someone who can hum but not speak.
 //
@@ -60,7 +60,7 @@ export function mountSpeak(host, env) {
   }
 
   function speak(g) {
-    g.notes.forEach((n, i) => playNote(n, i * 0.28, 0.4, { octave: env.refOctave() }));
+    g.notes.forEach((n, i) => playNote(n, i * 0.28, 0.28, { octave: env.refOctave(), damp: i < g.notes.length - 1 }));
     env.ear.deafen(g.notes.length * 280 + 1600);
     try {
       if (window.speechSynthesis) {

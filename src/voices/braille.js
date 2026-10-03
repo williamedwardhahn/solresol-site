@@ -1,4 +1,4 @@
-import { note } from '../dictionary/notes.js?v=ea2512429f';
+import { note } from '../dictionary/notes.js?v=d5188c5e91';
 
 // The Braille voice — a note as its dot pattern.
 export const braille = {

@@ -1,4 +1,4 @@
-import { isNote, note } from '../dictionary/notes.js?v=ea2512429f';
+import { isNote, note } from '../dictionary/notes.js?v=d5188c5e91';
 
 // The Solfège voice — a note as its written syllable.
 export const solfege = {

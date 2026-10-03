@@ -1,10 +1,10 @@
-import { note, cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { getIndex } from '../../dictionary/dictionary.js?v=ea2512429f';
-import { semanticKey } from '../../dictionary/grammar.js?v=ea2512429f';
-import { scriptSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
-import { candidates, readNotes } from '../../translate/lookup.js?v=ea2512429f';
-import { esc, swatches, playBtn, addBtn, markMatch, numbersOf } from './parts.js?v=ea2512429f';
-import { cursiveSVG } from '../../graphics/cursive.js?v=ea2512429f';
+import { note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { getIndex } from '../../dictionary/dictionary.js?v=d5188c5e91';
+import { semanticKey } from '../../dictionary/grammar.js?v=d5188c5e91';
+import { scriptSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=d5188c5e91';
+import { candidates, readNotes } from '../../translate/lookup.js?v=d5188c5e91';
+import { esc, swatches, playBtn, addBtn, markMatch, numbersOf } from './parts.js?v=d5188c5e91';
+import { cursiveSVG } from '../../graphics/cursive.js?v=d5188c5e91';
 
 // Words, both ways: English → the Solresol words that answer it (several,
 // best first); Solresol — typed as syllables or as numbers — → its meaning,

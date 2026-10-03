@@ -3226,13 +3226,26 @@ const __m_voices_instruments_model = (() => {
 
   // How loud and how long one note is. `step` is 0 (do) … 6 (si); `dur` is
   // how long the note is held. Low notes sit a little louder (the ear hears
-  // them as quieter), and a struck instrument rings out whatever the hold.
-  function noteShape(inst, step, dur) {
+  // them as quieter), and a struck instrument rings out whatever the hold —
+  // unless `damp`: then the note is stopped at the end of its time, as a
+  // pianist lifts a finger, so the notes of a word follow one another
+  // instead of piling up. (The last note of a word is left to ring.)
+  const DAMP = 0.06;          // seconds a damped note takes to fall silent
+  function noteShape(inst, step, dur, { damp = false } = {}) {
     const s = Math.max(0, Math.min(6, Number(step) || 0));
     const gain = inst.level * (1 + (6 - s) * 0.035);
     if (inst.struck) {
       const ring = Math.max(...inst.partials.map((p) => p.decay || 0)) * (1 + (6 - s) * 0.05);
-      return { gain, attack: inst.attack, hold: 0, end: inst.attack + ring };
+      const natural = inst.attack + ring;                       // when it would die away by itself
+      if (!damp) return { gain, attack: inst.attack, hold: 0, natural, cut: null, end: natural };
+      const cut = Math.max(dur, inst.attack + 0.05);            // when the finger lifts
+      return cut >= natural
+        ? { gain, attack: inst.attack, hold: 0, natural, cut: null, end: natural }
+        : { gain, attack: inst.attack, hold: 0, natural, cut, end: cut + DAMP };
+    }
+    if (damp) {
+      const hold = Math.max(dur - DAMP, inst.attack + 0.03);
+      return { gain, attack: inst.attack, hold, end: hold + DAMP };
     }
     const hold = Math.max(dur, inst.attack + 0.05);
     return { gain, attack: inst.attack, hold, end: hold + inst.release };
@@ -3340,12 +3353,12 @@ const __m_voices_tone = (() => {
   }
 
   // `octave` shifts the note (−1 = an octave down), so a lesson can sing in the learner's own range.
-  function playNote(name, when = 0, dur = 0.5, { octave = 0 } = {}) {
+  function playNote(name, when = 0, dur = 0.5, { octave = 0, damp = false } = {}) {
     const ac = audio(), nt = note(name);
     if (!nt) return;
     const { input, noise } = hall(ac);
     const inst = instrumentFor(timbre);
-    const shape = noteShape(inst, nt.step, dur);
+    const shape = noteShape(inst, nt.step, dur, { damp });
     const t = ac.currentTime + 0.01 + when, f = nt.freq * Math.pow(2, octave);
 
     // the envelope
@@ -3353,6 +3366,11 @@ const __m_voices_tone = (() => {
     amp.gain.setValueAtTime(0.0001, t);
     amp.gain.exponentialRampToValueAtTime(shape.gain, t + shape.attack);
     if (inst.struck) {
+      if (shape.cut != null) {
+        // ring as it naturally would until the finger lifts, then fall silent fast
+        const k = (shape.cut - shape.attack) / (shape.natural - shape.attack);
+        amp.gain.exponentialRampToValueAtTime(shape.gain * Math.pow(0.0001 / shape.gain, k), t + shape.cut);
+      }
       amp.gain.exponentialRampToValueAtTime(0.0001, t + shape.end);
     } else {
       amp.gain.setTargetAtTime(shape.gain * inst.sustain, t + shape.attack, 0.08);
@@ -3404,8 +3422,11 @@ const __m_voices_tone = (() => {
     }
   }
 
+  // A word: each note sounds until the next begins, then is damped, so the
+  // notes follow one another; the last one rings out.
   function playWord(word, gap = 0.32, when = 0) {
-    word.notes.forEach((n, i) => playNote(n, when + i * gap));
+    const last = word.notes.length - 1;
+    word.notes.forEach((n, i) => playNote(n, when + i * gap, i < last ? gap : 0.5, { damp: i < last }));
   }
 
   // A sentence is a melody: each word, in turn, with a breath between.
@@ -4547,7 +4568,10 @@ const __m_sequencer_sequencer = (() => {
       const { events, total } = playing.tl;
       while (playing.next < events.length && events[playing.next].start < t + 0.12) {
         const e = events[playing.next++];
-        playNote(e.note, Math.max(0, e.start - t), Math.min(0.5, e.dur * 1.3));
+        // each note is stopped as the next begins; a word's last note (or the end) rings
+        const nx = events[playing.next];
+        const follows = nx && nx.start - e.start < 0.6;
+        playNote(e.note, Math.max(0, e.start - t), follows ? nx.start - e.start : 0.5, { damp: !!follows });
       }
       if (t > total + 0.25) {
         if (get().loop) { playing.start = performance.now(); playing.next = 0; }
@@ -7836,9 +7860,11 @@ const __m_views_learn_common = (() => {
       const last = i === notes.length - 1;
       const stressed = i === accent;
       const dur = stressed ? 0.62 : (last && (feminine || plural)) ? 0.75 : 0.36;
-      playNote(n, t, dur);
-      if (stressed) playNote(n, t, dur);
-      t += dur - 0.04;
+      const step = dur - 0.04;                      // the next note starts here…
+      const opts = { damp: !last };                 // …so this one is stopped there (the last rings)
+      playNote(n, t, last ? dur : step, opts);
+      if (stressed) playNote(n, t, last ? dur : step, opts);
+      t += step;
     });
     return t - when;
   }
@@ -9349,7 +9375,7 @@ const __m_views_learn_sing_lane = (() => {
       const notes = word.match(/do|re|mi|fa|sol|la|si/g);
       // 1. listen: the page sings it; the ear rests meanwhile
       const listen = notes.length * L.beat * 0.62 + 0.4;
-      notes.forEach((n, i) => playNote(n, i * L.beat * 0.62, L.beat * 0.55, { octave: env.refOctave() }));
+      notes.forEach((n, i) => playNote(n, i * L.beat * 0.62, L.beat * 0.62, { octave: env.refOctave(), damp: i < notes.length - 1 }));
       env.ear.deafen(listen * 1000 + 250);
       // 2. your turn: the notes arrive at the line one beat apart
       const start = performance.now() / 1000 + listen + 0.6 + LEAD;
@@ -9373,7 +9399,7 @@ const __m_views_learn_sing_lane = (() => {
         (hits === all ? `you sang ${link}${gloss}.` : `the word was ${link}${gloss}. Try it again?`);
       if (hits === all) {
         emit('word:used', { key: round.word, channel: 'sing' });
-        round.notes.forEach((x, i) => playNote(x.n, 0.2 + i * 0.22, 0.3, { octave: env.refOctave() }));
+        round.notes.forEach((x, i, a) => playNote(x.n, 0.2 + i * 0.22, 0.22, { octave: env.refOctave(), damp: i < a.length - 1 }));
         env.ear.deafen(400 + all * 220);
       }
       saved.best[level] = Math.max(saved.best[level] || 0, total);
@@ -9593,7 +9619,7 @@ const __m_views_learn_sing_speak = (() => {
     }
 
     function speak(g) {
-      g.notes.forEach((n, i) => playNote(n, i * 0.28, 0.4, { octave: env.refOctave() }));
+      g.notes.forEach((n, i) => playNote(n, i * 0.28, 0.28, { octave: env.refOctave(), damp: i < g.notes.length - 1 }));
       env.ear.deafen(g.notes.length * 280 + 1600);
       try {
         if (window.speechSynthesis) {
@@ -9829,7 +9855,7 @@ const __m_views_learn_sing = (() => {
       if (current.word) {
         if (!stats.words.includes(current.word)) stats.words.push(current.word);
         emit('word:used', { key: current.word, channel: 'sing' });
-        current.notes.forEach((n, i) => playNote(n, 0.15 + i * 0.3, 0.45, { octave: refOctave }));
+        current.notes.forEach((n, i, a) => playNote(n, 0.15 + i * 0.3, 0.3, { octave: refOctave, damp: i < a.length - 1 }));
         ear.deafen(700 + current.notes.length * 300);
         status.innerHTML = `${stars} You sang <button class="chip-word" data-open="${current.word}">${cap(current.word)}</button> — <i>${esc(meaningOf(current.word))}</i>. ${g2.word}.`;
       } else if (book === 'scale') {

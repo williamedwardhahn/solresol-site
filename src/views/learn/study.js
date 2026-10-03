@@ -1,13 +1,13 @@
-import { NOTES, note, parse, cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { meaningOf } from '../../dictionary/dictionary.js?v=ea2512429f';
-import { semanticKey } from '../../dictionary/grammar.js?v=ea2512429f';
-import { Word } from '../../lang/word.js?v=ea2512429f';
-import { emit } from '../../live/bus.js?v=ea2512429f';
-import { playNote, playWord } from '../../voices/index.js?v=ea2512429f';
-import { mountChoir } from '../../ui/choir.js?v=ea2512429f';
-import { fanSVG, glyphSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=ea2512429f';
-import { esc } from './common.js?v=ea2512429f';
-import { handMark } from '../../voices/hand.js?v=ea2512429f';
+import { NOTES, note, parse, cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { meaningOf } from '../../dictionary/dictionary.js?v=d5188c5e91';
+import { semanticKey } from '../../dictionary/grammar.js?v=d5188c5e91';
+import { Word } from '../../lang/word.js?v=d5188c5e91';
+import { emit } from '../../live/bus.js?v=d5188c5e91';
+import { playNote, playWord } from '../../voices/index.js?v=d5188c5e91';
+import { mountChoir } from '../../ui/choir.js?v=d5188c5e91';
+import { fanSVG, glyphSVG, staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=d5188c5e91';
+import { esc } from './common.js?v=d5188c5e91';
+import { handMark } from '../../voices/hand.js?v=d5188c5e91';
 
 // Study — the seven notes, and one word shown in every voice at once.
 

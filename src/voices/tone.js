@@ -1,6 +1,6 @@
-import { note } from '../dictionary/notes.js?v=ea2512429f';
-import { schedule } from '../compose/sentence.model.js?v=ea2512429f';
-import { INSTRUMENT_IDS, DEFAULT_INSTRUMENT, instrumentFor, noteShape } from './instruments.model.js?v=ea2512429f';
+import { note } from '../dictionary/notes.js?v=d5188c5e91';
+import { schedule } from '../compose/sentence.model.js?v=d5188c5e91';
+import { INSTRUMENT_IDS, DEFAULT_INSTRUMENT, instrumentFor, noteShape } from './instruments.model.js?v=d5188c5e91';
 
 // The Tone voice — a note as a sound.
 //
@@ -96,12 +96,12 @@ function noiseBuffer(ac) {
 }
 
 // `octave` shifts the note (−1 = an octave down), so a lesson can sing in the learner's own range.
-export function playNote(name, when = 0, dur = 0.5, { octave = 0 } = {}) {
+export function playNote(name, when = 0, dur = 0.5, { octave = 0, damp = false } = {}) {
   const ac = audio(), nt = note(name);
   if (!nt) return;
   const { input, noise } = hall(ac);
   const inst = instrumentFor(timbre);
-  const shape = noteShape(inst, nt.step, dur);
+  const shape = noteShape(inst, nt.step, dur, { damp });
   const t = ac.currentTime + 0.01 + when, f = nt.freq * Math.pow(2, octave);
 
   // the envelope
@@ -109,6 +109,11 @@ export function playNote(name, when = 0, dur = 0.5, { octave = 0 } = {}) {
   amp.gain.setValueAtTime(0.0001, t);
   amp.gain.exponentialRampToValueAtTime(shape.gain, t + shape.attack);
   if (inst.struck) {
+    if (shape.cut != null) {
+      // ring as it naturally would until the finger lifts, then fall silent fast
+      const k = (shape.cut - shape.attack) / (shape.natural - shape.attack);
+      amp.gain.exponentialRampToValueAtTime(shape.gain * Math.pow(0.0001 / shape.gain, k), t + shape.cut);
+    }
     amp.gain.exponentialRampToValueAtTime(0.0001, t + shape.end);
   } else {
     amp.gain.setTargetAtTime(shape.gain * inst.sustain, t + shape.attack, 0.08);
@@ -160,8 +165,11 @@ export function playNote(name, when = 0, dur = 0.5, { octave = 0 } = {}) {
   }
 }
 
+// A word: each note sounds until the next begins, then is damped, so the
+// notes follow one another; the last one rings out.
 export function playWord(word, gap = 0.32, when = 0) {
-  word.notes.forEach((n, i) => playNote(n, when + i * gap));
+  const last = word.notes.length - 1;
+  word.notes.forEach((n, i) => playNote(n, when + i * gap, i < last ? gap : 0.5, { damp: i < last }));
 }
 
 // A sentence is a melody: each word, in turn, with a breath between.

@@ -1,7 +1,7 @@
-import { note, cap, parse } from '../dictionary/notes.js?v=ea2512429f';
-import { meaningOf, wordCount } from '../dictionary/dictionary.js?v=ea2512429f';
-import { playNote, playWord } from '../voices/index.js?v=ea2512429f';
-import { Word } from '../lang/word.js?v=ea2512429f';
+import { note, cap, parse } from '../dictionary/notes.js?v=d5188c5e91';
+import { meaningOf, wordCount } from '../dictionary/dictionary.js?v=d5188c5e91';
+import { playNote, playWord } from '../voices/index.js?v=d5188c5e91';
+import { Word } from '../lang/word.js?v=d5188c5e91';
 
 // The introduction — three steps, shown once, on a first visit.
 //

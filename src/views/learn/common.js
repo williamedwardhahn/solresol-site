@@ -1,6 +1,6 @@
-import { note, cap, parse } from '../../dictionary/notes.js?v=ea2512429f';
-import { playNote } from '../../voices/index.js?v=ea2512429f';
-import { wordHTML } from '../../graphics/graphics.js?v=ea2512429f';
+import { note, cap, parse } from '../../dictionary/notes.js?v=d5188c5e91';
+import { playNote } from '../../voices/index.js?v=d5188c5e91';
+import { wordHTML } from '../../graphics/graphics.js?v=d5188c5e91';
 
 // Small shared pieces for the School's pages: escaping, a word written
 // as a link into its panel, a word's colours, and speech with a tonic
@@ -26,9 +26,11 @@ export function sayWord(notes, { accent = -1, feminine = false, plural = false }
     const last = i === notes.length - 1;
     const stressed = i === accent;
     const dur = stressed ? 0.62 : (last && (feminine || plural)) ? 0.75 : 0.36;
-    playNote(n, t, dur);
-    if (stressed) playNote(n, t, dur);
-    t += dur - 0.04;
+    const step = dur - 0.04;                      // the next note starts here…
+    const opts = { damp: !last };                 // …so this one is stopped there (the last rings)
+    playNote(n, t, last ? dur : step, opts);
+    if (stressed) playNote(n, t, last ? dur : step, opts);
+    t += step;
   });
   return t - when;
 }

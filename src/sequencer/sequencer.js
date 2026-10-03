@@ -1,10 +1,10 @@
-import { note, cap } from '../dictionary/notes.js?v=ea2512429f';
-import { meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
-import { on } from '../live/bus.js?v=ea2512429f';
-import { playNote } from '../voices/index.js?v=ea2512429f';
-import { staffSVG } from '../graphics/graphics.js?v=ea2512429f';
-import { persisted } from '../site/state.js?v=ea2512429f';
-import { timeline, midiFile } from './midi.model.js?v=ea2512429f';
+import { note, cap } from '../dictionary/notes.js?v=d5188c5e91';
+import { meaningOf } from '../dictionary/dictionary.js?v=d5188c5e91';
+import { on } from '../live/bus.js?v=d5188c5e91';
+import { playNote } from '../voices/index.js?v=d5188c5e91';
+import { staffSVG } from '../graphics/graphics.js?v=d5188c5e91';
+import { persisted } from '../site/state.js?v=d5188c5e91';
+import { timeline, midiFile } from './midi.model.js?v=d5188c5e91';
 
 // The Sequencer — words laid out in time.
 //
@@ -112,7 +112,10 @@ export function mountSequencer(host, ctx) {
     const { events, total } = playing.tl;
     while (playing.next < events.length && events[playing.next].start < t + 0.12) {
       const e = events[playing.next++];
-      playNote(e.note, Math.max(0, e.start - t), Math.min(0.5, e.dur * 1.3));
+      // each note is stopped as the next begins; a word's last note (or the end) rings
+      const nx = events[playing.next];
+      const follows = nx && nx.start - e.start < 0.6;
+      playNote(e.note, Math.max(0, e.start - t), follows ? nx.start - e.start : 0.5, { damp: !!follows });
     }
     if (t > total + 0.25) {
       if (get().loop) { playing.start = performance.now(); playing.next = 0; }

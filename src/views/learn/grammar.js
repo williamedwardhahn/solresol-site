@@ -1,8 +1,8 @@
-import { NOTES, parse, cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { meaningOf } from '../../dictionary/dictionary.js?v=ea2512429f';
-import { SEMANTIC_KEYS, TENSE_MARKERS, accentForms, markWord } from '../../dictionary/grammar.js?v=ea2512429f';
-import { OPPOSITES, EXCEPTIONS, shortGloss } from '../../learn/quiz.model.js?v=ea2512429f';
-import { esc, wordLink, swatches, sayWord } from './common.js?v=ea2512429f';
+import { NOTES, parse, cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { meaningOf } from '../../dictionary/dictionary.js?v=d5188c5e91';
+import { SEMANTIC_KEYS, TENSE_MARKERS, accentForms, markWord } from '../../dictionary/grammar.js?v=d5188c5e91';
+import { OPPOSITES, EXCEPTIONS, shortGloss } from '../../learn/quiz.model.js?v=d5188c5e91';
+import { esc, wordLink, swatches, sayWord } from './common.js?v=d5188c5e91';
 
 // Grammar — canonical Gajewski (Grammaire du Solrésol, 1902), set as a
 // grammar book: numbered paragraphs, interlinear examples, tables. Every

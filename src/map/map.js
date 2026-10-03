@@ -1,7 +1,7 @@
-import { NOTES, note, parse, cap } from '../dictionary/notes.js?v=ea2512429f';
-import { semanticKey } from '../dictionary/grammar.js?v=ea2512429f';
-import { allWords, meaningOf } from '../dictionary/dictionary.js?v=ea2512429f';
-import { emit } from '../live/bus.js?v=ea2512429f';
+import { NOTES, note, parse, cap } from '../dictionary/notes.js?v=d5188c5e91';
+import { semanticKey } from '../dictionary/grammar.js?v=d5188c5e91';
+import { allWords, meaningOf } from '../dictionary/dictionary.js?v=d5188c5e91';
+import { emit } from '../live/bus.js?v=d5188c5e91';
 
 // The map — the whole language, seen. Two projections of one trie:
 // the Predictor (the branching narrowing of meaning as you add a note)

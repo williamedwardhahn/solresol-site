@@ -1,9 +1,9 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js?v=ea2512429f';
-import { meaningOf } from '../../dictionary/dictionary.js?v=ea2512429f';
-import { playNote } from '../../voices/index.js?v=ea2512429f';
-import { emit } from '../../live/bus.js?v=ea2512429f';
-import { ladderPosition } from '../../learn/singing.model.js?v=ea2512429f';
-import { esc } from './common.js?v=ea2512429f';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
+import { meaningOf } from '../../dictionary/dictionary.js?v=d5188c5e91';
+import { playNote } from '../../voices/index.js?v=d5188c5e91';
+import { emit } from '../../live/bus.js?v=d5188c5e91';
+import { ladderPosition } from '../../learn/singing.model.js?v=d5188c5e91';
+import { esc } from './common.js?v=d5188c5e91';
 
 // Sing-along — the singing lesson as a game.
 //
@@ -65,7 +65,7 @@ export function mountLane(host, env) {
     const notes = word.match(/do|re|mi|fa|sol|la|si/g);
     // 1. listen: the page sings it; the ear rests meanwhile
     const listen = notes.length * L.beat * 0.62 + 0.4;
-    notes.forEach((n, i) => playNote(n, i * L.beat * 0.62, L.beat * 0.55, { octave: env.refOctave() }));
+    notes.forEach((n, i) => playNote(n, i * L.beat * 0.62, L.beat * 0.62, { octave: env.refOctave(), damp: i < notes.length - 1 }));
     env.ear.deafen(listen * 1000 + 250);
     // 2. your turn: the notes arrive at the line one beat apart
     const start = performance.now() / 1000 + listen + 0.6 + LEAD;
@@ -89,7 +89,7 @@ export function mountLane(host, env) {
       (hits === all ? `you sang ${link}${gloss}.` : `the word was ${link}${gloss}. Try it again?`);
     if (hits === all) {
       emit('word:used', { key: round.word, channel: 'sing' });
-      round.notes.forEach((x, i) => playNote(x.n, 0.2 + i * 0.22, 0.3, { octave: env.refOctave() }));
+      round.notes.forEach((x, i, a) => playNote(x.n, 0.2 + i * 0.22, 0.22, { octave: env.refOctave(), damp: i < a.length - 1 }));
       env.ear.deafen(400 + all * 220);
     }
     saved.best[level] = Math.max(saved.best[level] || 0, total);

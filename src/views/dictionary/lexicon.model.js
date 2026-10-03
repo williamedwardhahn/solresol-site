@@ -1,5 +1,5 @@
-import { parse, NOTE_NAMES } from '../../dictionary/notes.js?v=ea2512429f';
-import { fold } from '../../dictionary/index.js?v=ea2512429f';
+import { parse, NOTE_NAMES } from '../../dictionary/notes.js?v=d5188c5e91';
+import { fold } from '../../dictionary/index.js?v=d5188c5e91';
 
 // The lexicon — the dictionary as a book you can leaf through. Pure: given
 // the word list it builds entries in the order of the scale, filters them,

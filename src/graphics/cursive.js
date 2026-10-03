@@ -1,4 +1,4 @@
-import { note } from '../dictionary/notes.js?v=ea2512429f';
+import { note } from '../dictionary/notes.js?v=d5188c5e91';
 
 // The connected script — a whole Solresol word written as one line.
 //
