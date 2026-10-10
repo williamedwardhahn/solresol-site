@@ -1,6 +1,6 @@
-import { NOTES, noteByNumber, cap } from '../dictionary/notes.js?v=c115d42191';
-import { noteForKey, keyForNote, isCommitKey } from './keymap.js?v=c115d42191';
-import { playNote } from '../voices/index.js?v=c115d42191';
+import { NOTES, noteByNumber, cap } from '../dictionary/notes.js?v=8aaee6f447';
+import { noteForKey, keyForNote, isCommitKey } from './keymap.js?v=8aaee6f447';
+import { playNote } from '../voices/index.js?v=8aaee6f447';
 
 // The seven-note keyboard — an instrument and a typewriter.
 //

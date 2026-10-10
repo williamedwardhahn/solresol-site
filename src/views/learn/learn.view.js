@@ -1,12 +1,12 @@
-import { mountStudy } from './study.js?v=c115d42191';
-import { mountGrammar } from './grammar.js?v=c115d42191';
-import { mountQuiz } from './quiz.js?v=c115d42191';
-import { mountSing } from './sing.js?v=c115d42191';
-import { mountWrite } from './write.js?v=c115d42191';
-import { mountGames } from './games.js?v=c115d42191';
-import { mountHistory } from './history.js?v=c115d42191';
-import { mountYours } from './yours.js?v=c115d42191';
-import { bindWordLinks } from './common.js?v=c115d42191';
+import { mountStudy } from './study.js?v=8aaee6f447';
+import { mountGrammar } from './grammar.js?v=8aaee6f447';
+import { mountQuiz } from './quiz.js?v=8aaee6f447';
+import { mountSing } from './sing.js?v=8aaee6f447';
+import { mountWrite } from './write.js?v=8aaee6f447';
+import { mountGames } from './games.js?v=8aaee6f447';
+import { mountHistory } from './history.js?v=8aaee6f447';
+import { mountYours } from './yours.js?v=8aaee6f447';
+import { bindWordLinks } from './common.js?v=8aaee6f447';
 
 // The Learn chapter — the School. mountLearnView(host, ctx, route) → { update(route), destroy() }.
 // Eight leaves, each its own route so every one is linkable:

@@ -1,4 +1,4 @@
-import { live } from '../live/live.js?v=c115d42191';
+import { live } from '../live/live.js?v=8aaee6f447';
 
 // State that outlives a visit — preferences, starred words, recent words,
 // and saved sentences. Each is one live value mirrored to localStorage,

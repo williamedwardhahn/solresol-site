@@ -1,4 +1,4 @@
-import { voiceParams } from './voice.model.js?v=c115d42191';
+import { voiceParams } from './voice.model.js?v=8aaee6f447';
 
 // The toy's voice — warm, sustained, alive.
 //

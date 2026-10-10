@@ -1,8 +1,8 @@
-import { NOTES, parse, cap } from '../../dictionary/notes.js?v=c115d42191';
-import { playNote } from '../../voices/index.js?v=c115d42191';
-import { fold } from '../../dictionary/index.js?v=c115d42191';
-import { mirrorOf, mirrorPairs, SUDRE_PAIRS, ECO_EXCEPTIONS } from './lexicon.model.js?v=c115d42191';
-import { lexicon, esc, fmt, swatches, digits } from './common.js?v=c115d42191';
+import { NOTES, parse, cap } from '../../dictionary/notes.js?v=8aaee6f447';
+import { playNote } from '../../voices/index.js?v=8aaee6f447';
+import { fold } from '../../dictionary/index.js?v=8aaee6f447';
+import { mirrorOf, mirrorPairs, SUDRE_PAIRS, ECO_EXCEPTIONS } from './lexicon.model.js?v=8aaee6f447';
+import { lexicon, esc, fmt, swatches, digits } from './common.js?v=8aaee6f447';
 
 // Mirrors — Sudre's "inverse of the thought by the inverse of the sign":
 // read a word backwards and, often, its meaning turns over. A looking-glass

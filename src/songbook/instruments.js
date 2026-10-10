@@ -1,5 +1,5 @@
-import { unlockAudio } from '../voices/tone.js?v=c115d42191';
-import { frequency } from './songs.js?v=c115d42191';
+import { unlockAudio } from '../voices/tone.js?v=8aaee6f447';
+import { frequency } from './songs.js?v=8aaee6f447';
 
 // The songbook's band — one small recipe per instrument.
 //

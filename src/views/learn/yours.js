@@ -1,11 +1,11 @@
-import { parse, cap } from '../../dictionary/notes.js?v=c115d42191';
-import { meaningOf } from '../../dictionary/dictionary.js?v=c115d42191';
-import { Word } from '../../lang/word.js?v=c115d42191';
-import { playSentence } from '../../voices/index.js?v=c115d42191';
-import { colorStripSVG } from '../../graphics/graphics.js?v=c115d42191';
-import { LEVELS, UNLOCK_AT, QUIZ_KEY, normalize, freshProgress, accuracy } from '../../learn/quiz.model.js?v=c115d42191';
-import { SRS_KEY, normalizeSrs, freshSrs } from '../../learn/srs.model.js?v=c115d42191';
-import { esc, wordLink, swatches, loadJSON, saveJSON } from './common.js?v=c115d42191';
+import { parse, cap } from '../../dictionary/notes.js?v=8aaee6f447';
+import { meaningOf } from '../../dictionary/dictionary.js?v=8aaee6f447';
+import { Word } from '../../lang/word.js?v=8aaee6f447';
+import { playSentence } from '../../voices/index.js?v=8aaee6f447';
+import { colorStripSVG } from '../../graphics/graphics.js?v=8aaee6f447';
+import { LEVELS, UNLOCK_AT, QUIZ_KEY, normalize, freshProgress, accuracy } from '../../learn/quiz.model.js?v=8aaee6f447';
+import { SRS_KEY, normalizeSrs, freshSrs } from '../../learn/srs.model.js?v=8aaee6f447';
+import { esc, wordLink, swatches, loadJSON, saveJSON } from './common.js?v=8aaee6f447';
 
 // Yours — what this device remembers of you: starred words, saved
 // sentences, the words memory holds and how brightly, your examinations,

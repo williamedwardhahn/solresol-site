@@ -1,17 +1,19 @@
-import { emit } from '../../live/bus.js?v=c115d42191';
-import { playWord, playSentence } from '../../voices/index.js?v=c115d42191';
-import { schedule } from '../../compose/sentence.model.js?v=c115d42191';
-import { decSentence } from './parts.js?v=c115d42191';
-import { mountWordsLeaf } from './words.leaf.js?v=c115d42191';
-import { mountSentenceLeaf } from './sentence.leaf.js?v=c115d42191';
-import { mountPhrasebookLeaf } from './phrasebook.leaf.js?v=c115d42191';
-import { mountComposerLeaf } from './composer.leaf.js?v=c115d42191';
+import { emit } from '../../live/bus.js?v=8aaee6f447';
+import { playWord, playSentence } from '../../voices/index.js?v=8aaee6f447';
+import { schedule } from '../../compose/sentence.model.js?v=8aaee6f447';
+import { decSentence } from './parts.js?v=8aaee6f447';
+import { mountWordsLeaf } from './words.leaf.js?v=8aaee6f447';
+import { mountSentenceLeaf } from './sentence.leaf.js?v=8aaee6f447';
+import { mountPhrasebookLeaf } from './phrasebook.leaf.js?v=8aaee6f447';
+import { mountComposerLeaf } from './composer.leaf.js?v=8aaee6f447';
+import { mountNameLeaf } from './name.leaf.js?v=8aaee6f447';
 
-// Chapter III · Translation — four leaves, each its own address:
+// Chapter III · Translation — five leaves, each its own address:
 //   #/translate             words, both ways
 //   #/translate/sentence    a sentence, both ways
 //   #/translate/phrasebook  phrases that hold to the canon
 //   #/translate/compose     a sentence built by the grammar
+//   #/translate/name        a name, spelled by sound in Sudre's alphabet
 //
 // Every word on these pages opens its own page (ctx.openWord); ▶ sounds it,
 // ＋ sends it to the sentence being said (bus: sentence:add).
@@ -21,6 +23,7 @@ const LEAVES = [
   { id: 'sentence',   href: 'translate/sentence',   label: 'Sentences',  mount: mountSentenceLeaf },
   { id: 'phrasebook', href: 'translate/phrasebook', label: 'Phrasebook', mount: mountPhrasebookLeaf },
   { id: 'compose',    href: 'translate/compose',    label: 'Composer',   mount: mountComposerLeaf },
+  { id: 'name',       href: 'translate/name',       label: 'Your name',  mount: mountNameLeaf },
 ];
 
 export function mountTranslateView(host, ctx, route) {

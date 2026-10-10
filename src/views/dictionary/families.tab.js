@@ -1,7 +1,7 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js?v=c115d42191';
-import { SEMANTIC_KEYS } from '../../dictionary/grammar.js?v=c115d42191';
-import { familyTree } from './lexicon.model.js?v=c115d42191';
-import { lexicon, entryRow, esc, fmt, swatches } from './common.js?v=c115d42191';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=8aaee6f447';
+import { SEMANTIC_KEYS } from '../../dictionary/grammar.js?v=8aaee6f447';
+import { familyTree } from './lexicon.model.js?v=8aaee6f447';
+import { lexicon, entryRow, esc, fmt, swatches } from './common.js?v=8aaee6f447';
 
 // By family — Gajewski's seven keys (the first note decides the field of
 // meaning), each split by its second note into seven sub-families. The

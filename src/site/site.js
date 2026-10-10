@@ -1,7 +1,7 @@
-import { VIEWS, ELSEWHERE } from './views.js?v=c115d42191';
-import { fanSVG } from '../graphics/graphics.js?v=c115d42191';
-import { mountPanel } from './panel.js?v=c115d42191';
-import { mountMicroQuiz } from '../learn/microquiz.js?v=c115d42191';
+import { VIEWS, ELSEWHERE } from './views.js?v=8aaee6f447';
+import { fanSVG } from '../graphics/graphics.js?v=8aaee6f447';
+import { mountPanel } from './panel.js?v=8aaee6f447';
+import { mountMicroQuiz } from '../learn/microquiz.js?v=8aaee6f447';
 
 // renderSite — the book's binding: the masthead, the chapter you are in,
 // the colophon, and the word panel that any word anywhere opens into.

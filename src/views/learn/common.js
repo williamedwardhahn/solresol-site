@@ -1,6 +1,6 @@
-import { note, cap, parse } from '../../dictionary/notes.js?v=c115d42191';
-import { playNote } from '../../voices/index.js?v=c115d42191';
-import { wordHTML } from '../../graphics/graphics.js?v=c115d42191';
+import { note, cap, parse } from '../../dictionary/notes.js?v=8aaee6f447';
+import { playNote } from '../../voices/index.js?v=8aaee6f447';
+import { wordHTML } from '../../graphics/graphics.js?v=8aaee6f447';
 
 // Small shared pieces for the School's pages: escaping, a word written
 // as a link into its panel, a word's colours, and speech with a tonic

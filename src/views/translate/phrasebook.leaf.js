@@ -1,10 +1,12 @@
-import { PHRASEBOOK, phraseWords } from '../../translate/phrases.js?v=c115d42191';
-import { readNotes } from '../../translate/lookup.js?v=c115d42191';
-import { esc, swatches, playBtn, addBtn } from './parts.js?v=c115d42191';
-import { wordHTML } from '../../graphics/graphics.js?v=c115d42191';
+import { PHRASEBOOK, phraseWords } from '../../translate/phrases.js?v=8aaee6f447';
+import { readNotes } from '../../translate/lookup.js?v=8aaee6f447';
+import { esc, swatches, playBtn, addBtn } from './parts.js?v=8aaee6f447';
+import { wordHTML } from '../../graphics/graphics.js?v=8aaee6f447';
 
 // The phrasebook — a traveller's pages, each phrase checked against the
 // dictionary and the canonical grammar (see src/translate/phrases.js).
+
+const ROMAN = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
 
 export function mountPhrasebookLeaf(el) {
   const row = (p, k) => {
@@ -16,11 +18,11 @@ export function mountPhrasebookLeaf(el) {
       const n = notes[i], lit = p.lit[i]; i++;
       return `<button type="button" class="pb-w" data-open="${n.join('-')}" title="${esc(lit)}">${wordHTML(w, { color: true })}</button>`;
     });
-    return `<li class="pb-row" data-score style="--i:${k}">
+    return `<li class="pb-row${ws.length > 5 ? ' pb-row--long' : ''}" data-score style="--i:${k}">
       <p class="pb-en">${esc(p.en)}</p>
       <div class="pb-sol-wrap">
         <p class="pb-sol">${solHtml}</p>
-        <p class="pb-lit">${p.lit.map((l, j) => `<span data-wi="${j}">${esc(l)}</span>`).join('<i aria-hidden="true">·</i>')}</p>
+        <p class="pb-lit">${p.lit.map((l, j) => `<span data-wi="${j}">${esc(l)}</span>`).join('<i aria-hidden="true">·</i><wbr>')}</p>
       </div>
       <span class="pb-sw">${notes.map((n) => swatches(n)).join('')}</span>
       <span class="pb-acts">${playBtn(notes, `Hear “${p.en}”`)}${addBtn(notes, `Add “${p.en}” to the sentence`)}</span>
@@ -29,12 +31,12 @@ export function mountPhrasebookLeaf(el) {
 
   el.innerHTML = `
     <nav class="pb-index" aria-label="Phrasebook sections">
-      ${PHRASEBOOK.map((c, i) => `<button type="button" class="pb-index-btn" data-goto="${c.id}"><span class="pb-num">${['i', 'ii', 'iii', 'iv', 'v'][i]}</span>${c.label}</button>`).join('')}
+      ${PHRASEBOOK.map((c, i) => `<button type="button" class="pb-index-btn" data-goto="${c.id}"><span class="pb-num">${ROMAN[i]}</span>${c.label}</button>`).join('')}
     </nav>
     ${PHRASEBOOK.map((c, i) => `
       <section class="pb-cat" id="pb-${c.id}">
         <header class="pb-head">
-          <span class="pb-head-num">${['I', 'II', 'III', 'IV', 'V'][i]}</span>
+          <span class="pb-head-num">${ROMAN[i].toUpperCase()}</span>
           <h2 class="section-title">${c.label}</h2>
           <p class="hint">${esc(c.note)}</p>
         </header>

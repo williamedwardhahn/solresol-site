@@ -1,4 +1,4 @@
-import { glyphSVG } from '../graphics/graphics.js?v=c115d42191';
+import { glyphSVG } from '../graphics/graphics.js?v=8aaee6f447';
 
 // The Script voice — a note as its stroke in Sudre's own writing.
 export const script = {

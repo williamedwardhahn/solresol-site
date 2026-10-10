@@ -1,12 +1,12 @@
-import { parse, cap, note } from '../dictionary/notes.js?v=c115d42191';
-import { meaningOf } from '../dictionary/dictionary.js?v=c115d42191';
-import { semanticKey, reverse, accentForms, markWord, partOfSpeech } from '../dictionary/grammar.js?v=c115d42191';
-import { Word } from '../lang/word.js?v=c115d42191';
-import { emit } from '../live/bus.js?v=c115d42191';
-import { playWord } from '../voices/index.js?v=c115d42191';
-import { mountChoir } from '../ui/choir.js?v=c115d42191';
-import { staffSVG, GLYPH_PATHS, wordHTML, syllablesHTML, numbersHTML } from '../graphics/graphics.js?v=c115d42191';
-import { cursiveSVG } from '../graphics/cursive.js?v=c115d42191';
+import { parse, cap, note } from '../dictionary/notes.js?v=8aaee6f447';
+import { meaningOf } from '../dictionary/dictionary.js?v=8aaee6f447';
+import { semanticKey, reverse, accentForms, markWord, partOfSpeech } from '../dictionary/grammar.js?v=8aaee6f447';
+import { Word } from '../lang/word.js?v=8aaee6f447';
+import { emit } from '../live/bus.js?v=8aaee6f447';
+import { playWord } from '../voices/index.js?v=8aaee6f447';
+import { mountChoir } from '../ui/choir.js?v=8aaee6f447';
+import { staffSVG, GLYPH_PATHS, wordHTML, syllablesHTML, numbersHTML } from '../graphics/graphics.js?v=8aaee6f447';
+import { cursiveSVG } from '../graphics/cursive.js?v=8aaee6f447';
 
 // The word panel — every word's own page. Opened from anywhere (a search
 // hit, a chip, a star on the map) through ctx.openWord, and addressable

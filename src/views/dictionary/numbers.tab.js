@@ -1,6 +1,6 @@
-import { parse, cap } from '../../dictionary/notes.js?v=c115d42191';
-import { toSolresol, TABLE } from './numbers.model.js?v=c115d42191';
-import { lexicon, esc, fmt, swatches, digits } from './common.js?v=c115d42191';
+import { parse, cap } from '../../dictionary/notes.js?v=8aaee6f447';
+import { toSolresol, TABLE } from './numbers.model.js?v=8aaee6f447';
+import { lexicon, esc, fmt, swatches, digits } from './common.js?v=8aaee6f447';
 
 // Numbers — any whole number said in Solresol. The base words are the
 // dictionary's own; how they join is marked as the reading it is.
@@ -43,7 +43,7 @@ export function mountNumbers(host, ctx, route, memo) {
     <section class="leaf dx-canon">
       <h2 class="rubric">What the dictionary does not say</h2>
       <ul>
-        <li><b>No zero.</b> No headword is glossed “zero”. <i>Dodore</i>, which an earlier version of this site gave for it, means “earth, world”.</li>
+        <li><b>No zero.</b> No headword is glossed “zero”. <i>Dodore</i>, which an earlier version of this site gave for it (following the modern Symmetric dialect), means “earth, world” in Sudre's dictionary.</li>
         <li><b>No seventy, no ninety.</b> The tens run <i>fafa</i> + a note (20 <i>re</i>, 30 <i>mi</i>, 40 <i>sol</i>, 50 <i>la</i>, 60 <i>si</i>)
           and the notes run out; 80 is <i>Fadodo</i>. So 70 and 90 are read here as the French read them — 60 + 10 and 80 + 10 — and marked as a reading.</li>
         <li><b>No joining rule.</b> The parts are canon; putting them largest first, adding and multiplying as French does

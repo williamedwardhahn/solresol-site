@@ -1,6 +1,6 @@
-import { NOTES, parse, cap } from '../dictionary/notes.js?v=c115d42191';
-import { SEMANTIC_KEYS, accentForms, partOfSpeech, markWord, reverse, TENSE_MARKERS } from '../dictionary/grammar.js?v=c115d42191';
-import { wordHTML } from '../graphics/graphics.js?v=c115d42191';
+import { NOTES, parse, cap } from '../dictionary/notes.js?v=8aaee6f447';
+import { SEMANTIC_KEYS, accentForms, partOfSpeech, markWord, reverse, TENSE_MARKERS } from '../dictionary/grammar.js?v=8aaee6f447';
+import { wordHTML } from '../graphics/graphics.js?v=8aaee6f447';
 
 // The pure core of the School's examinations — no DOM, no storage, no
 // clock. Progress is a plain object passed in and handed back new;

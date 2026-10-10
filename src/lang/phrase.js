@@ -1,4 +1,4 @@
-import { sequence } from '../live/sequence.js?v=c115d42191';
+import { sequence } from '../live/sequence.js?v=8aaee6f447';
 
 // A Phrase — a live sequence of Words.
 //

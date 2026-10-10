@@ -1,7 +1,7 @@
-import { note } from '../dictionary/notes.js?v=c115d42191';
-import { createMic } from '../learn/mic.js?v=c115d42191';
-import { SONGS, RANGE, BUTTONS, parseNote, syllablesOf } from './songs.js?v=c115d42191';
-import { playNote, hold, stopAll, fanfare } from './sound.js?v=c115d42191';
+import { note } from '../dictionary/notes.js?v=8aaee6f447';
+import { createMic } from '../learn/mic.js?v=8aaee6f447';
+import { SONGS, RANGE, BUTTONS, parseNote, syllablesOf } from './songs.js?v=8aaee6f447';
+import { playNote, hold, stopAll, fanfare } from './sound.js?v=8aaee6f447';
 
 // Ocarina Songs — learn the seven names through melodies already known.
 //

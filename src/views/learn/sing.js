@@ -1,13 +1,13 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js?v=c115d42191';
-import { meaningOf } from '../../dictionary/dictionary.js?v=c115d42191';
-import { playNote } from '../../voices/index.js?v=c115d42191';
-import { emit } from '../../live/bus.js?v=c115d42191';
-import { handMark } from '../../voices/hand.js?v=c115d42191';
-import { ladderPosition, lesson, grade } from '../../learn/singing.model.js?v=c115d42191';
-import { createMic } from '../../learn/mic.js?v=c115d42191';
-import { mountLane } from './sing-lane.js?v=c115d42191';
-import { mountSpeak } from './sing-speak.js?v=c115d42191';
-import { esc } from './common.js?v=c115d42191';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=8aaee6f447';
+import { meaningOf } from '../../dictionary/dictionary.js?v=8aaee6f447';
+import { playNote } from '../../voices/index.js?v=8aaee6f447';
+import { emit } from '../../live/bus.js?v=8aaee6f447';
+import { handMark } from '../../voices/hand.js?v=8aaee6f447';
+import { ladderPosition, lesson, grade } from '../../learn/singing.model.js?v=8aaee6f447';
+import { createMic } from '../../learn/mic.js?v=8aaee6f447';
+import { mountLane } from './sing-lane.js?v=8aaee6f447';
+import { mountSpeak } from './sing-speak.js?v=8aaee6f447';
+import { esc } from './common.js?v=8aaee6f447';
 
 // The singing lesson (#/learn/sing) — a tuner that teaches.
 //

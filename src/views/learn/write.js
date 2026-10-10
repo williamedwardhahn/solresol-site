@@ -1,12 +1,12 @@
-import { NOTES, note, cap, noteByNumber } from '../../dictionary/notes.js?v=c115d42191';
-import { meaningOf } from '../../dictionary/dictionary.js?v=c115d42191';
-import { playNote, playWord, playSentence } from '../../voices/index.js?v=c115d42191';
-import { emit } from '../../live/bus.js?v=c115d42191';
-import { noteForKey, isCommitKey } from '../../ui/keymap.js?v=c115d42191';
-import { wordHTML, numbersHTML } from '../../graphics/graphics.js?v=c115d42191';
-import { PHRASEBOOK } from '../../translate/phrases.js?v=c115d42191';
-import { targetWords, checkWriting } from '../../learn/write.model.js?v=c115d42191';
-import { esc } from './common.js?v=c115d42191';
+import { NOTES, note, cap, noteByNumber } from '../../dictionary/notes.js?v=8aaee6f447';
+import { meaningOf } from '../../dictionary/dictionary.js?v=8aaee6f447';
+import { playNote, playWord, playSentence } from '../../voices/index.js?v=8aaee6f447';
+import { emit } from '../../live/bus.js?v=8aaee6f447';
+import { noteForKey, isCommitKey } from '../../ui/keymap.js?v=8aaee6f447';
+import { wordHTML, numbersHTML } from '../../graphics/graphics.js?v=8aaee6f447';
+import { PHRASEBOOK } from '../../translate/phrases.js?v=8aaee6f447';
+import { targetWords, checkWriting } from '../../learn/write.model.js?v=8aaee6f447';
+import { esc } from './common.js?v=8aaee6f447';
 
 // Write (#/learn/write) — learning sentences by typing them.
 //
@@ -17,7 +17,9 @@ import { esc } from './common.js?v=c115d42191';
 // written when every word is. Hints show the next word's colours.
 
 const STORE = 'solresol:write';
-const PHRASES = PHRASEBOOK.flatMap((s) => s.phrases.map((p) => ({ ...p, section: s.label })))
+// A whole paragraph (the "A real text" section) is reading, not a writing drill.
+const PHRASES = PHRASEBOOK.filter((s) => s.id !== 'text')
+  .flatMap((s) => s.phrases.map((p) => ({ ...p, section: s.label })))
   .filter((p) => targetWords(p.sol).length);
 
 const load = () => { try { return { written: 0, words: 0, seen: [], ...JSON.parse(localStorage.getItem(STORE) || '{}') }; } catch { return { written: 0, words: 0, seen: [] }; } };

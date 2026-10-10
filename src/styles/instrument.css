@@ -55,6 +55,11 @@
 .cell--staff { padding: 0; overflow: hidden; }
 .cell--staff .staff-cell { width: 100%; height: 100%; }
 .cell--hand { padding: 0; overflow: hidden; background: color-mix(in srgb, var(--nc, transparent) 10%, var(--paper-raised)); }
+.cell--finger { padding: 3px; }
+.finger { width: 100%; height: 100%; display: block; }
+.finger-hand rect { fill: var(--paper-sunk); stroke: var(--ink-3); stroke-width: 1.6; }
+.finger-off { fill: var(--ink-3); opacity: .45; }
+.finger-on { stroke: var(--ink); stroke-width: 1.8; }
 .cell--script { color: var(--ink); }
 .cell--script .glyph { width: 70%; height: 70%; }
 

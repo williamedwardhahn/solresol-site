@@ -439,6 +439,11 @@ select.field { font-size: 1rem; padding-right: 20px; }
 .cell--staff { padding: 0; overflow: hidden; }
 .cell--staff .staff-cell { width: 100%; height: 100%; }
 .cell--hand { padding: 0; overflow: hidden; background: color-mix(in srgb, var(--nc, transparent) 10%, var(--paper-raised)); }
+.cell--finger { padding: 3px; }
+.finger { width: 100%; height: 100%; display: block; }
+.finger-hand rect { fill: var(--paper-sunk); stroke: var(--ink-3); stroke-width: 1.6; }
+.finger-off { fill: var(--ink-3); opacity: .45; }
+.finger-on { stroke: var(--ink); stroke-width: 1.8; }
 .cell--script { color: var(--ink); }
 .cell--script .glyph { width: 70%; height: 70%; }
 
@@ -1456,6 +1461,13 @@ tbody .dx-mh::after { width: 5px; height: 22px; }
 .pb-sw { display: inline-flex; gap: 6px; justify-self: end; }
 .pb-sw .swatches i { width: 9px; height: 16px; border-radius: 1px; }
 .pb-acts { display: inline-flex; gap: 6px; }
+/* a long sentence: its colour strip goes under the words instead of beside them */
+.pb-row--long { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto; grid-template-areas: "en sol acts" ". sw acts"; }
+.pb-row--long .pb-en { grid-area: en; }
+.pb-row--long .pb-sol-wrap { grid-area: sol; }
+.pb-row--long .pb-sw { grid-area: sw; justify-self: start; flex-wrap: wrap; }
+.pb-row--long .pb-acts { grid-area: acts; }
+.pb-row--long .pb-lit { white-space: normal; overflow: visible; text-overflow: clip; }
 .tr-colophon { text-align: center; color: var(--ink-3); font-style: italic; font-size: .95rem; max-width: 60ch; margin: 0 auto; }
 
 /* ═══ Composer ═══ */
@@ -1579,6 +1591,48 @@ tbody .dx-mh::after { width: 5px; height: 22px; }
 .tr-key[data-key="mi"] { color: var(--ink); text-shadow: none; }
 .tr-key:active { transform: translateY(2px); box-shadow: inset 0 -2px 0 rgba(0,0,0,.2); }
 .tr-key--gap { --c: var(--paper-raised); color: var(--ink); text-shadow: none; border: 1px solid var(--ink-2); font-family: var(--sc); font-size: .95rem; }
+
+/* ── your name: spelled by sound ── */
+.nm-head { max-width: 46rem; }
+.nm-head .section-title { margin: 0 0 4px; }
+.nm-input {
+  display: block; width: 100%; max-width: 26rem; margin: 16px 0 18px; padding: 10px 14px;
+  font: 400 1.6rem var(--display); color: var(--ink); background: var(--paper-raised);
+  border: 1px solid var(--rule); border-radius: var(--radius);
+}
+.nm-input:focus { outline: 2px solid var(--rubric); outline-offset: 2px; }
+.nm-word { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.nm-written { margin: 0; font-family: var(--display); font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.1; overflow-wrap: anywhere; }
+.nm-strip { margin: 8px 0 4px; }
+.nm-strip .swatches i { width: 12px; height: 20px; }
+.nm-script { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; margin: 10px 0 14px; min-height: 40px; }
+.nm-script .cursive { max-width: 100%; height: auto; }
+.nm-parts { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.nm-part {
+  display: grid; justify-items: center; gap: 2px; min-width: 76px; padding: 8px 10px;
+  background: var(--paper-raised); border: 1px solid var(--rule-soft); border-radius: var(--radius); transition: background .15s, border-color .15s;
+}
+.nm-part.is-sounding { background: #fff8e0; border-color: var(--rubric); }
+.nm-part--silent { opacity: .55; }
+.nm-letters { font: 400 1.5rem var(--display); color: var(--ink); }
+.nm-say { font-size: .8rem; color: var(--ink-3); font-style: italic; }
+.nm-say b { font-style: normal; color: var(--ink-2); font-weight: 600; }
+.nm-notes { display: flex; gap: 4px; font: 400 1.25rem var(--display); }
+.nm-gap { width: 18px; }
+.nm-table { border-top: 1px solid var(--rule); padding-top: 14px; max-width: 46rem; }
+.nm-table h3 { margin: 0 0 8px; }
+.nm-table table { border-collapse: collapse; width: 100%; }
+.nm-table th, .nm-table td { padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--rule-soft); }
+.nm-table thead th { font: 400 1.2rem var(--display); }
+.nm-table tbody th { text-align: left; font-weight: 400; font-family: var(--sc); font-size: .9rem; color: var(--ink-2); white-space: nowrap; }
+.nm-table tbody th small { display: block; font-family: var(--text); font-style: italic; color: var(--ink-3); font-size: .78rem; }
+.nm-sound { min-width: 40px; padding: 4px 6px; font: 400 1.15rem var(--display); background: none; border: 1px solid transparent; border-radius: var(--radius); cursor: pointer; color: var(--ink); }
+.nm-sound:hover { border-color: var(--rule); background: var(--paper-raised); }
+.nm-src { margin-top: 10px; }
+@media (max-width: 560px) {
+  .nm-table { overflow-x: auto; }
+  .nm-part { min-width: 64px; padding: 6px 8px; }
+}
 
 /* Chapter IV — Learn, the School. A grammar book of 1866 that you can
    play: numbered paragraphs, interlinear examples, engraved plates, and
@@ -3024,6 +3078,76 @@ const __m_voices_hand = (() => {
   return { handMark, hand };
 })();
 
+// === voices/finger.js ===
+const __m_voices_finger = (() => {
+  const { note, NOTES } = __m_dictionary_notes;
+
+  // The Finger voice — a note as a place on the hand.
+  //
+  // From the finger chart in the research-notes deck (slide 17, after
+  // Bergziege-OWL and an older engraving): do on the outer edge of the palm,
+  // then each finger carries two notes, base then tip — re/mi on the little
+  // finger, fa/sol on the ring finger, la/si on the middle finger. A word is
+  // tapped on your own hand or into a partner's palm, a touch channel like
+  // the Lorm alphabet, for someone who cannot see a screen or hear a tone.
+  // See docs/NOTES_DECK.md §4.
+
+  // Where each note sits on the drawing (viewBox 0 0 100 100, fingers up).
+  const FINGER_SPOTS = {
+    do:  [21, 82],    // outer edge of the palm, by the wrist
+    re:  [29, 55],    // little finger, base
+    mi:  [29, 33],    // little finger, tip
+    fa:  [42, 53],    // ring finger, base
+    sol: [42, 20],    // ring finger, tip
+    la:  [55, 52],    // middle finger, base
+    si:  [55, 14],    // middle finger, tip
+  };
+
+  const HAND =
+    '<rect x="23.5" y="27" width="11" height="34" rx="5.5"/>' +       // little
+    '<rect x="36.5" y="14" width="11" height="46" rx="5.5"/>' +       // ring
+    '<rect x="49.5" y="8" width="11" height="52" rx="5.5"/>' +        // middle
+    '<rect x="62.5" y="14" width="11" height="46" rx="5.5"/>' +       // index
+    '<rect x="74" y="46" width="11" height="32" rx="5.5" transform="rotate(32 79.5 62)"/>' +   // thumb
+    '<rect x="21" y="50" width="57" height="44" rx="14"/>';          // palm, over the finger roots
+
+  // A note on the hand: every place shown faintly, this note's place lit.
+  function fingerMark(n) {
+    const nt = note(n);
+    if (!nt) return '';
+    const spots = NOTES.map(({ name }) => {
+      const [x, y] = FINGER_SPOTS[name];
+      return name === n
+        ? `<circle class="finger-on" cx="${x}" cy="${y}" r="7.5" fill="${nt.color}"/>`
+        : `<circle class="finger-off" cx="${x}" cy="${y}" r="2.6"/>`;
+    }).join('');
+    return `<svg class="finger" viewBox="0 0 100 100" role="img" aria-label="${n}: ${placeOf(n)}"><g class="finger-hand">${HAND}</g>${spots}</svg>`;
+  }
+
+  const PLACES = {
+    do: 'edge of the palm', re: 'base of the little finger', mi: 'tip of the little finger',
+    fa: 'base of the ring finger', sol: 'tip of the ring finger', la: 'base of the middle finger', si: 'tip of the middle finger',
+  };
+  const placeOf = (n) => PLACES[n] || '';
+
+  const finger = {
+    name: 'finger',
+    label: 'Finger',
+    mount() {
+      const el = document.createElement('div');
+      el.className = 'cell cell--finger';
+      return el;
+    },
+    update(el, n) {
+      if (el.dataset.n === n) return;
+      el.dataset.n = n;
+      el.innerHTML = fingerMark(n);
+      el.title = `${n} — ${placeOf(n)}`;
+    },
+  };
+  return { FINGER_SPOTS, fingerMark, placeOf, finger };
+})();
+
 // === voices/script.js ===
 const __m_voices_script = (() => {
   const { glyphSVG } = __m_graphics_graphics;
@@ -3450,6 +3574,7 @@ const __m_voices_index = (() => {
   const { number } = __m_voices_number;
   const { staff } = __m_voices_staff;
   const { hand } = __m_voices_hand;
+  const { finger } = __m_voices_finger;
   const { script } = __m_voices_script;
   const { braille } = __m_voices_braille;
   const { binary } = __m_voices_binary;
@@ -3457,7 +3582,7 @@ const __m_voices_index = (() => {
 
   // The seen voices, in display order. Adding a voice is: write one file,
   // add one line here. Nothing else in the app has to change.
-  const VOICES = [solfege, number, color, staff, hand, script, braille, binary];
+  const VOICES = [solfege, number, color, staff, hand, finger, script, braille, binary];
   return { tone, playNote, playWord, playSentence, setTimbre, VOICES };
 })();
 
@@ -6432,7 +6557,7 @@ const __m_views_dictionary_numbers_tab = (() => {
       <section class="leaf dx-canon">
         <h2 class="rubric">What the dictionary does not say</h2>
         <ul>
-          <li><b>No zero.</b> No headword is glossed “zero”. <i>Dodore</i>, which an earlier version of this site gave for it, means “earth, world”.</li>
+          <li><b>No zero.</b> No headword is glossed “zero”. <i>Dodore</i>, which an earlier version of this site gave for it (following the modern Symmetric dialect), means “earth, world” in Sudre's dictionary.</li>
           <li><b>No seventy, no ninety.</b> The tens run <i>fafa</i> + a note (20 <i>re</i>, 30 <i>mi</i>, 40 <i>sol</i>, 50 <i>la</i>, 60 <i>si</i>)
             and the notes run out; 80 is <i>Fadodo</i>. So 70 and 90 are read here as the French read them — 60 + 10 and 80 + 10 — and marked as a reading.</li>
           <li><b>No joining rule.</b> The parts are canon; putting them largest first, adding and multiplying as French does
@@ -7329,6 +7454,32 @@ const __m_translate_phrases = (() => {
         { en: 'We will sing', sol: 'Doré mimi solremifa', lit: ['we', '(future)', 'sing'] },
       ],
     },
+    {
+      id: 'colours', label: 'Colours', note: 'The colours are one family: la-re-, then the hue. Gold and silver are la-fa-sol-.',
+      phrases: [
+        { en: 'Red', sol: 'Laremisi', lit: ['red'] },
+        { en: 'Yellow', sol: 'Laremisol', lit: ['yellow'] },
+        { en: 'Green', sol: 'Laremifa', lit: ['green'] },
+        { en: 'Blue', sol: 'Laremila', lit: ['blue'] },
+        { en: 'Violet', sol: 'Laremire', lit: ['violet'] },
+        { en: 'Grey', sol: 'Laremido', lit: ['grey'] },
+        { en: 'White', sol: 'Laredosol', lit: ['white'] },
+        { en: 'Brown · dark', sol: 'Laredomi', lit: ['dark, brown'] },
+        { en: 'Gold', sol: 'Lafasolre', lit: ['gold'] },
+        { en: 'Silver', sol: 'Lafasolfa', lit: ['silver'] },
+      ],
+    },
+    {
+      id: 'text', label: 'A real text', note: 'Article 1 of the Universal Declaration of Human Rights, as it is usually given in Solresol. Every word is in the dictionary.',
+      phrases: [
+        { en: 'All human beings are born free and equal in dignity and rights.',
+          sol: 'Sire misolredo doredore famido re misolla, re famisol dosila re refasi.',
+          lit: ['each', 'person', 'born', 'free', 'and', 'equal', 'and', 'have', 'dignity', 'and', 'rights'] },
+        { en: 'They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.',
+          sol: 'Dofa midomido midodosi dofasifa re domilafa, re falado fasolfa miladomi midodosi simisila.',
+          lit: ['they', 'endow', 'with', 'conscience', 'and', 'reason', 'and', 'must', 'act', 'together', 'with', 'brotherhood'] },
+      ],
+    },
   ];
 
   // The words of a phrase, as they are written (marks kept): "Dore do falafa" → ['Dore','do','falafa'].
@@ -7346,6 +7497,8 @@ const __m_views_translate_phrasebook_leaf = (() => {
   // The phrasebook — a traveller's pages, each phrase checked against the
   // dictionary and the canonical grammar (see src/translate/phrases.js).
 
+  const ROMAN = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
+
   function mountPhrasebookLeaf(el) {
     const row = (p, k) => {
       const ws = phraseWords(p.sol);
@@ -7356,11 +7509,11 @@ const __m_views_translate_phrasebook_leaf = (() => {
         const n = notes[i], lit = p.lit[i]; i++;
         return `<button type="button" class="pb-w" data-open="${n.join('-')}" title="${esc(lit)}">${wordHTML(w, { color: true })}</button>`;
       });
-      return `<li class="pb-row" data-score style="--i:${k}">
+      return `<li class="pb-row${ws.length > 5 ? ' pb-row--long' : ''}" data-score style="--i:${k}">
         <p class="pb-en">${esc(p.en)}</p>
         <div class="pb-sol-wrap">
           <p class="pb-sol">${solHtml}</p>
-          <p class="pb-lit">${p.lit.map((l, j) => `<span data-wi="${j}">${esc(l)}</span>`).join('<i aria-hidden="true">·</i>')}</p>
+          <p class="pb-lit">${p.lit.map((l, j) => `<span data-wi="${j}">${esc(l)}</span>`).join('<i aria-hidden="true">·</i><wbr>')}</p>
         </div>
         <span class="pb-sw">${notes.map((n) => swatches(n)).join('')}</span>
         <span class="pb-acts">${playBtn(notes, `Hear “${p.en}”`)}${addBtn(notes, `Add “${p.en}” to the sentence`)}</span>
@@ -7369,12 +7522,12 @@ const __m_views_translate_phrasebook_leaf = (() => {
 
     el.innerHTML = `
       <nav class="pb-index" aria-label="Phrasebook sections">
-        ${PHRASEBOOK.map((c, i) => `<button type="button" class="pb-index-btn" data-goto="${c.id}"><span class="pb-num">${['i', 'ii', 'iii', 'iv', 'v'][i]}</span>${c.label}</button>`).join('')}
+        ${PHRASEBOOK.map((c, i) => `<button type="button" class="pb-index-btn" data-goto="${c.id}"><span class="pb-num">${ROMAN[i]}</span>${c.label}</button>`).join('')}
       </nav>
       ${PHRASEBOOK.map((c, i) => `
         <section class="pb-cat" id="pb-${c.id}">
           <header class="pb-head">
-            <span class="pb-head-num">${['I', 'II', 'III', 'IV', 'V'][i]}</span>
+            <span class="pb-head-num">${ROMAN[i].toUpperCase()}</span>
             <h2 class="section-title">${c.label}</h2>
             <p class="hint">${esc(c.note)}</p>
           </header>
@@ -7718,6 +7871,232 @@ const __m_views_translate_composer_leaf = (() => {
   return { mountComposerLeaf };
 })();
 
+// === translate/name.model.js ===
+const __m_translate_name_model = (() => {
+  // Spell a name in Solresol — Sudre's alphabet for proper nouns.
+  //
+  // A name has no meaning to translate, so Sudre wrote it by sound: each
+  // vowel is one note, each consonant is one note with an accent or a doubled
+  // note, with or without an accent. An accent lengthens the note it sits on,
+  // so the ear can tell a consonant (an accented do) from a vowel (a plain do).
+  //
+  //            do   re   mi   fa   sol  la   si
+  //   vowels   a    eu   e    i    o    u    ou     one note
+  //   cons.*   p    n    k    f    j                one accented note
+  //   cons.    s    t    r    v    m    l    d      doubled note
+  //   cons.*   z    b    g    ch   x                doubled, first accented
+  //
+  // Source: Sudre, Langue Musicale Universelle (1866), pp. XXII–XXIV — the
+  // "Alphabet phonétique", checked against the scan (docs/XXIIVV.md §7). A dot
+  // before a note is spoken as a rinforzando (stress); a black note is doubled.
+  // Sudre spells by sound, never by letter: c is always hard (a soft c is
+  // written s), s is always hard (an s said as z is written z), ai is é, au
+  // is o. Those rules are his; reading English letters (w, y, h, ph, th, sh,
+  // a silent final e) as his sounds is this site's guess.
+
+  const N = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
+
+  // sound → { notes, accent } (accent marks the first note)
+  const ALPHABET = {};
+  const row = (sounds, make) => sounds.forEach((s, i) => { if (s) ALPHABET[s] = make(N[i]); });
+  row(['a', 'eu', 'e', 'i', 'o', 'u', 'ou'], (n) => ({ notes: [n], accent: false, kind: 'vowel' }));
+  row(['p', 'n', 'k', 'f', 'j'], (n) => ({ notes: [n], accent: true, kind: 'consonant' }));
+  row(['s', 't', 'r', 'v', 'm', 'l', 'd'], (n) => ({ notes: [n, n], accent: false, kind: 'consonant' }));
+  row(['z', 'b', 'g', 'ch', 'x'], (n) => ({ notes: [n, n], accent: true, kind: 'consonant' }));
+
+  // The alphabet as rows, for a reference table.
+  const ALPHABET_ROWS = [
+    { label: 'Vowels', note: 'one note', sounds: ['a', 'eu', 'e', 'i', 'o', 'u', 'ou'], show: { e: 'é' } },
+    { label: 'Consonants', note: 'one note, accented', sounds: ['p', 'n', 'k', 'f', 'j', '', ''], show: { k: 'k, qu, c' } },
+    { label: 'Consonants', note: 'a doubled note', sounds: ['s', 't', 'r', 'v', 'm', 'l', 'd'] },
+    { label: 'Consonants', note: 'doubled, accented', sounds: ['z', 'b', 'g', 'ch', 'x', '', ''] },
+  ];
+
+  // Letters this site reads as one of Sudre's sounds. Longest first.
+  const READINGS = [
+    ['eau', 'o'], ['au', 'o'], ['ai', 'e'], ['ay', 'e'], ['eu', 'eu'], ['oeu', 'eu'], ['ou', 'ou'], ['oo', 'ou'],
+    ['ch', 'ch'], ['sh', 'ch'], ['sch', 'ch'], ['ph', 'f'], ['th', 't'],
+    ['qu', 'k'], ['ck', 'k'], ['kh', 'k'],
+    ['a', 'a'], ['e', 'e'], ['i', 'i'], ['y', 'i'], ['o', 'o'], ['u', 'u'], ['w', 'ou'],
+    ['p', 'p'], ['n', 'n'], ['k', 'k'], ['q', 'k'], ['f', 'f'], ['j', 'j'],
+    ['s', 's'], ['t', 't'], ['r', 'r'], ['v', 'v'], ['m', 'm'], ['l', 'l'], ['d', 'd'],
+    ['z', 'z'], ['b', 'b'], ['g', 'g'], ['x', 'x'],
+  ];
+  const VOWEL_LETTERS = new Set(['a', 'e', 'i', 'o', 'u', 'y']);
+
+  const fold = (t) => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/ß/g, 'ss').replace(/æ/g, 'ae').replace(/œ/g, 'oe').toLowerCase();
+
+  // One word of a name → its sounds.
+  function spellWord(word) {
+    const src = String(word);
+    const w = fold(src);
+    const parts = [];
+    let i = 0;
+    while (i < w.length) {
+      const c = w[i], next = w[i + 1] || '';
+      // a doubled consonant is said once (Anna, Matthew)
+      if (i > 0 && c === w[i - 1] && !VOWEL_LETTERS.has(c) && c !== 'h') { i++; continue; }
+      let sound = null, len = 1;
+      if (c === 'c') sound = /[eiy]/.test(next) ? 's' : (next === 'h' ? (len = 2, 'ch') : 'k');   // Cecile, Carl, Charles
+      else if (c === 'g' && /[eiy]/.test(next)) sound = 'j';                                     // George, Gina
+      else if (c === 'g' && next === 'u' && /[aeiy]/.test(w[i + 2] || '')) { sound = 'g'; len = 2; }   // Guy, Guillaume
+      else if (c === 'a' && /[iy]/.test(next) && VOWEL_LETTERS.has(w[i + 2] || '')) sound = 'a';   // Maya, Kaia: a new syllable, not é
+      else if (c === 'h') sound = null;                                                          // silent, as in French
+      else if (c === 's' && VOWEL_LETTERS.has(w[i - 1]) && VOWEL_LETTERS.has(next)) sound = 'z';   // Rosa, Pontoise → Pontoize (Sudre)
+      else if (c === 'e' && i === w.length - 1 && i > 1 && !VOWEL_LETTERS.has(w[i - 1]) && src[i] === 'e') sound = null;   // Anne, George: a silent final e
+      else {
+        for (const [letters, s] of READINGS) {
+          if (w.startsWith(letters, i)) { sound = s; len = letters.length; break; }
+        }
+      }
+      const letters = src.slice(i, i + len) || w.slice(i, i + len);
+      if (sound && ALPHABET[sound]) parts.push({ letters, sound, ...ALPHABET[sound] });
+      else parts.push({ letters, sound: null, notes: [], accent: false, kind: 'silent' });
+      i += len;
+    }
+    // a doubled consonant read as two letters (e.g. "tth") still says one sound
+    return parts.filter((p, k) => !(p.kind === 'consonant' && parts[k - 1]?.sound === p.sound));
+  }
+
+  // A name → { words: [{ text, parts, notes, accents }], notes, accents }.
+  // accents are the indices (into that word's notes) that carry an accent.
+  function spellName(text) {
+    const words = String(text || '').split(/[\s\-–—]+/).filter((w) => /[a-zà-ÿ]/i.test(w)).map((t) => {
+      const parts = spellWord(t.replace(/[^\p{L}]/gu, ''));
+      const notes = [], accents = [];
+      for (const p of parts) {
+        if (p.accent) accents.push(notes.length);
+        notes.push(...p.notes);
+      }
+      return { text: t, parts, notes, accents };
+    });
+    return { words, notes: words.flatMap((w) => w.notes), accents: words.map((w) => w.accents) };
+  }
+
+  // The name written out, an accented note carrying the site's stress mark
+  // (a circumflex, as on the word pages): Anna → "dorêdo".
+  const STRESSED = { do: 'dô', re: 'rê', mi: 'mî', fa: 'fâ', sol: 'sôl', la: 'lâ', si: 'sî' };
+  function writeName(word) {
+    return word.notes.map((n, i) => (word.accents.includes(i) ? STRESSED[n] : n)).join('');
+  }
+  return { ALPHABET, ALPHABET_ROWS, spellName, writeName };
+})();
+
+// === views/translate/name.leaf.js ===
+const __m_views_translate_name_leaf = (() => {
+  const { note, cap } = __m_dictionary_notes;
+  const { spellName, writeName, ALPHABET, ALPHABET_ROWS } = __m_translate_name_model;
+  const { playNote } = __m_voices_index;
+  const { cursiveSVG } = __m_graphics_cursive;
+  const { wordHTML } = __m_graphics_graphics;
+  const { esc, swatches } = __m_views_translate_parts;
+
+  // Your name — spelled by sound in Sudre's alphabet for proper nouns, shown
+  // sound by sound (the letters, the sound heard in them, its notes), then as
+  // one word in colour, in the connected script, and to the ear: an accented
+  // note is held longer, which is how the ear tells p (dô) from a (do).
+
+  const NAMES = ['do', 're', 'mi', 'fa', 'sol', 'la', 'si'];
+  const NOTE_S = 0.3, ACCENT_S = 0.6, GAP_S = 0.06, WORD_GAP_S = 0.35;
+
+  const noteChip = (n, accent) =>
+    `<span class="nm-note nt" style="color:${note(n).color}">${accent ? n.replace(/[aeiou]/, (v) => ({ a: 'â', e: 'ê', i: 'î', o: 'ô', u: 'û' }[v])) : n}</span>`;
+
+  function mountNameLeaf(el) {
+    let timers = [];
+    const stored = (() => { try { return localStorage.getItem('solresol:name') || ''; } catch { return ''; } })();
+
+    el.innerHTML = `
+      <header class="nm-head">
+        <h2 class="section-title">Your name in Solresol</h2>
+        <p class="hint">A name has no meaning to translate, so Sudre spelled names by sound: each vowel is one note,
+          each consonant an accented note or a doubled one. An accent is held longer, so the ear can tell them apart.</p>
+      </header>
+      <input class="nm-input" type="text" autocomplete="off" autocapitalize="words" spellcheck="false"
+        aria-label="A name" placeholder="Type a name" value="${esc(stored || 'Maya')}" />
+      <div class="nm-out" aria-live="polite"></div>
+      <section class="nm-table">
+        <h3 class="rubric">Sudre’s alphabet for names</h3>
+        <table>
+          <thead><tr><th></th>${NAMES.map((n) => `<th style="color:${note(n).color}" class="nt">${n}</th>`).join('')}</tr></thead>
+          <tbody>${ALPHABET_ROWS.map((r) => `<tr><th scope="row">${r.label}<small>${r.note}</small></th>${r.sounds.map((s) =>
+            s ? `<td><button type="button" class="nm-sound" data-sound="${s}" title="${esc(s)}: ${ALPHABET[s].notes.join(' ')}${ALPHABET[s].accent ? ', accented' : ''}">${esc(r.show?.[s] || s)}</button></td>` : '<td></td>').join('')}</tr>`).join('')}</tbody>
+        </table>
+        <p class="hint nm-src">Sudre’s <i>Alphabet phonétique</i>, <i>Langue Musicale Universelle</i> (1866), pp. XXII–XXIV.
+          He spells by sound, never by letter: <i>c</i> is always hard and a soft <i>c</i> is written <i>s</i>; an <i>s</i> said as <i>z</i> is written <i>z</i>;
+          <i>ai</i> is <i>é</i> and <i>au</i> is <i>o</i>. Reading English letters — <i>w</i>, <i>y</i>, <i>h</i>, <i>ph</i>, <i>th</i>, <i>sh</i>, a silent final <i>e</i> —
+          as his sounds is this site’s guess.</p>
+      </section>`;
+
+    const input = el.querySelector('.nm-input');
+    const out = el.querySelector('.nm-out');
+
+    function render() {
+      const text = input.value.trim();
+      try { localStorage.setItem('solresol:name', text); } catch { /* private mode */ }
+      const r = spellName(text);
+      if (!r.notes.length) { out.innerHTML = text ? '<p class="hint">No letters there to spell.</p>' : ''; return; }
+      let k = 0;
+      out.innerHTML = `
+        <div class="nm-word" data-score>
+          <p class="nm-written">${r.words.map((w) => wordHTML(cap(writeName(w)), { color: true })).join(' ')}</p>
+          <button type="button" class="tr-icon nm-play" aria-label="Hear the name" title="Hear the name">▶</button>
+        </div>
+        <div class="nm-strip">${swatches(r.notes)}</div>
+        <div class="nm-script">${r.words.map((w) => cursiveSVG(w.notes, { size: 40, weight: 2.4, title: w.text })).join('')}</div>
+        <ol class="nm-parts">${r.words.map((w, wi) => w.parts.map((p) => {
+          if (!p.sound) return `<li class="nm-part nm-part--silent"><span class="nm-letters">${esc(p.letters)}</span><span class="nm-say">silent</span></li>`;
+          const html = `<li class="nm-part" data-k="${k}">
+            <span class="nm-letters">${esc(p.letters)}</span>
+            <span class="nm-say">${p.kind === 'vowel' ? 'vowel' : 'consonant'} <b>${esc(p.sound)}</b></span>
+            <span class="nm-notes">${p.notes.map((n, j) => noteChip(n, p.accent && j === 0)).join('')}</span></li>`;
+          k++;
+          return html;
+        }).join('') + (wi < r.words.length - 1 ? '<li class="nm-gap" aria-hidden="true"></li>' : '')).join('')}</ol>`;
+    }
+
+    function stop() { timers.forEach(clearTimeout); timers = []; el.querySelectorAll('.is-sounding').forEach((x) => x.classList.remove('is-sounding')); }
+
+    // the name as sound: accented notes held longer, a breath between words
+    function hear() {
+      stop();
+      const r = spellName(input.value);
+      let t = 0, k = 0;
+      r.words.forEach((w) => {
+        for (const p of w.parts) {
+          if (!p.sound) continue;
+          const start = t, card = k++;
+          p.notes.forEach((n, j) => {
+            const dur = p.accent && j === 0 ? ACCENT_S : NOTE_S;
+            playNote(n, t, dur * 0.95);
+            t += dur + GAP_S;
+          });
+          later(() => out.querySelector(`[data-k="${card}"]`)?.classList.add('is-sounding'), start * 1000);
+          later(() => out.querySelector(`[data-k="${card}"]`)?.classList.remove('is-sounding'), t * 1000);
+        }
+        t += WORD_GAP_S;
+      });
+    }
+    function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+
+    input.addEventListener('input', () => { stop(); render(); });
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') hear(); });
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.nm-play')) hear();
+      const s = e.target.closest('[data-sound]');
+      if (s) {
+        const a = ALPHABET[s.dataset.sound];
+        let t = 0;
+        a.notes.forEach((n, j) => { const d = a.accent && j === 0 ? ACCENT_S : NOTE_S; playNote(n, t, d * 0.95); t += d + GAP_S; });
+      }
+    });
+    render();
+    return { destroy() { stop(); } };
+  }
+  return { mountNameLeaf };
+})();
+
 // === views/translate/translate.view.js ===
 const __m_views_translate_translate_view = (() => {
   const { emit } = __m_live_bus;
@@ -7728,12 +8107,14 @@ const __m_views_translate_translate_view = (() => {
   const { mountSentenceLeaf } = __m_views_translate_sentence_leaf;
   const { mountPhrasebookLeaf } = __m_views_translate_phrasebook_leaf;
   const { mountComposerLeaf } = __m_views_translate_composer_leaf;
+  const { mountNameLeaf } = __m_views_translate_name_leaf;
 
-  // Chapter III · Translation — four leaves, each its own address:
+  // Chapter III · Translation — five leaves, each its own address:
   //   #/translate             words, both ways
   //   #/translate/sentence    a sentence, both ways
   //   #/translate/phrasebook  phrases that hold to the canon
   //   #/translate/compose     a sentence built by the grammar
+  //   #/translate/name        a name, spelled by sound in Sudre's alphabet
   //
   // Every word on these pages opens its own page (ctx.openWord); ▶ sounds it,
   // ＋ sends it to the sentence being said (bus: sentence:add).
@@ -7743,6 +8124,7 @@ const __m_views_translate_translate_view = (() => {
     { id: 'sentence',   href: 'translate/sentence',   label: 'Sentences',  mount: mountSentenceLeaf },
     { id: 'phrasebook', href: 'translate/phrasebook', label: 'Phrasebook', mount: mountPhrasebookLeaf },
     { id: 'compose',    href: 'translate/compose',    label: 'Composer',   mount: mountComposerLeaf },
+    { id: 'name',       href: 'translate/name',       label: 'Your name',  mount: mountNameLeaf },
   ];
 
   function mountTranslateView(host, ctx, route) {
@@ -10238,7 +10620,9 @@ const __m_views_learn_write = (() => {
   // written when every word is. Hints show the next word's colours.
 
   const STORE = 'solresol:write';
-  const PHRASES = PHRASEBOOK.flatMap((s) => s.phrases.map((p) => ({ ...p, section: s.label })))
+  // A whole paragraph (the "A real text" section) is reading, not a writing drill.
+  const PHRASES = PHRASEBOOK.filter((s) => s.id !== 'text')
+    .flatMap((s) => s.phrases.map((p) => ({ ...p, section: s.label })))
     .filter((p) => targetWords(p.sol).length);
 
   const load = () => { try { return { written: 0, words: 0, seen: [], ...JSON.parse(localStorage.getItem(STORE) || '{}') }; } catch { return { written: 0, words: 0, seen: [] }; } };

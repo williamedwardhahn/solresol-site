@@ -71,6 +71,32 @@ export const PHRASEBOOK = [
       { en: 'We will sing', sol: 'Doré mimi solremifa', lit: ['we', '(future)', 'sing'] },
     ],
   },
+  {
+    id: 'colours', label: 'Colours', note: 'The colours are one family: la-re-, then the hue. Gold and silver are la-fa-sol-.',
+    phrases: [
+      { en: 'Red', sol: 'Laremisi', lit: ['red'] },
+      { en: 'Yellow', sol: 'Laremisol', lit: ['yellow'] },
+      { en: 'Green', sol: 'Laremifa', lit: ['green'] },
+      { en: 'Blue', sol: 'Laremila', lit: ['blue'] },
+      { en: 'Violet', sol: 'Laremire', lit: ['violet'] },
+      { en: 'Grey', sol: 'Laremido', lit: ['grey'] },
+      { en: 'White', sol: 'Laredosol', lit: ['white'] },
+      { en: 'Brown · dark', sol: 'Laredomi', lit: ['dark, brown'] },
+      { en: 'Gold', sol: 'Lafasolre', lit: ['gold'] },
+      { en: 'Silver', sol: 'Lafasolfa', lit: ['silver'] },
+    ],
+  },
+  {
+    id: 'text', label: 'A real text', note: 'Article 1 of the Universal Declaration of Human Rights, as it is usually given in Solresol. Every word is in the dictionary.',
+    phrases: [
+      { en: 'All human beings are born free and equal in dignity and rights.',
+        sol: 'Sire misolredo doredore famido re misolla, re famisol dosila re refasi.',
+        lit: ['each', 'person', 'born', 'free', 'and', 'equal', 'and', 'have', 'dignity', 'and', 'rights'] },
+      { en: 'They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.',
+        sol: 'Dofa midomido midodosi dofasifa re domilafa, re falado fasolfa miladomi midodosi simisila.',
+        lit: ['they', 'endow', 'with', 'conscience', 'and', 'reason', 'and', 'must', 'act', 'together', 'with', 'brotherhood'] },
+    ],
+  },
 ];
 
 // The words of a phrase, as they are written (marks kept): "Dore do falafa" → ['Dore','do','falafa'].

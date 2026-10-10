@@ -1,7 +1,7 @@
-import { sequence } from '../live/sequence.js?v=c115d42191';
-import { parse, cap } from '../dictionary/notes.js?v=c115d42191';
-import { meaningOf } from '../dictionary/dictionary.js?v=c115d42191';
-import { semanticKey, reverse } from '../dictionary/grammar.js?v=c115d42191';
+import { sequence } from '../live/sequence.js?v=8aaee6f447';
+import { parse, cap } from '../dictionary/notes.js?v=8aaee6f447';
+import { meaningOf } from '../dictionary/dictionary.js?v=8aaee6f447';
+import { semanticKey, reverse } from '../dictionary/grammar.js?v=8aaee6f447';
 
 // A Word — a live sequence of notes.
 //
