@@ -1,9 +1,9 @@
-import { note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
-import { CORE } from '../../dictionary/core.js?v=d5188c5e91';
-import { playNote } from '../../voices/index.js?v=d5188c5e91';
-import { emit } from '../../live/bus.js?v=d5188c5e91';
-import { noteTracker, decodeHum } from '../../learn/singing.model.js?v=d5188c5e91';
-import { esc } from './common.js?v=d5188c5e91';
+import { note, cap } from '../../dictionary/notes.js?v=c115d42191';
+import { CORE } from '../../dictionary/core.js?v=c115d42191';
+import { playNote } from '../../voices/index.js?v=c115d42191';
+import { emit } from '../../live/bus.js?v=c115d42191';
+import { noteTracker, decodeHum } from '../../learn/singing.model.js?v=c115d42191';
+import { esc } from './common.js?v=c115d42191';
 
 // Hum to speak — for someone who can hum but not speak.
 //

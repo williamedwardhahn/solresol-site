@@ -1,0 +1,147 @@
+/* Ocarina Songs — the site's paper and ink; the seven notes stay the only
+   bright colours. Text in a note's colour gets an ink edge for legibility. */
+
+body { background: var(--paper); color: var(--ink); font-family: var(--text); margin: 0; padding-bottom: 210px; }
+
+.oc-head, .oc-main { max-width: var(--page); margin: 0 auto; padding: 0 var(--gutter); }
+.oc-head { padding-top: 22px; }
+.oc-back { font-family: var(--sc); color: var(--rubric); text-decoration: none; font-size: 15px; }
+.oc-head h1 { font-size: clamp(36px, 6vw, 56px); color: var(--rubric); margin: 6px 0 4px; }
+.oc-lede { font-size: 18px; color: var(--ink-2); max-width: 60ch; margin: 0 0 16px; }
+
+.oc-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule); }
+.oc-tabs button {
+  font: 18px var(--sc); background: none; border: 0; padding: 8px 14px; color: var(--ink-3); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.oc-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rubric); }
+
+/* note syllables: the note's own colour, edged in ink */
+.syl {
+  color: var(--c); font-family: var(--display); font-weight: 400; position: relative; white-space: nowrap;
+  -webkit-text-stroke: .6px var(--ink); paint-order: stroke fill;
+}
+.hi { position: absolute; top: -.55em; left: 50%; transform: translateX(-50%); font-style: normal; font-size: .6em; color: var(--ink); -webkit-text-stroke: 0; }
+
+/* songs layout */
+.oc-songs { display: grid; grid-template-columns: 260px 1fr; gap: 28px; padding-top: 20px; }
+.oc-list h3 { font: 15px var(--sc); color: var(--rubric); margin: 14px 0 6px; letter-spacing: .02em; }
+.oc-list ul { list-style: none; margin: 0; padding: 0; }
+.oc-list button {
+  width: 100%; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name stars" "dots dots";
+  gap: 2px 8px; text-align: left; background: none; border: 1px solid transparent; border-radius: var(--radius);
+  padding: 7px 9px; cursor: pointer; font: 16px var(--text); color: var(--ink);
+}
+.oc-list button:hover { background: var(--paper-raised); border-color: var(--rule-soft); }
+.oc-list button[aria-current="true"] { background: var(--paper-raised); border-color: var(--rule); box-shadow: var(--shadow); }
+.oc-list .name { grid-area: name; }
+.oc-list .dots { grid-area: dots; display: flex; gap: 3px; }
+.oc-list .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 1px rgba(34,27,20,.35); }
+.oc-list .stars { grid-area: stars; font-size: 12px; color: var(--rule); letter-spacing: 1px; }
+.oc-list .star.on { color: var(--rubric); }
+
+.oc-stage { min-width: 0; }
+.oc-song-head h2 { font-size: 34px; }
+.oc-song-head p { margin: 6px 0; color: var(--ink-2); font-size: 17px; }
+.oc-uses .syl { font-size: 20px; margin-right: 4px; }
+
+.oc-modes { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; margin: 14px 0 10px; }
+.oc-modes button { font: 15px var(--sc); padding: 7px 12px; background: var(--paper-raised); border: 0; border-right: 1px solid var(--rule); cursor: pointer; color: var(--ink-2); }
+.oc-modes button:last-child { border-right: 0; }
+.oc-modes button[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+
+.oc-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.oc-btn { font: 16px var(--sc); padding: 8px 14px; border-radius: var(--radius); border: 1px solid var(--rule); background: var(--paper-raised); color: var(--ink); cursor: pointer; }
+.oc-btn:hover { border-color: var(--ink-3); }
+.oc-btn.primary { background: var(--rubric); border-color: var(--rubric); color: #fff8ec; min-width: 116px; }
+.oc-tempo { display: inline-flex; align-items: center; gap: 6px; font: 15px var(--sc); color: var(--ink-3); margin-left: 6px; }
+.oc-tempo input { accent-color: var(--rubric); width: 110px; }
+
+/* the big syllable of the moment */
+.oc-now { height: 96px; display: flex; align-items: center; justify-content: center; }
+.oc-now .syl { font-size: 76px; -webkit-text-stroke: 1.4px var(--ink); }
+.oc-now .q, .oc-now .miss { font: 64px var(--display); color: var(--ink-3); }
+.oc-now .miss { font-size: 34px; font-style: italic; }
+.pop { animation: pop .28s var(--ease); }
+@keyframes pop { from { transform: scale(.82); opacity: .4; } }
+
+/* the melody: tiles rise with pitch and widen with length */
+.oc-tiles {
+  list-style: none; margin: 0; padding: 18px 12px 12px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 22px 6px;
+  background: var(--paper-raised); border: 1px solid var(--rule); border-radius: var(--radius);
+  background-image: repeating-linear-gradient(to top, transparent 0 13px, var(--rule-soft) 13px 14px);
+}
+.tile { --step: 7px; margin-bottom: calc(var(--h) * var(--step)); flex: 0 0 auto; width: calc(38px + (var(--w) - 1) * 12px); }
+.tile .face {
+  display: flex; align-items: center; justify-content: center; height: 44px; border-radius: 22px;
+  background: color-mix(in srgb, var(--c) 18%, var(--paper-raised)); border: 2px solid var(--c);
+  transition: transform .15s var(--ease), background .15s;
+}
+.tile .syl { font-size: 19px; }
+.tile.next .face { box-shadow: 0 0 0 3px var(--paper-raised), 0 0 0 5px var(--ink); }
+.tile.played .face { background: var(--c); }
+.tile.played .syl { color: #fff8ec; }
+.tile.sounding .face { transform: translateY(-6px) scale(1.08); background: var(--c); }
+.tile.wrong .face { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+/* level 2: colours, no names; level 3: neither, until played */
+.oc-tiles[data-mode="colour"] .tile:not(.played) .syl { visibility: hidden; }
+.oc-tiles[data-mode="ear"] .tile:not(.played) .syl { visibility: hidden; }
+.oc-tiles[data-mode="ear"] .tile:not(.played) .face { background: var(--paper-sunk); border-color: var(--rule); }
+.oc-tiles[data-mode="ear"] .tile:not(.played) { margin-bottom: 0; }
+
+.oc-msg { min-height: 1.5em; font-size: 17px; color: var(--ink-2); margin: 12px 0; }
+.oc-msg.good { color: var(--fa); font-weight: 600; }
+.oc-msg.bad { color: var(--rubric); }
+
+/* ear game */
+.oc-ear { padding-top: 20px; max-width: 640px; }
+.oc-ear h2 { font-size: 34px; }
+.oc-ear p { font-size: 17px; color: var(--ink-2); }
+.oc-score { font: 18px var(--sc); color: var(--ink-2); text-align: center; }
+
+/* the instrument */
+.oc-instrument {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: var(--paper-sunk); border-top: 1px solid var(--rule); box-shadow: 0 -10px 24px -18px rgba(34,27,20,.5);
+  padding: 8px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+}
+.oc-options { max-width: var(--page); margin: 0 auto 8px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 15px; color: var(--ink-2); }
+.oc-options input { accent-color: var(--rubric); }
+.oc-mic-meter { font: 15px var(--sc); color: var(--ink-3); min-width: 70px; }
+.oc-mic-meter .syl { font-size: 22px; }
+.oc-keys { max-width: var(--page); margin: 0 auto; display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
+.key {
+  position: relative; height: 104px; border-radius: 14px 14px 26px 26px; cursor: pointer; touch-action: manipulation;
+  border: 2px solid var(--ink); background: var(--c); color: #fff8ec; user-select: none; -webkit-user-select: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0;
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,.18); transition: transform .08s;
+}
+.key.up { height: 92px; align-self: end; }
+.key .kname { font: 24px var(--display); -webkit-text-stroke: .6px var(--ink); paint-order: stroke fill; }
+.key .hi { top: 6px; color: #fff8ec; font-size: 14px; }
+.key .btn64 { font: 11px var(--text); font-weight: 600; background: rgba(255,248,236,.92); color: var(--ink); border-radius: 8px; padding: 0 5px; }
+.key kbd { font: 11px ui-monospace, monospace; opacity: .8; }
+.key:active, .key.lit { transform: translateY(3px); box-shadow: inset 0 -2px 0 rgba(0,0,0,.18), 0 0 0 4px color-mix(in srgb, var(--c) 40%, transparent); }
+.key.lit { animation: lit .35s; }
+@keyframes lit { from { filter: brightness(1.35); } }
+
+@media (max-width: 820px) {
+  .oc-songs { grid-template-columns: 1fr; gap: 8px; }
+  .oc-list ul { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; }
+  .oc-list li { flex: 0 0 auto; }
+  .oc-list button { width: auto; }
+  .tile { --step: 4px; }
+}
+@media (max-width: 560px) {
+  body { padding-bottom: 250px; }
+  .oc-keys { grid-template-columns: repeat(7, 1fr); }
+  .key { height: 70px; }
+  .key.up { height: 58px; }
+  .key kbd { display: none; }
+  .key .hi { top: 1px; }
+  .key .kname { font-size: 19px; }
+  .oc-now { height: 76px; }
+  .oc-now .syl { font-size: 58px; }
+}

@@ -1,4 +1,4 @@
-import { NOTES } from '../dictionary/notes.js?v=d5188c5e91';
+import { NOTES } from '../dictionary/notes.js?v=c115d42191';
 
 // The pure core of tone-in — a heard pitch is an INTERPRETATION, not a
 // fact. `detectNote` returns the nearest note AND a confidence that falls

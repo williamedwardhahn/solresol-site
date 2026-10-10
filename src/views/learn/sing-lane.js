@@ -1,9 +1,9 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
-import { meaningOf } from '../../dictionary/dictionary.js?v=d5188c5e91';
-import { playNote } from '../../voices/index.js?v=d5188c5e91';
-import { emit } from '../../live/bus.js?v=d5188c5e91';
-import { ladderPosition } from '../../learn/singing.model.js?v=d5188c5e91';
-import { esc } from './common.js?v=d5188c5e91';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=c115d42191';
+import { meaningOf } from '../../dictionary/dictionary.js?v=c115d42191';
+import { playNote } from '../../voices/index.js?v=c115d42191';
+import { emit } from '../../live/bus.js?v=c115d42191';
+import { ladderPosition } from '../../learn/singing.model.js?v=c115d42191';
+import { esc } from './common.js?v=c115d42191';
 
 // Sing-along — the singing lesson as a game.
 //

@@ -1,11 +1,11 @@
-import { emit } from '../../live/bus.js?v=d5188c5e91';
-import { playWord, playSentence } from '../../voices/index.js?v=d5188c5e91';
-import { schedule } from '../../compose/sentence.model.js?v=d5188c5e91';
-import { decSentence } from './parts.js?v=d5188c5e91';
-import { mountWordsLeaf } from './words.leaf.js?v=d5188c5e91';
-import { mountSentenceLeaf } from './sentence.leaf.js?v=d5188c5e91';
-import { mountPhrasebookLeaf } from './phrasebook.leaf.js?v=d5188c5e91';
-import { mountComposerLeaf } from './composer.leaf.js?v=d5188c5e91';
+import { emit } from '../../live/bus.js?v=c115d42191';
+import { playWord, playSentence } from '../../voices/index.js?v=c115d42191';
+import { schedule } from '../../compose/sentence.model.js?v=c115d42191';
+import { decSentence } from './parts.js?v=c115d42191';
+import { mountWordsLeaf } from './words.leaf.js?v=c115d42191';
+import { mountSentenceLeaf } from './sentence.leaf.js?v=c115d42191';
+import { mountPhrasebookLeaf } from './phrasebook.leaf.js?v=c115d42191';
+import { mountComposerLeaf } from './composer.leaf.js?v=c115d42191';
 
 // Chapter III · Translation — four leaves, each its own address:
 //   #/translate             words, both ways

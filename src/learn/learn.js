@@ -1,9 +1,9 @@
-import { NOTES, note, parse, cap } from '../dictionary/notes.js?v=d5188c5e91';
-import { meaningOf, allWords, getIndex } from '../dictionary/dictionary.js?v=d5188c5e91';
-import { SEMANTIC_KEYS } from '../dictionary/grammar.js?v=d5188c5e91';
-import { on } from '../live/bus.js?v=d5188c5e91';
-import { playWord } from '../voices/index.js?v=d5188c5e91';
-import { mirrorOf } from './mirror.model.js?v=d5188c5e91';
+import { NOTES, note, parse, cap } from '../dictionary/notes.js?v=c115d42191';
+import { meaningOf, allWords, getIndex } from '../dictionary/dictionary.js?v=c115d42191';
+import { SEMANTIC_KEYS } from '../dictionary/grammar.js?v=c115d42191';
+import { on } from '../live/bus.js?v=c115d42191';
+import { playWord } from '../voices/index.js?v=c115d42191';
+import { mirrorOf } from './mirror.model.js?v=c115d42191';
 
 // The haunting — learning that is discovered, not administered.
 // Every mechanic here is built only on the kernel: a live Word, the

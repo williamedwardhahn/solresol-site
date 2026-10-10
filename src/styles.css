@@ -1,11 +1,11 @@
 /* Solresol — the stylesheet index. The single-file build inlines these
    @imports in order; each chapter keeps its own sheet beside its code. */
-@import './styles/base.css?v=d5188c5e91';
-@import './styles/shell.css?v=d5188c5e91';
-@import './styles/components.css?v=d5188c5e91';
-@import './styles/instrument.css?v=d5188c5e91';
-@import './styles/panel.css?v=d5188c5e91';
-@import './views/play/play.css?v=d5188c5e91';
-@import './views/dictionary/dictionary.css?v=d5188c5e91';
-@import './views/translate/translate.css?v=d5188c5e91';
-@import './views/learn/learn.css?v=d5188c5e91';
+@import './styles/base.css?v=c115d42191';
+@import './styles/shell.css?v=c115d42191';
+@import './styles/components.css?v=c115d42191';
+@import './styles/instrument.css?v=c115d42191';
+@import './styles/panel.css?v=c115d42191';
+@import './views/play/play.css?v=c115d42191';
+@import './views/dictionary/dictionary.css?v=c115d42191';
+@import './views/translate/translate.css?v=c115d42191';
+@import './views/learn/learn.css?v=c115d42191';

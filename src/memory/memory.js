@@ -1,6 +1,6 @@
-import { live } from '../live/live.js?v=d5188c5e91';
-import { on } from '../live/bus.js?v=d5188c5e91';
-import { strength } from './strength.js?v=d5188c5e91';
+import { live } from '../live/live.js?v=c115d42191';
+import { on } from '../live/bus.js?v=c115d42191';
+import { strength } from './strength.js?v=c115d42191';
 
 // Memory — the medium remembers you.
 //

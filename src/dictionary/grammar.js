@@ -1,4 +1,4 @@
-import { parse } from './notes.js?v=d5188c5e91';
+import { parse } from './notes.js?v=c115d42191';
 
 // The rules of the language — kept in one place, as data and pure
 // functions. Canonical Sudre / Gajewski; see docs/SOLRESOL_MASTER.md.

@@ -1,7 +1,7 @@
-import { note, cap } from '../../dictionary/notes.js?v=d5188c5e91';
-import { allWords } from '../../dictionary/dictionary.js?v=d5188c5e91';
-import { prepare } from './lexicon.model.js?v=d5188c5e91';
-import { numbersHTML } from '../../graphics/graphics.js?v=d5188c5e91';
+import { note, cap } from '../../dictionary/notes.js?v=c115d42191';
+import { allWords } from '../../dictionary/dictionary.js?v=c115d42191';
+import { prepare } from './lexicon.model.js?v=c115d42191';
+import { numbersHTML } from '../../graphics/graphics.js?v=c115d42191';
 
 // Small shared pieces of the Dictionary chapter: the prepared lexicon
 // (built once per loaded word list) and the markup every tab writes.

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Songbook</title>
+  <meta name="description" content="Twenty-three songs to play on the keys, learning do re mi fa sol la si as you go." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap" />
+  <link rel="stylesheet" href="./songbook.css" />
+</head>
+<body>
+  <div class="book">
+    <header class="top">
+      <a href="../../solresol.html">← Solresol</a>
+      <span class="brand">Songbook</span>
+      <a href="../ocarina/">Ocarina songs →</a>
+    </header>
+
+    <main class="console">
+      <!-- the player: instrument, speed, play -->
+      <aside class="player">
+        <div class="card">
+          <div class="icon" id="icon" aria-hidden="true"></div>
+          <select id="instrument" aria-label="Instrument"></select>
+        </div>
+        <label class="meter" title="Speed">
+          <span>S</span><input id="tempo" type="range" min="50" max="170" step="5" value="100" aria-label="Speed" /><span>F</span>
+        </label>
+        <button class="play" id="play">Play</button>
+        <div class="row">
+          <button class="sq" id="prev" aria-label="Previous song">◀</button>
+          <button class="sq" id="loop" aria-pressed="false" aria-label="Repeat">↻</button>
+          <button class="sq" id="next" aria-label="Next song">▶</button>
+        </div>
+        <div class="modes" role="radiogroup" aria-label="Mode">
+          <button role="radio" data-mode="listen">Listen</button>
+          <button role="radio" data-mode="turn">Your turn</button>
+        </div>
+        <div class="toggles">
+          <label><input type="checkbox" id="pedal" checked /> Sustain pedal</label>
+          <label><input type="checkbox" id="names" checked /> Show names</label>
+        </div>
+      </aside>
+
+      <!-- the page of music -->
+      <section class="sheet" aria-live="polite">
+        <div class="sheet-head">
+          <span class="sheet-icon" id="sheet-icon" aria-hidden="true"></span>
+          <h1 id="title"></h1>
+          <span class="badge" id="number"></span>
+        </div>
+        <div class="music" id="music"></div>
+        <p class="msg" id="msg"></p>
+      </section>
+
+      <!-- page tabs, as in a songbook -->
+      <nav class="tabs" aria-label="Pages">
+        <button id="contents" aria-label="Contents">☰</button>
+        <button data-jump="1">1</button>
+        <button data-jump="6">6</button>
+        <button data-jump="12">12</button>
+        <button data-jump="18">18</button>
+        <button data-jump="24">24</button>
+      </nav>
+    </main>
+
+    <div class="keyboard">
+      <div class="keys" id="keys"></div>
+      <p class="hint">Keys <b>1</b>–<b>0</b> play the white keys · hold <b>Shift</b> for the black key just above · <b>Space</b> plays the song · <b>←</b> <b>→</b> turn the page</p>
+    </div>
+  </div>
+
+  <dialog id="toc">
+    <form method="dialog" class="toc">
+      <h2>Table of Contents</h2>
+      <ol id="toc-list"></ol>
+      <button class="sq close" aria-label="Close">✕</button>
+    </form>
+  </dialog>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

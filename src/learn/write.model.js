@@ -1,4 +1,4 @@
-import { readNotes } from '../translate/lookup.js?v=d5188c5e91';
+import { readNotes } from '../translate/lookup.js?v=c115d42191';
 
 // Writing practice, pure: a phrase's target words, and how what was typed
 // measures up — word by word, as each is finished.

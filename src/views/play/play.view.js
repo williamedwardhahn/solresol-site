@@ -1,17 +1,17 @@
-import { cap } from '../../dictionary/notes.js?v=d5188c5e91';
-import { meaningOf, wordCount } from '../../dictionary/dictionary.js?v=d5188c5e91';
-import { playWord, VOICES } from '../../voices/index.js?v=d5188c5e91';
-import { mountChoir } from '../../ui/choir.js?v=d5188c5e91';
-import { mountKeyboard } from '../../ui/keyboard.js?v=d5188c5e91';
-import { mountPredictor } from '../../map/map.js?v=d5188c5e91';
-import { mountSentence } from '../../compose/compose.js?v=d5188c5e91';
-import { mountColorIn, mountNumberIn, mountToneIn, mountMidiIn } from '../../sense/inputs.js?v=d5188c5e91';
-import { mountSequencer } from '../../sequencer/sequencer.js?v=d5188c5e91';
-import { mountOnboarding } from '../../onboarding/onboarding.js?v=d5188c5e91';
-import { emit } from '../../live/bus.js?v=d5188c5e91';
-import { wordHTML } from '../../graphics/graphics.js?v=d5188c5e91';
-import { cursiveSVG } from '../../graphics/cursive.js?v=d5188c5e91';
-import { mountWriting, reopenLast } from '../../compose/writing.js?v=d5188c5e91';
+import { cap } from '../../dictionary/notes.js?v=c115d42191';
+import { meaningOf, wordCount } from '../../dictionary/dictionary.js?v=c115d42191';
+import { playWord, VOICES } from '../../voices/index.js?v=c115d42191';
+import { mountChoir } from '../../ui/choir.js?v=c115d42191';
+import { mountKeyboard } from '../../ui/keyboard.js?v=c115d42191';
+import { mountPredictor } from '../../map/map.js?v=c115d42191';
+import { mountSentence } from '../../compose/compose.js?v=c115d42191';
+import { mountColorIn, mountNumberIn, mountToneIn, mountMidiIn } from '../../sense/inputs.js?v=c115d42191';
+import { mountSequencer } from '../../sequencer/sequencer.js?v=c115d42191';
+import { mountOnboarding } from '../../onboarding/onboarding.js?v=c115d42191';
+import { emit } from '../../live/bus.js?v=c115d42191';
+import { wordHTML } from '../../graphics/graphics.js?v=c115d42191';
+import { cursiveSVG } from '../../graphics/cursive.js?v=c115d42191';
+import { mountWriting, reopenLast } from '../../compose/writing.js?v=c115d42191';
 
 // Chapter I — Play: the instrument, and its companions.
 //

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Ocarina Songs</title>
+  <meta name="description" content="Learn do re mi fa sol la si by playing the ocarina songs you already know." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" />
+  <link rel="stylesheet" href="../styles/base.css" />
+  <link rel="stylesheet" href="./ocarina.css" />
+</head>
+<body>
+  <header class="oc-head">
+    <a class="oc-back" href="../../solresol.html">← Solresol</a>
+    <h1>Ocarina Songs</h1>
+    <p class="oc-lede">Learn <b>do re mi fa sol la si</b> by playing tunes you already hum. Listen, then play them back on the keys below — or sing them.</p>
+    <nav class="oc-tabs" role="tablist">
+      <button role="tab" data-tab="songs" aria-selected="true">Songs</button>
+      <button role="tab" data-tab="ear" aria-selected="false">Ear game</button>
+    </nav>
+  </header>
+
+  <main class="oc-main">
+    <!-- Songs: pick one, hear it, play it back -->
+    <section id="tab-songs" class="oc-songs">
+      <aside class="oc-list" aria-label="Songs"></aside>
+
+      <div class="oc-stage">
+        <div class="oc-song-head">
+          <h2 id="song-title"></h2>
+          <p id="song-about"></p>
+          <p class="oc-uses">Notes in this song: <span id="song-uses"></span></p>
+        </div>
+
+        <div class="oc-modes" role="radiogroup" aria-label="How much to show">
+          <button data-mode="read"   role="radio">1 · Names</button>
+          <button data-mode="colour" role="radio">2 · Colours only</button>
+          <button data-mode="ear"    role="radio">3 · By ear</button>
+        </div>
+
+        <div class="oc-controls">
+          <button id="listen" class="oc-btn primary">▶ Listen</button>
+          <button id="restart" class="oc-btn">↺ Start over</button>
+          <button id="hint" class="oc-btn">Hint</button>
+          <label class="oc-tempo">Speed <input id="tempo" type="range" min="60" max="160" step="5" value="100" /></label>
+        </div>
+
+        <div class="oc-now" aria-live="polite"><span id="now"></span></div>
+        <ol class="oc-tiles" id="tiles" aria-label="The melody"></ol>
+        <p class="oc-msg" id="msg" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- Ear game: hear one note, name it -->
+    <section id="tab-ear" class="oc-ear" hidden>
+      <h2>Which note is that?</h2>
+      <p>A note plays. Find it on the keys. You get to hear <b>do</b> first, every round, as a reference.</p>
+      <div class="oc-modes" role="radiogroup" aria-label="Which notes">
+        <button data-set="five" role="radio">The five ocarina notes</button>
+        <button data-set="seven" role="radio">All seven</button>
+      </div>
+      <div class="oc-controls">
+        <button id="ear-play" class="oc-btn primary">▶ Play a note</button>
+        <button id="ear-again" class="oc-btn">Hear it again</button>
+      </div>
+      <div class="oc-now"><span id="ear-now"></span></div>
+      <p class="oc-score" id="ear-score"></p>
+    </section>
+  </main>
+
+  <!-- The instrument, always at hand -->
+  <footer class="oc-instrument">
+    <div class="oc-options">
+      <label><input type="checkbox" id="pedal" checked /> Sustain pedal</label>
+      <label><input type="checkbox" id="say" /> Say the names</label>
+      <label><input type="checkbox" id="mic" /> Sing or play into the mic</label>
+      <span class="oc-mic-meter" id="mic-meter" hidden></span>
+    </div>
+    <div class="oc-keys" id="keys"></div>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

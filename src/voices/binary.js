@@ -1,4 +1,4 @@
-import { note } from '../dictionary/notes.js?v=d5188c5e91';
+import { note } from '../dictionary/notes.js?v=c115d42191';
 
 // The Binary voice — a note as three bits (do = 001 … si = 111).
 export const binary = {

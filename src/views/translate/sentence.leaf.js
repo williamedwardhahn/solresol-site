@@ -1,10 +1,10 @@
-import { cap, NOTES } from '../../dictionary/notes.js?v=d5188c5e91';
-import { getIndex } from '../../dictionary/dictionary.js?v=d5188c5e91';
-import { staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=d5188c5e91';
-import { translateEnglish, glossSolresol } from '../../translate/english.model.js?v=d5188c5e91';
-import { esc, swatches, written, encSentence } from './parts.js?v=d5188c5e91';
-import { wordHTML } from '../../graphics/graphics.js?v=d5188c5e91';
-import { cursiveSVG } from '../../graphics/cursive.js?v=d5188c5e91';
+import { cap, NOTES } from '../../dictionary/notes.js?v=c115d42191';
+import { getIndex } from '../../dictionary/dictionary.js?v=c115d42191';
+import { staffSVG, colorStripSVG } from '../../graphics/graphics.js?v=c115d42191';
+import { translateEnglish, glossSolresol } from '../../translate/english.model.js?v=c115d42191';
+import { esc, swatches, written, encSentence } from './parts.js?v=c115d42191';
+import { wordHTML } from '../../graphics/graphics.js?v=c115d42191';
+import { cursiveSVG } from '../../graphics/cursive.js?v=c115d42191';
 
 // A sentence, both ways, laid out as an interlinear gloss: the English
 // word, the Solresol word under it, its colours, its sense. Particles are

@@ -1,10 +1,10 @@
-import { NOTES, parse, cap } from '../../dictionary/notes.js?v=d5188c5e91';
-import { wordCount } from '../../dictionary/dictionary.js?v=d5188c5e91';
-import { Word } from '../../lang/word.js?v=d5188c5e91';
-import { playNote, playWord } from '../../voices/index.js?v=d5188c5e91';
-import { mountMirror, mountDiscovery, mountFading } from '../../learn/learn.js?v=d5188c5e91';
-import { mountGame } from '../../outputs/outputs.js?v=d5188c5e91';
-import { mountConstellation } from '../../map/map.js?v=d5188c5e91';
+import { NOTES, parse, cap } from '../../dictionary/notes.js?v=c115d42191';
+import { wordCount } from '../../dictionary/dictionary.js?v=c115d42191';
+import { Word } from '../../lang/word.js?v=c115d42191';
+import { playNote, playWord } from '../../voices/index.js?v=c115d42191';
+import { mountMirror, mountDiscovery, mountFading } from '../../learn/learn.js?v=c115d42191';
+import { mountGame } from '../../outputs/outputs.js?v=c115d42191';
+import { mountConstellation } from '../../map/map.js?v=c115d42191';
 
 // Games — the learning cards, each on its own plate, and the sky as a
 // map of everything you have met.

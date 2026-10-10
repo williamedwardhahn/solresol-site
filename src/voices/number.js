@@ -1,4 +1,4 @@
-import { note, noteByNumber } from '../dictionary/notes.js?v=d5188c5e91';
+import { note, noteByNumber } from '../dictionary/notes.js?v=c115d42191';
 
 // The Number voice — a note as 1–7.
 export const number = {

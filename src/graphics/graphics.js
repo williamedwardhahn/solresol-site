@@ -1,4 +1,4 @@
-import { NOTES, note } from '../dictionary/notes.js?v=d5188c5e91';
+import { NOTES, note } from '../dictionary/notes.js?v=c115d42191';
 
 // The original graphics, redrawn as SVG in the canonical colours:
 // the half-fan of the seven notes (the project's mark), the staff with

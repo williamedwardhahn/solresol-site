@@ -1,4 +1,4 @@
-import { detectPitch, hear, smoother, levelGate, octaveGuard, rmsOf } from './singing.model.js?v=d5188c5e91';
+import { detectPitch, hear, smoother, levelGate, octaveGuard, rmsOf } from './singing.model.js?v=c115d42191';
 
 // The ear — one microphone for every singing mode.
 //
