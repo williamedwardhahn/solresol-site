@@ -1,6 +1,6 @@
-import { note, cap } from '../../dictionary/notes.js?v=8aaee6f447';
-import { markWord } from '../../dictionary/grammar.js?v=8aaee6f447';
-import { numbersHTML } from '../../graphics/graphics.js?v=8aaee6f447';
+import { note, cap } from '../../dictionary/notes.js?v=c5b00be221';
+import { markWord } from '../../dictionary/grammar.js?v=c5b00be221';
+import { numbersHTML } from '../../graphics/graphics.js?v=c5b00be221';
 
 // Small markup helpers shared by the Translation chapter's four leaves.
 // A word travels in attributes as hyphenated notes ("do-mi-sol"); a

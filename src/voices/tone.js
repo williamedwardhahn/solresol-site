@@ -1,6 +1,6 @@
-import { note } from '../dictionary/notes.js?v=8aaee6f447';
-import { schedule } from '../compose/sentence.model.js?v=8aaee6f447';
-import { INSTRUMENT_IDS, DEFAULT_INSTRUMENT, instrumentFor, noteShape } from './instruments.model.js?v=8aaee6f447';
+import { note } from '../dictionary/notes.js?v=c5b00be221';
+import { schedule } from '../compose/sentence.model.js?v=c5b00be221';
+import { INSTRUMENT_IDS, DEFAULT_INSTRUMENT, instrumentFor, noteShape } from './instruments.model.js?v=c5b00be221';
 
 // The Tone voice — a note as a sound.
 //

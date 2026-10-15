@@ -1,4 +1,4 @@
-import { live } from '../live/live.js?v=8aaee6f447';
+import { live } from '../live/live.js?v=c5b00be221';
 
 // State that outlives a visit — preferences, starred words, recent words,
 // and saved sentences. Each is one live value mirrored to localStorage,
@@ -19,7 +19,7 @@ export function persisted(key, initial) {
 }
 
 // The seen voices a person can switch on and off in the word display.
-export const VOICE_IDS = ['solfege', 'number', 'color', 'staff', 'hand', 'script', 'braille', 'binary'];
+export const VOICE_IDS = ['solfege', 'number', 'color', 'staff', 'hand', 'finger', 'ocarina', 'script', 'braille', 'binary'];
 
 export const DEFAULT_PREFS = {
   timbre: 'bell',                                       // bell (celesta) | sine | triangle | sawtooth | square

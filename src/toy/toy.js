@@ -1,6 +1,6 @@
-import { NOTES, noteByNumber, cap } from '../dictionary/notes.js?v=8aaee6f447';
-import { noteForKey, keyForNote } from '../ui/keymap.js?v=8aaee6f447';
-import { voiceOn } from './synth.js?v=8aaee6f447';
+import { NOTES, noteByNumber, cap } from '../dictionary/notes.js?v=c5b00be221';
+import { noteForKey, keyForNote } from '../ui/keymap.js?v=c5b00be221';
+import { voiceOn } from './synth.js?v=c5b00be221';
 
 // The toy — seven keys you mash to feel them respond. No meaning, no gate,
 // no score, nothing to fail. Touch, hold, sweep. It just sings back.

@@ -1,7 +1,7 @@
-import { PHRASEBOOK, phraseWords } from '../../translate/phrases.js?v=8aaee6f447';
-import { readNotes } from '../../translate/lookup.js?v=8aaee6f447';
-import { esc, swatches, playBtn, addBtn } from './parts.js?v=8aaee6f447';
-import { wordHTML } from '../../graphics/graphics.js?v=8aaee6f447';
+import { PHRASEBOOK, phraseWords } from '../../translate/phrases.js?v=c5b00be221';
+import { readNotes } from '../../translate/lookup.js?v=c5b00be221';
+import { esc, swatches, playBtn, addBtn } from './parts.js?v=c5b00be221';
+import { wordHTML } from '../../graphics/graphics.js?v=c5b00be221';
 
 // The phrasebook — a traveller's pages, each phrase checked against the
 // dictionary and the canonical grammar (see src/translate/phrases.js).

@@ -1,5 +1,5 @@
-import { note } from '../dictionary/notes.js?v=8aaee6f447';
-import { HAND_LINES, PLATE_LINES } from '../assets/assets.js?v=8aaee6f447';
+import { note } from '../dictionary/notes.js?v=c5b00be221';
+import { HAND_LINES, PLATE_LINES } from '../assets/assets.js?v=c5b00be221';
 
 // The Hand voice — a note as Curwen's hand sign, from the original
 // engraved plates (do: the strong or firm tone … si: the piercing tone),

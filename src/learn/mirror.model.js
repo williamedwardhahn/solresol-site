@@ -1,4 +1,4 @@
-import { reverse } from '../dictionary/grammar.js?v=8aaee6f447';
+import { reverse } from '../dictionary/grammar.js?v=c5b00be221';
 
 // The pure core of The Mirror — a word and its reversed shadow, each with
 // its meaning. Opposition by reversal is a principle with exceptions, so

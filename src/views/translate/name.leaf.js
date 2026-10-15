@@ -1,9 +1,9 @@
-import { note, cap } from '../../dictionary/notes.js?v=8aaee6f447';
-import { spellName, writeName, ALPHABET, ALPHABET_ROWS } from '../../translate/name.model.js?v=8aaee6f447';
-import { playNote } from '../../voices/index.js?v=8aaee6f447';
-import { cursiveSVG } from '../../graphics/cursive.js?v=8aaee6f447';
-import { wordHTML } from '../../graphics/graphics.js?v=8aaee6f447';
-import { esc, swatches } from './parts.js?v=8aaee6f447';
+import { note, cap } from '../../dictionary/notes.js?v=c5b00be221';
+import { spellName, writeName, ALPHABET, ALPHABET_ROWS } from '../../translate/name.model.js?v=c5b00be221';
+import { playNote } from '../../voices/index.js?v=c5b00be221';
+import { cursiveSVG } from '../../graphics/cursive.js?v=c5b00be221';
+import { wordHTML } from '../../graphics/graphics.js?v=c5b00be221';
+import { esc, swatches } from './parts.js?v=c5b00be221';
 
 // Your name — spelled by sound in Sudre's alphabet for proper nouns, shown
 // sound by sound (the letters, the sound heard in them, its notes), then as

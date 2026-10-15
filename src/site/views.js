@@ -1,7 +1,7 @@
-import { mountPlayView } from '../views/play/play.view.js?v=8aaee6f447';
-import { mountDictionaryView } from '../views/dictionary/dictionary.view.js?v=8aaee6f447';
-import { mountTranslateView } from '../views/translate/translate.view.js?v=8aaee6f447';
-import { mountLearnView } from '../views/learn/learn.view.js?v=8aaee6f447';
+import { mountPlayView } from '../views/play/play.view.js?v=c5b00be221';
+import { mountDictionaryView } from '../views/dictionary/dictionary.view.js?v=c5b00be221';
+import { mountTranslateView } from '../views/translate/translate.view.js?v=c5b00be221';
+import { mountLearnView } from '../views/learn/learn.view.js?v=c5b00be221';
 
 // The chapters of the site, in the order of the book.
 //

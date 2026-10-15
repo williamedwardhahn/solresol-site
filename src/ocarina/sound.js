@@ -1,5 +1,5 @@
-import { unlockAudio } from '../voices/tone.js?v=8aaee6f447';
-import { frequency } from './songs.js?v=8aaee6f447';
+import { unlockAudio } from '../voices/tone.js?v=c5b00be221';
+import { frequency } from './songs.js?v=c5b00be221';
 
 // The ocarina's voice.
 //

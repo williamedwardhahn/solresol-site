@@ -56,6 +56,8 @@
 .cell--staff .staff-cell { width: 100%; height: 100%; }
 .cell--hand { padding: 0; overflow: hidden; background: color-mix(in srgb, var(--nc, transparent) 10%, var(--paper-raised)); }
 .cell--finger { padding: 3px; }
+.cell--ocarina { padding: 2px; }
+.cell--ocarina .oc-tab { width: 100%; height: 100%; }
 .finger { width: 100%; height: 100%; display: block; }
 .finger-hand rect { fill: var(--paper-sunk); stroke: var(--ink-3); stroke-width: 1.6; }
 .finger-off { fill: var(--ink-3); opacity: .45; }

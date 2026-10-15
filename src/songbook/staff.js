@@ -1,5 +1,5 @@
-import { note } from '../dictionary/notes.js?v=8aaee6f447';
-import { accidental } from './songs.js?v=8aaee6f447';
+import { note } from '../dictionary/notes.js?v=c5b00be221';
+import { accidental } from './songs.js?v=c5b00be221';
 
 // One line of music as SVG: a treble staff, the notes in their own colours
 // (heads, stems, flags, dots, ledger lines and accidentals as on a printed

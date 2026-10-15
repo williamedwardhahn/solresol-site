@@ -1,7 +1,8 @@
-import { note } from '../dictionary/notes.js?v=8aaee6f447';
-import { createMic } from '../learn/mic.js?v=8aaee6f447';
-import { SONGS, RANGE, BUTTONS, parseNote, syllablesOf } from './songs.js?v=8aaee6f447';
-import { playNote, hold, stopAll, fanfare } from './sound.js?v=8aaee6f447';
+import { note } from '../dictionary/notes.js?v=c5b00be221';
+import { createMic } from '../learn/mic.js?v=c5b00be221';
+import { SONGS, RANGE, BUTTONS, parseNote, syllablesOf } from './songs.js?v=c5b00be221';
+import { playNote, hold, stopAll, fanfare } from './sound.js?v=c5b00be221';
+import { ocarinaTabSVG } from '../voices/ocarina.js?v=c5b00be221';
 
 // Ocarina Songs — learn the seven names through melodies already known.
 //
@@ -37,6 +38,10 @@ let timers = [];
 // ---------- rendering ----------
 
 const colourOf = (token) => note(parseNote(token).name).color;
+// Ocarina tabs: the fingering of each note on a 12-hole alto C ocarina.
+// Shown unless switched off — and never in the by-ear mode, where a
+// fingering would give the answer away.
+const tabsOn = () => $('#tabs').checked && state.mode !== 'ear';
 const label = (token) => parseNote(token).name;
 
 function syllableHTML(token) {
@@ -70,22 +75,28 @@ function renderSong() {
       <span class="face">${syllableHTML(t)}</span></li>`;
   }).join('');
   $('#tiles').dataset.mode = state.mode;
+  const sheet = $('#tabsheet');
+  sheet.hidden = !tabsOn();
+  sheet.innerHTML = tabsOn() ? s.notes.map((t, i) =>
+    `<li class="tabnote" data-i="${i}">${ocarinaTabSVG(t)}<span class="tabsyl">${syllableHTML(t)}</span></li>`).join('') : '';
   markTiles();
 }
 
 function markTiles() {
-  document.querySelectorAll('.tile').forEach((el, i) => {
+  document.querySelectorAll('.tile, .tabnote').forEach((el) => {
+    const i = Number(el.dataset.i);
     el.classList.toggle('played', i < state.pos);
     el.classList.toggle('next', i === state.pos && !state.playing);
   });
 }
 
 function renderKeys() {
+  $('#keys').classList.toggle('with-tabs', $('#tabs').checked);
   $('#keys').innerHTML = RANGE.map((t, i) => {
     const { name, up } = parseNote(t);
     const btn = BUTTONS[t] ? `<span class="btn64">${BUTTONS[t]}</span>` : '';
     return `<button class="key${up ? ' up' : ''}" data-note="${t}" style="--c:${note(name).color}" aria-label="${name}${up ? ' high' : ''}">
-      ${up ? '<i class="hi">•</i>' : ''}<span class="kname">${name}</span>${btn}<kbd>${DIGITS[i].replace('Digit', '').replace('Minus', '-')}</kbd></button>`;
+      ${up ? '<i class="hi">•</i>' : ''}<span class="kname">${name}</span>${btn}${$('#tabs').checked ? `<span class="ktab">${ocarinaTabSVG(t)}</span>` : ''}<kbd>${DIGITS[i].replace('Digit', '').replace('Minus', '-')}</kbd></button>`;
   }).join('');
 }
 
@@ -98,7 +109,8 @@ function say(text) {
 }
 
 function flashNow(token, el = $('#now'), hidden = false) {
-  el.innerHTML = hidden ? '<span class="q">?</span>' : syllableHTML(token);
+  el.innerHTML = hidden ? '<span class="q">?</span>'
+    : syllableHTML(token) + (el.id === 'now' && tabsOn() ? `<span class="nowtab">${ocarinaTabSVG(token)}</span>` : '');
   el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
 }
 
@@ -336,6 +348,8 @@ $('#say').checked = store.get('say', false);
 $('#pedal').checked = store.get('pedal', true);
 $('#pedal').onchange = (e) => store.set('pedal', e.target.checked);
 $('#say').onchange = (e) => store.set('say', e.target.checked);
+$('#tabs').checked = store.get('tabs', true);
+$('#tabs').onchange = (e) => { store.set('tabs', e.target.checked); renderKeys(); renderSong(); };
 
 renderKeys(); renderList(); renderSong(); earRender();
 message('Pick a song, press Listen, then play it back.');

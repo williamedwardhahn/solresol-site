@@ -1,12 +1,12 @@
-import { parse } from '../../dictionary/notes.js?v=8aaee6f447';
-import { Word } from '../../lang/word.js?v=8aaee6f447';
-import { emit } from '../../live/bus.js?v=8aaee6f447';
-import { playWord, playSentence } from '../../voices/index.js?v=8aaee6f447';
-import { mountWords } from './words.tab.js?v=8aaee6f447';
-import { mountFamilies } from './families.tab.js?v=8aaee6f447';
-import { mountMirrors } from './mirrors.tab.js?v=8aaee6f447';
-import { mountNumbers } from './numbers.tab.js?v=8aaee6f447';
-import { mountMap } from './map.tab.js?v=8aaee6f447';
+import { parse } from '../../dictionary/notes.js?v=c5b00be221';
+import { Word } from '../../lang/word.js?v=c5b00be221';
+import { emit } from '../../live/bus.js?v=c5b00be221';
+import { playWord, playSentence } from '../../voices/index.js?v=c5b00be221';
+import { mountWords } from './words.tab.js?v=c5b00be221';
+import { mountFamilies } from './families.tab.js?v=c5b00be221';
+import { mountMirrors } from './mirrors.tab.js?v=c5b00be221';
+import { mountNumbers } from './numbers.tab.js?v=c5b00be221';
+import { mountMap } from './map.tab.js?v=c5b00be221';
 
 // Chapter II · The Dictionary. mountDictionaryView(host, ctx, route) → { update(route), destroy() }.
 // Five leaves, each linkable: #/dictionary (all words), /families, /mirrors,

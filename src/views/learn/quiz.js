@@ -1,14 +1,14 @@
-import { NOTES, note, cap } from '../../dictionary/notes.js?v=8aaee6f447';
-import { allWords } from '../../dictionary/dictionary.js?v=8aaee6f447';
-import { SEMANTIC_KEYS } from '../../dictionary/grammar.js?v=8aaee6f447';
-import { emit } from '../../live/bus.js?v=8aaee6f447';
-import { playNote, playWord } from '../../voices/index.js?v=8aaee6f447';
+import { NOTES, note, cap } from '../../dictionary/notes.js?v=c5b00be221';
+import { allWords } from '../../dictionary/dictionary.js?v=c5b00be221';
+import { SEMANTIC_KEYS } from '../../dictionary/grammar.js?v=c5b00be221';
+import { emit } from '../../live/bus.js?v=c5b00be221';
+import { playNote, playWord } from '../../voices/index.js?v=c5b00be221';
 import {
   LEVELS, UNLOCK_AT, QUIZ_KEY, normalize, isUnlocked, highestUnlocked, record, accuracy, dayStreak,
   weightOf, prepare, question, checkComposition, shortGloss, ROLE_LABEL, TENSE_EN,
-} from '../../learn/quiz.model.js?v=8aaee6f447';
-import { esc, wordLink, swatches, sayWord, today, loadJSON, saveJSON } from './common.js?v=8aaee6f447';
-import { wordHTML } from '../../graphics/graphics.js?v=8aaee6f447';
+} from '../../learn/quiz.model.js?v=c5b00be221';
+import { esc, wordLink, swatches, sayWord, today, loadJSON, saveJSON } from './common.js?v=c5b00be221';
+import { wordHTML } from '../../graphics/graphics.js?v=c5b00be221';
 
 // The examinations — five levels, each opened by ten right answers in the
 // one before. Keys 1–7 answer; Enter goes on. The pure logic (questions,

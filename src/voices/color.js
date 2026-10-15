@@ -1,4 +1,4 @@
-import { note, NOTES } from '../dictionary/notes.js?v=8aaee6f447';
+import { note, NOTES } from '../dictionary/notes.js?v=c5b00be221';
 
 // The Colour voice — a note as its place in the rainbow.
 export const color = {

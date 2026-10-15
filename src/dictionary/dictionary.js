@@ -1,4 +1,4 @@
-import { makeIndex } from './index.js?v=8aaee6f447';
+import { makeIndex } from './index.js?v=c5b00be221';
 
 // The Dictionary singleton — the one book of truth, loaded once at
 // startup. All the logic lives in makeIndex (pure, tested); this file
@@ -7,7 +7,7 @@ import { makeIndex } from './index.js?v=8aaee6f447';
 let dict = makeIndex([]);
 
 export async function loadDictionary() {
-  const res = await fetch(new URL('./words.json?v=8aaee6f447', import.meta.url));
+  const res = await fetch(new URL('./words.json?v=c5b00be221', import.meta.url));
   dict = makeIndex(await res.json());
 }
 

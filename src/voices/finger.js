@@ -1,4 +1,4 @@
-import { note, NOTES } from '../dictionary/notes.js?v=8aaee6f447';
+import { note, NOTES } from '../dictionary/notes.js?v=c5b00be221';
 
 // The Finger voice — a note as a place on the hand.
 //

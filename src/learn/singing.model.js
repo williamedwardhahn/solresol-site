@@ -1,4 +1,4 @@
-import { NOTES } from '../dictionary/notes.js?v=8aaee6f447';
+import { NOTES } from '../dictionary/notes.js?v=c5b00be221';
 
 // The singing lesson — pure parts: hear a pitch, read it as a note in any
 // voice's octave, and judge whether a note has been held in tune.

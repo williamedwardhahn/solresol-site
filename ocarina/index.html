@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" />
-  <link rel="stylesheet" href="../src/styles/base.css?v=8aaee6f447" />
-  <link rel="stylesheet" href="../src/ocarina/ocarina.css?v=8aaee6f447" />
+  <link rel="stylesheet" href="../src/styles/base.css?v=c5b00be221" />
+  <link rel="stylesheet" href="../src/ocarina/ocarina.css?v=c5b00be221" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Crect x='0' y='1' width='2' height='12' fill='%23e63946'/%3E%3Crect x='2' y='1' width='2' height='12' fill='%23f3722c'/%3E%3Crect x='4' y='1' width='2' height='12' fill='%23f9c74f'/%3E%3Crect x='6' y='1' width='2' height='12' fill='%2343aa8b'/%3E%3Crect x='8' y='1' width='2' height='12' fill='%23277da1'/%3E%3Crect x='10' y='1' width='2' height='12' fill='%234d5198'/%3E%3Crect x='12' y='1' width='2' height='12' fill='%237b2cbf'/%3E%3C/svg%3E" />
   <meta name="theme-color" content="#f4ecd6" />
   <meta property="og:type" content="website" />
@@ -56,6 +56,7 @@
 
         <div class="oc-now" aria-live="polite"><span id="now"></span></div>
         <ol class="oc-tiles" id="tiles" aria-label="The melody"></ol>
+        <ol class="oc-tabsheet" id="tabsheet" aria-label="The melody as ocarina tabs (12-hole alto C)"></ol>
         <p class="oc-msg" id="msg" aria-live="polite"></p>
       </div>
     </section>
@@ -82,12 +83,13 @@
     <div class="oc-options">
       <label><input type="checkbox" id="pedal" checked /> Sustain pedal</label>
       <label><input type="checkbox" id="say" /> Say the names</label>
+      <label title="the fingering of a 12-hole alto C ocarina: a filled hole is covered"><input type="checkbox" id="tabs" /> Ocarina tabs</label>
       <label><input type="checkbox" id="mic" /> Sing or play into the mic</label>
       <span class="oc-mic-meter" id="mic-meter" hidden></span>
     </div>
     <div class="oc-keys" id="keys"></div>
   </footer>
 
-  <script type="module" src="../src/ocarina/app.js?v=8aaee6f447"></script>
+  <script type="module" src="../src/ocarina/app.js?v=c5b00be221"></script>
 </body>
 </html>

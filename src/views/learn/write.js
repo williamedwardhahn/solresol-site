@@ -1,12 +1,12 @@
-import { NOTES, note, cap, noteByNumber } from '../../dictionary/notes.js?v=8aaee6f447';
-import { meaningOf } from '../../dictionary/dictionary.js?v=8aaee6f447';
-import { playNote, playWord, playSentence } from '../../voices/index.js?v=8aaee6f447';
-import { emit } from '../../live/bus.js?v=8aaee6f447';
-import { noteForKey, isCommitKey } from '../../ui/keymap.js?v=8aaee6f447';
-import { wordHTML, numbersHTML } from '../../graphics/graphics.js?v=8aaee6f447';
-import { PHRASEBOOK } from '../../translate/phrases.js?v=8aaee6f447';
-import { targetWords, checkWriting } from '../../learn/write.model.js?v=8aaee6f447';
-import { esc } from './common.js?v=8aaee6f447';
+import { NOTES, note, cap, noteByNumber } from '../../dictionary/notes.js?v=c5b00be221';
+import { meaningOf } from '../../dictionary/dictionary.js?v=c5b00be221';
+import { playNote, playWord, playSentence } from '../../voices/index.js?v=c5b00be221';
+import { emit } from '../../live/bus.js?v=c5b00be221';
+import { noteForKey, isCommitKey } from '../../ui/keymap.js?v=c5b00be221';
+import { wordHTML, numbersHTML } from '../../graphics/graphics.js?v=c5b00be221';
+import { PHRASEBOOK } from '../../translate/phrases.js?v=c5b00be221';
+import { targetWords, checkWriting } from '../../learn/write.model.js?v=c5b00be221';
+import { esc } from './common.js?v=c5b00be221';
 
 // Write (#/learn/write) — learning sentences by typing them.
 //

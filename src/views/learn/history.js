@@ -1,8 +1,8 @@
-import { parse } from '../../dictionary/notes.js?v=8aaee6f447';
-import { markWord } from '../../dictionary/grammar.js?v=8aaee6f447';
-import { fanSVG, staffSVG, scriptSVG, colorStripSVG } from '../../graphics/graphics.js?v=8aaee6f447';
-import { wordLink, sayWord } from './common.js?v=8aaee6f447';
-import { wordHTML } from '../../graphics/graphics.js?v=8aaee6f447';
+import { parse } from '../../dictionary/notes.js?v=c5b00be221';
+import { markWord } from '../../dictionary/grammar.js?v=c5b00be221';
+import { fanSVG, staffSVG, scriptSVG, colorStripSVG } from '../../graphics/graphics.js?v=c5b00be221';
+import { wordLink, sayWord } from './common.js?v=c5b00be221';
+import { wordHTML } from '../../graphics/graphics.js?v=c5b00be221';
 
 // History — Sudre's story, as a short illustrated timeline. Only the
 // facts SOLRESOL_MASTER §1–3 marks [canon] or [documented]; the popular

@@ -1,4 +1,4 @@
-import { live } from '../live/live.js?v=8aaee6f447';
+import { live } from '../live/live.js?v=c5b00be221';
 
 // The router — where you are, as a live value read from the address.
 //

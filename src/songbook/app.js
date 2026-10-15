@@ -1,7 +1,7 @@
-import { note } from '../dictionary/notes.js?v=8aaee6f447';
-import { SONGS, WHITE, BLACK, notesOf, samePitch, accidental } from './songs.js?v=8aaee6f447';
-import { INSTRUMENTS, start, play, stopAll } from './instruments.js?v=8aaee6f447';
-import { staffSVG } from './staff.js?v=8aaee6f447';
+import { note } from '../dictionary/notes.js?v=c5b00be221';
+import { SONGS, WHITE, BLACK, notesOf, samePitch, accidental } from './songs.js?v=c5b00be221';
+import { INSTRUMENTS, start, play, stopAll } from './instruments.js?v=c5b00be221';
+import { staffSVG } from './staff.js?v=c5b00be221';
 
 // The songbook page — a song on its sheet, the instrument that plays it,
 // and a keyboard to play along on.

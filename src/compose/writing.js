@@ -1,9 +1,9 @@
-import { cap } from '../dictionary/notes.js?v=8aaee6f447';
-import { getIndex } from '../dictionary/dictionary.js?v=8aaee6f447';
-import { playSentence } from '../voices/index.js?v=8aaee6f447';
-import { wordHTML } from '../graphics/graphics.js?v=8aaee6f447';
-import { glossSolresol } from '../translate/english.model.js?v=8aaee6f447';
-import { shortGloss } from '../translate/lookup.js?v=8aaee6f447';
+import { cap } from '../dictionary/notes.js?v=c5b00be221';
+import { getIndex } from '../dictionary/dictionary.js?v=c5b00be221';
+import { playSentence } from '../voices/index.js?v=c5b00be221';
+import { wordHTML } from '../graphics/graphics.js?v=c5b00be221';
+import { glossSolresol } from '../translate/english.model.js?v=c5b00be221';
+import { shortGloss } from '../translate/lookup.js?v=c5b00be221';
 
 // The writing line — type a sentence on the instrument like a typewriter.
 //
